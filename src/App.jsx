@@ -22,6 +22,7 @@ import {
   Loader2,
   LogOut,
   MessageCircle,
+  Mic,
   MoreHorizontal,
   PlayCircle,
   Plus,
@@ -287,6 +288,16 @@ const MOCK_FEED = [
     tags: ["spring", "floral"]
   },
   {
+    id: 501,
+    filter: "y2k",
+    image: "https://i.pinimg.com/736x/d0/50/01/d050018a2250b92ba154b148d2d6e26f.jpg",
+    user: "Vintage Finds",
+    avatar: "https://i.pravatar.cc/150?u=v1",
+    likes: 432,
+    desc: "Throwback aesthetic for the weekend.",
+    tags: ["y2k", "vintage"]
+  },
+  {
     id: 503,
     filter: "minimalist",
     image: "https://i.pinimg.com/736x/c2/3d/6d/c23d6da086bd35893755ab8cb33ff280.jpg",
@@ -305,6 +316,16 @@ const MOCK_FEED = [
     likes: 920,
     desc: "Sleek and sophisticated evening wear.",
     tags: ["evening", "sophisticated"]
+  },
+  {
+    id: 507,
+    filter: "y2k",
+    image: "https://img.ltwebstatic.com/v4/j/pi/2026/02/10/2d/17707311586d4e11f7e561bbebc27b6a8b83049aac_thumbnail_420x.webp",
+    user: "Trend Setter",
+    avatar: "https://i.pravatar.cc/150?u=v7",
+    likes: 489,
+    desc: "Bringing back the early 2000s.",
+    tags: ["trendy", "y2k"]
   },
   {
     id: 509,
@@ -817,6 +838,12 @@ const myPostsStore = createStore(MOCK_MIX_GALLERY);
 const wishlistStore = createStore(MOCK_WISHLIST);
 const wardrobeStore = createStore(INITIAL_WARDROBE);
 const wardrobeUploadStore = createStore(null);
+const tryOnStatusStore = createStore({
+  phase: "idle",
+  loadingText: "Analyzing fabric logic...",
+  profileNotificationCount: 0,
+  runId: null
+});
 const outfitsStore = createStore({
   outfits: [
     {
@@ -1234,26 +1261,62 @@ function ShopItemOverlay({ initialItem, onClose, wishlist, toggleWishlist, showT
   );
 }
 
+const buildStylistShopOptions = (term) => [
+  {
+    label: "Google Shopping",
+    brand: "Live Search",
+    price: "Shop",
+    href: `https://www.google.com/search?tbm=shop&q=${encodeURIComponent(term)}`
+  },
+  {
+    label: "Pinterest Similar",
+    brand: "Visual Match",
+    price: "Moodboard",
+    href: `https://www.pinterest.com/search/pins/?q=${encodeURIComponent(term)}`
+  },
+  {
+    label: "Web Search",
+    brand: "Search",
+    price: "Compare",
+    href: `https://www.google.com/search?q=${encodeURIComponent(term)}`
+  }
+];
+
+const getPostBreakdown = (post) => {
+  if (post.shoppingItems?.length) {
+    return post.shoppingItems;
+  }
+  return MOCK_SHOP_ALL_ITEMS.slice(0, 4).map((item, index) => ({
+    id: `${post.id || "post"}-${index}`,
+    category: item.category,
+    name: item.name,
+    brand: item.brand,
+    price: item.price,
+    image: item.image,
+    link: item.link || `https://www.google.com/search?tbm=shop&q=${encodeURIComponent(`${item.brand} ${item.name}`)}`,
+    shopOptions: buildStylistShopOptions(`${item.brand} ${item.name}`)
+  }));
+};
+
 function TrendingFeed({ aura }) {
-  const [activeTab, setActiveTab] = useState("COMMUNITY");
   const [searchQuery, setSearchQuery] = useState("");
   const [activeCommunityFilter, setActiveCommunityFilter] = useState("All");
   const [mixItems, setMixItems] = useGlobalMix();
-  const [feedData, setFeedData] = useStore(feedStore);
+  const [feedData] = useStore(feedStore);
   const [wishlist, toggleWishlist] = useWishlist();
   const [outfitsState] = useStore(outfitsStore);
   const localOutfits = outfitsState.outfits;
-  const [selectedTrend, setSelectedTrend] = useState(null);
-  const [isSearchFocused, setIsSearchFocused] = useState(false);
   const [inlineSearch, setInlineSearch] = useState({});
   const [contextMenu, setContextMenu] = useState(null);
   const [toastMessage, setToastMessage] = useState(null);
   const [selectedShopItem, setSelectedShopItem] = useState(null);
   const [postHistory, setPostHistory] = useState([]);
-  const [isRemixed, setIsRemixed] = useState(false);
+  const [stylistReply, setStylistReply] = useState("Tell me the occasion and I will help style it.");
+  const [isRecording, setIsRecording] = useState(false);
   const postScrollRef = useRef(null);
   const pressTimer = useRef(null);
   const isLongPress = useRef(false);
+  const recognitionRef = useRef(null);
 
   const filterTags = [
     { label: "Y2K", slug: "y2k" },
@@ -1267,30 +1330,45 @@ function TrendingFeed({ aura }) {
     setTimeout(() => setToastMessage(null), 2000);
   };
 
-  const handleAskStylist = async (e) => {
+  const activeStylistMessage = stylistReply;
+
+  const runStylistFeed = useCallback(
+    (rawQuery) => {
+      const query = rawQuery.trim();
+      if (!query) {
+        return;
+      }
+      const lower = query.toLowerCase();
+      if (lower.includes("hawaii") || lower.includes("夏威夷")) {
+        setStylistReply("For Hawaii, think easy resort pieces: airy dresses, sandals, woven bags, and light layers.");
+      } else {
+        setStylistReply(`Styling note: ${query}`);
+      }
+      setSearchQuery("");
+      setShowDemoPrompt(false);
+    },
+    []
+  );
+
+  const handleAskStylist = (e) => {
     e.preventDefault();
-    const query = searchQuery.trim();
-    if (!query) {
-      return;
-    }
-    setIsSearchFocused(false);
-    aura.setInputText(query);
-    aura.processPrompt(query);
-    if (!API_KEY) {
-      aura.setAuraMessage(await callGeminiText(query));
-    }
-    setSearchQuery("");
+    runStylistFeed(searchQuery);
   };
+
+  useEffect(() => {
+    return () => recognitionRef.current?.stop?.();
+  }, []);
 
   const handleInlineSearch = (item) => {
     setInlineSearch((prev) => ({ ...prev, [item.id]: { status: "scanning" } }));
     setTimeout(() => {
-      const matches = [...MOCK_SHOP_ALL_ITEMS].sort(() => 0.5 - Math.random()).slice(0, 3);
+      const sourceItems = getPostBreakdown(item);
+      const matches = sourceItems.slice(0, 3);
       setInlineSearch((prev) => ({
         ...prev,
         [item.id]: { status: "results", results: matches }
       }));
-    }, 1500);
+    }, 900);
   };
 
   const handlePressStart = (e, item) => {
@@ -1328,386 +1406,348 @@ function TrendingFeed({ aura }) {
   const handleCardClick = (item) => {
     if (!isLongPress.current && !contextMenu) {
       setPostHistory([item]);
-      setIsRemixed(false);
     }
   };
 
+  const toggleSelectedPostMix = () => {
+    if (selectedPostItems.length === 0) {
+      return;
+    }
+
+    if (isSelectedPostMixed) {
+      const selectedImages = new Set(selectedPostItems.map((item) => item.image));
+      setMixItems((prev) => prev.filter((item) => !selectedImages.has(item.image)));
+      showToast("Removed from Mix");
+      return;
+    }
+
+    const itemsToAdd = selectedPostItems
+      .filter((item) => !mixItems.some((mixItem) => mixItem.image === item.image))
+      .map((item) => ({ id: Date.now() + Math.random(), image: item.image }));
+
+    setMixItems((prev) => [...itemsToAdd, ...prev].slice(0, 5));
+    showToast("Items added to Try-On Mix");
+  };
+
+  const toggleSingleMixItem = (item, e) => {
+    e.stopPropagation();
+    const isMixed = mixItems.some((mixItem) => mixItem.image === item.image);
+
+    if (isMixed) {
+      setMixItems((prev) => prev.filter((mixItem) => mixItem.image !== item.image));
+      showToast("Removed from Mix");
+      return;
+    }
+
+    setMixItems((prev) => [{ id: Date.now() + Math.random(), image: item.image }, ...prev].slice(0, 5));
+    triggerFlyingAnimation(item.image, e);
+    showToast("Added to Mix");
+  };
+
+  const handleVoiceInput = () => {
+    const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+    if (!SpeechRecognition) {
+      showToast("Voice input is not supported on this device");
+      return;
+    }
+    if (isRecording) {
+      recognitionRef.current?.stop();
+      setIsRecording(false);
+      return;
+    }
+    const recognition = new SpeechRecognition();
+    recognitionRef.current = recognition;
+    recognition.continuous = false;
+    recognition.interimResults = true;
+    recognition.lang = "zh-CN";
+    recognition.onstart = () => setIsRecording(true);
+    recognition.onresult = (event) => {
+      const transcript = Array.from(event.results)
+        .map((result) => result[0]?.transcript || "")
+        .join("");
+      setSearchQuery(transcript);
+    };
+    recognition.onerror = () => {
+      setIsRecording(false);
+      showToast("Voice input failed");
+    };
+    recognition.onend = () => setIsRecording(false);
+    recognition.start();
+  };
+
+  const filteredFeed = feedData.filter((item) => activeCommunityFilter === "All" || item.filter === activeCommunityFilter);
   const selectedPost = postHistory[postHistory.length - 1] || null;
+  const selectedPostItems = selectedPost ? getPostBreakdown(selectedPost) : [];
+  const isSelectedPostMixed =
+    selectedPostItems.length > 0 &&
+    selectedPostItems.every((item) => mixItems.some((mixItem) => mixItem.image === item.image));
+  const hasTypedInput = searchQuery.trim().length > 0;
 
   return (
-    <div className="bg-[#f5f3ef] min-h-full pb-24 relative">
+    <div className="relative min-h-full bg-[#f5f3ef] pb-44">
       {toastMessage && (
-        <div className="fixed top-32 left-1/2 -translate-x-1/2 z-50 bg-[#1a1a1a] text-white px-5 py-2.5 rounded-full shadow-lg text-sm font-medium animate-in slide-in-from-top-4 fade-in duration-300 whitespace-nowrap flex items-center gap-2">
+        <div className="fixed left-1/2 top-32 z-50 flex -translate-x-1/2 items-center gap-2 whitespace-nowrap rounded-full bg-[#1a1a1a] px-5 py-2.5 text-sm font-medium text-white shadow-lg animate-in slide-in-from-top-4 fade-in duration-300">
           {toastMessage}
         </div>
       )}
-      <div className="sticky top-0 z-30 flex flex-col bg-[#f5f3ef]/90 backdrop-blur-xl">
-        {!isSearchFocused && (
-          <div className="flex justify-between items-center px-4 pt-12 pb-3 sm:pt-14">
-            <h1 className="text-3xl font-serif italic text-[#1a1a1a] tracking-tight">fAIshion</h1>
-            <button onClick={() => showToast("No new notifications")} className="text-[#1a1a1a] hover:text-black transition active:scale-95">
-              <Bell size={22} />
-            </button>
-          </div>
-        )}
-        <div className={`px-4 pb-2 ${isSearchFocused ? "pt-12 sm:pt-14" : ""}`}>
-          <form
-            onSubmit={handleAskStylist}
-            className={`flex flex-col gap-3 bg-white rounded-full px-5 py-3.5 shadow-[0_4px_20px_rgb(0,0,0,0.05)] border transition-all ${isSearchFocused ? "border-black ring-4 ring-black/5" : "border-[#e5e5e5] focus-within:border-black focus-within:ring-4 focus-within:ring-black/5"}`}
-          >
-            <div className="flex items-center gap-3 w-full">
-              {isSearchFocused ? (
-                <button type="button" onClick={() => setIsSearchFocused(false)} className="text-[#999999] hover:text-[#1a1a1a] shrink-0 transition-colors">
-                  <ArrowLeft size={18} />
-                </button>
-              ) : (
-                <Sparkles size={18} className="text-[#1a1a1a] shrink-0" />
-              )}
-              <input
-                type="text"
-                placeholder="Ask your AI stylist..."
-                className="flex-1 bg-transparent border-none outline-none text-sm text-[#1a1a1a] placeholder:text-[#999999] min-w-0"
-                value={searchQuery}
-                onChange={(e) => setSearchQuery(e.target.value)}
-                onFocus={() => setIsSearchFocused(true)}
-              />
-              <button type="button" onClick={() => aura.openAura()} className="text-[#999999] hover:text-[#1a1a1a] transition shrink-0">
-                <Camera size={18} />
-              </button>
-              <button type="submit" className="text-[#999999] hover:text-[#1a1a1a] transition shrink-0">
-                <Send size={18} />
-              </button>
+
+      <div className="sticky top-0 z-30 bg-[#f5f3ef]/92 backdrop-blur-xl">
+        <div className="px-4 pb-3 pt-12 sm:pt-14">
+          <div className="flex w-full items-center gap-2.5 rounded-full border border-[#ebe5db] bg-white px-3 py-2 shadow-[0_8px_26px_rgba(0,0,0,0.05)]">
+            <div className="shrink-0">
+              <div className="h-9 w-9 overflow-hidden rounded-full border border-[#ebe5db] shadow-sm">
+                <img
+                  src="https://images.unsplash.com/photo-1488426862026-3ee34a7d66df?auto=format&fit=crop&w=240&q=80"
+                  alt="Stylist avatar"
+                  className="h-full w-full object-cover"
+                />
+              </div>
             </div>
-          </form>
-        </div>
-        {!isSearchFocused && (
-          <div className="flex px-4 pt-2 border-b border-[#e5e5e5]">
-            <button
-              onClick={() => {
-                setActiveTab("COMMUNITY");
-                setSelectedTrend(null);
-              }}
-              className={`flex-1 pb-3 text-[10px] font-bold uppercase tracking-widest ${activeTab === "COMMUNITY" ? "text-[#1a1a1a] border-b-2 border-[#1a1a1a]" : "text-[#999999] hover:text-[#1a1a1a] transition-colors"}`}
-            >
-              COMMUNITY
-            </button>
-            <button
-              onClick={() => setActiveTab("SHOP")}
-              className={`flex-1 pb-3 text-[10px] font-bold uppercase tracking-widest ${activeTab === "SHOP" ? "text-[#1a1a1a] border-b-2 border-[#1a1a1a]" : "text-[#999999] hover:text-[#1a1a1a] transition-colors"}`}
-            >
-              SHOP
-            </button>
+            <div className="min-w-0 flex-1">
+              <p className="truncate text-[12px] text-[#2b2723]">{activeStylistMessage}</p>
+            </div>
           </div>
-        )}
+        </div>
+
       </div>
-      {aura.auraMessage && !isSearchFocused && (
-        <div className="px-4 mb-6 mt-4 flex items-start justify-between gap-3 animate-in fade-in bg-white p-4 rounded-2xl border border-[#e5e5e5] shadow-sm">
-          <div className="flex items-start gap-2">
-            <Sparkles size={16} className="text-purple-600 shrink-0 mt-0.5" />
-            <p className="text-[13px] text-[#1a1a1a] font-medium leading-relaxed">{aura.auraMessage}</p>
-          </div>
-          <div className="flex items-center gap-1 shrink-0">
+
+      <>
+          <div className="flex gap-2 overflow-x-auto px-4 py-3 scrollbar-hide animate-in slide-in-from-top-2">
             <button
-              onClick={() => aura.toggleSpeech(aura.auraMessage)}
-              className={`p-1.5 rounded-full transition ${aura.isSpeaking ? "bg-purple-100 text-purple-600" : "text-[#999999] hover:text-[#1a1a1a] hover:bg-gray-100"}`}
+              onClick={() => setActiveCommunityFilter("All")}
+              className={`rounded-full px-5 py-1.5 text-xs font-bold whitespace-nowrap transition ${activeCommunityFilter === "All" ? "bg-[#1a1a1a] text-white" : "border border-[#e5e5e5] bg-white text-[#1a1a1a] hover:bg-[#f5f3ef]"}`}
             >
-              {aura.isSpeaking ? <Loader2 size={14} className="animate-spin" /> : <Volume2 size={14} />}
+              All
             </button>
-            <button onClick={aura.clearAuraMessage} className="p-1.5 rounded-full text-[#999999] hover:text-[#1a1a1a] hover:bg-gray-100 transition">
-              <X size={14} />
-            </button>
-          </div>
-        </div>
-      )}
-      {isSearchFocused && (
-        <div className="px-4 pt-4 animate-in fade-in slide-in-from-bottom-2 duration-300 pb-20">
-          <h3 className="text-[10px] font-bold text-[#999999] uppercase tracking-widest mb-4">Trending Searches</h3>
-          <div className="flex flex-wrap gap-2 mb-8">
-            {["Linen dresses", "Spring wedding guest", "Chic office wear", "Y2K denim"].map((trend) => (
+            {filterTags.map((tag) => (
               <button
-                key={trend}
-                onClick={() => {
-                  setSearchQuery(trend);
-                  setIsSearchFocused(false);
-                  aura.setInputText(trend);
-                  aura.processPrompt(trend);
-                }}
-                className="px-4 py-2 bg-white border border-[#e5e5e5] rounded-full text-xs font-bold text-[#1a1a1a] shadow-sm hover:bg-gray-50 flex items-center gap-2 transition active:scale-95"
+                key={tag.slug}
+                onClick={() => setActiveCommunityFilter(tag.slug)}
+                className={`rounded-full px-4 py-1.5 text-xs font-medium whitespace-nowrap transition ${activeCommunityFilter === tag.slug ? "border-transparent bg-[#1a1a1a] text-white" : "border border-[#e5e5e5] bg-white text-[#1a1a1a] hover:bg-[#f5f3ef]"}`}
               >
-                <TrendingUp size={12} className="text-[#999999]" />
-                {trend}
+                {tag.label}
               </button>
             ))}
           </div>
-        </div>
-      )}
-      {!isSearchFocused && (
-        <>
-          {activeTab === "COMMUNITY" ? (
-            <>
-              <div className="flex gap-2 overflow-x-auto px-4 py-3 scrollbar-hide animate-in slide-in-from-top-2">
-                <button
-                  onClick={() => setActiveCommunityFilter("All")}
-                  className={`px-5 py-1.5 rounded-full text-xs font-bold whitespace-nowrap transition ${activeCommunityFilter === "All" ? "bg-[#1a1a1a] text-white" : "border border-[#e5e5e5] bg-white text-[#1a1a1a] hover:bg-[#f5f3ef]"}`}
-                >
-                  All
-                </button>
-                {filterTags.map((tag) => (
-                  <button
-                    key={tag.slug}
-                    onClick={() => setActiveCommunityFilter(tag.slug)}
-                    className={`px-4 py-1.5 rounded-full text-xs font-medium whitespace-nowrap transition ${activeCommunityFilter === tag.slug ? "bg-[#1a1a1a] text-white border-transparent" : "border border-[#e5e5e5] bg-white text-[#1a1a1a] hover:bg-[#f5f3ef]"}`}
+
+          <div className="columns-2 gap-3 px-4 pt-2">
+            {filteredFeed.map((item) => {
+              const isLiked = localOutfits.some((o) => o.id === item.id);
+              return (
+                <div key={item.id} className="relative mb-4 break-inside-avoid group flex flex-col">
+                  <div
+                    className="relative cursor-pointer select-none overflow-hidden rounded-[2rem] bg-[#e6e2d6] shadow-sm transition-all duration-300 active:scale-[0.98] hover:shadow-md"
+                    onClick={() => handleCardClick(item)}
+                    onTouchStart={(e) => handlePressStart(e, item)}
+                    onTouchEnd={cancelPress}
+                    onTouchMove={cancelPress}
+                    onMouseDown={(e) => handlePressStart(e, item)}
+                    onMouseUp={cancelPress}
+                    onMouseMove={cancelPress}
+                    onMouseLeave={cancelPress}
+                    onContextMenu={(e) => e.preventDefault()}
                   >
-                    {tag.label}
-                  </button>
-                ))}
-              </div>
-              <div className="columns-2 gap-3 px-4 pt-2">
-                {feedData
-                  .filter((item) => activeCommunityFilter === "All" || item.filter === activeCommunityFilter)
-                  .map((item) => {
-                    const isLiked = localOutfits.some((o) => o.id === item.id);
-                    return (
-                      <div key={item.id} className="mb-4 break-inside-avoid relative group flex flex-col">
-                        <div
-                          className="relative rounded-[2rem] overflow-hidden bg-[#e6e2d6] active:scale-[0.98] transition-all duration-300 select-none cursor-pointer shadow-sm hover:shadow-md"
-                          onClick={() => handleCardClick(item)}
-                          onTouchStart={(e) => handlePressStart(e, item)}
-                          onTouchEnd={cancelPress}
-                          onTouchMove={cancelPress}
-                          onMouseDown={(e) => handlePressStart(e, item)}
-                          onMouseUp={cancelPress}
-                          onMouseMove={cancelPress}
-                          onMouseLeave={cancelPress}
-                          onContextMenu={(e) => e.preventDefault()}
-                        >
-                          <img src={item.image} alt="post" className="w-full object-cover pointer-events-none" referrerPolicy="no-referrer" />
-                          <button
-                            onClick={(e) => {
-                              e.stopPropagation();
-                              if (isLiked) {
-                                outfitsStore.setState((s) => ({ ...s, outfits: s.outfits.filter((o) => o.id !== item.id) }));
-                                showToast("Removed from Outfits");
-                              } else {
-                                addGlobalOutfit({
-                                  id: item.id,
-                                  title: `${item.user}'s Look`,
-                                  source: "Saved from Community",
-                                  coverImage: item.image,
-                                  items: MOCK_SHOP_ALL_ITEMS.slice(0, 4).map((c) => ({ type: "image", content: c.image })),
-                                  tags: [{ label: "Wishlist Looks", classes: "bg-white border border-[#e5e5e5] text-[#1a1a1a]" }]
-                                });
-                                showToast("Saved to Outfits");
-                              }
-                            }}
-                            className={`absolute top-3 right-3 p-2 bg-white/80 backdrop-blur rounded-full transition shadow-sm z-10 ${isLiked ? "text-red-500" : "text-[#1a1a1a] hover:text-red-500"}`}
-                          >
-                            <Heart size={16} fill={isLiked ? "currentColor" : "none"} />
-                          </button>
-                          {contextMenu === item.id && (
-                            <div className="absolute inset-0 bg-black/20 z-20 animate-in fade-in duration-200" onClick={(e) => { e.stopPropagation(); setContextMenu(null); }}>
-                              <div className="absolute bottom-3 left-3 right-3 flex justify-between items-center bg-white/95 backdrop-blur-md rounded-3xl px-3 py-2 shadow-xl animate-in slide-in-from-bottom-2 duration-200" onClick={(e) => e.stopPropagation()}>
-                                <button onClick={(e) => { e.stopPropagation(); handleMenuAction("Saved to Outfits", item, e); }} className="flex flex-col items-center gap-0.5 text-[#1a1a1a] hover:text-black transition-colors">
-                                  <Bookmark size={14} />
-                                  <span className="text-[8px] font-bold uppercase tracking-wide">Save</span>
-                                </button>
-                                <button onClick={(e) => { e.stopPropagation(); handleMenuAction("Added to Mix", item, e); }} className="flex flex-col items-center gap-0.5 bg-black text-white rounded-full p-2.5 -mt-8 shadow-md hover:scale-105 transition-transform border-4 border-[#e6e2d6]">
-                                  <Layers size={14} />
-                                  <span className="text-[8px] font-bold mt-0.5">Mix</span>
-                                </button>
-                                <button onClick={(e) => { e.stopPropagation(); handleMenuAction("search", item, e); }} className="flex flex-col items-center gap-0.5 text-[#1a1a1a] hover:text-black transition-colors">
-                                  <Search size={14} />
-                                  <span className="text-[8px] font-bold uppercase tracking-wide">Similar</span>
-                                </button>
-                              </div>
-                            </div>
-                          )}
-                        </div>
-                        {inlineSearch[item.id] && (
-                          <div className="mt-2 bg-white rounded-2xl border border-[#e5e5e5] p-3 shadow-sm animate-in slide-in-from-top-2 z-10 relative cursor-default" onClick={(e) => e.stopPropagation()}>
-                            {inlineSearch[item.id].status === "scanning" ? (
-                              <div className="flex flex-col items-center justify-center py-3">
-                                <Loader2 size={18} className="animate-spin text-[#999999] mb-2" />
-                                <span className="text-[9px] font-bold uppercase tracking-widest text-[#999999]">Searching Google...</span>
-                              </div>
-                            ) : (
-                              <div className="flex flex-col">
-                                <div className="flex items-center justify-between mb-2">
-                                  <div className="flex items-center gap-1.5">
-                                    <Search size={10} className="text-blue-500" />
-                                    <span className="text-[9px] font-bold uppercase tracking-widest text-[#1a1a1a]">Google Matches</span>
-                                  </div>
-                                  <button
-                                    onClick={(e) => {
-                                      e.stopPropagation();
-                                      setInlineSearch((prev) => {
-                                        const next = { ...prev };
-                                        delete next[item.id];
-                                        return next;
-                                      });
-                                    }}
-                                    className="text-[#999999] hover:text-[#1a1a1a] p-1 -mr-1 transition-colors"
-                                  >
-                                    <X size={12} />
-                                  </button>
-                                </div>
-                                <div className="flex gap-2 overflow-x-auto scrollbar-hide pb-0.5">
-                                  {inlineSearch[item.id].results.map((res) => (
-                                    <div
-                                      key={res.id}
-                                      onClick={(e) => {
-                                        e.stopPropagation();
-                                        window.open(`https://www.google.com/search?tbm=shop&q=${encodeURIComponent(`${res.brand} ${res.name}`)}`, "_blank");
-                                      }}
-                                      className="w-16 shrink-0 flex flex-col gap-1 cursor-pointer group"
-                                    >
-                                      <div className="w-16 h-16 rounded-xl overflow-hidden bg-[#f5f3ef] border border-[#e5e5e5]">
-                                        <img src={res.image} className="w-full h-full object-cover group-hover:scale-105 transition-transform" alt={res.name} />
-                                      </div>
-                                      <span className="text-[9px] font-bold text-[#1a1a1a] truncate w-full">{res.price}</span>
-                                    </div>
-                                  ))}
-                                </div>
-                              </div>
-                            )}
-                          </div>
-                        )}
-                      </div>
-                    );
-                  })}
-              </div>
-            </>
-          ) : (
-            <div className="pt-2 animate-in fade-in duration-300">
-              {!selectedTrend ? (
-                <div className="flex flex-col gap-2 py-2">
-                  <div className="flex gap-4 px-4 pb-4 overflow-x-auto scrollbar-hide">
-                    {MOCK_TRENDS.map((trend) => (
-                      <div key={trend.id} onClick={() => setSelectedTrend(trend)} className="w-64 shrink-0 relative rounded-3xl overflow-hidden h-48 group cursor-pointer active:scale-[0.98] transition-transform shadow-sm">
-                        <img src={trend.image} className="absolute inset-0 w-full h-full object-cover group-hover:scale-105 transition-transform duration-700" alt={trend.title} />
-                        <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent" />
-                        <div className="absolute bottom-3 left-4 right-4 flex justify-between items-end">
-                          <div>
-                            <h3 className="text-white font-serif text-xl leading-tight">{trend.title}</h3>
-                            <p className="text-[#e5e5e5] text-[10px] mt-1 font-bold line-clamp-1">{trend.subtitle}</p>
-                          </div>
-                          <button className="w-6 h-6 shrink-0 rounded-full bg-white/20 backdrop-blur-md flex items-center justify-center text-white">
-                            <ArrowLeft size={12} className="rotate-180" />
-                          </button>
-                        </div>
-                      </div>
-                    ))}
-                  </div>
-                  <div className="px-4 mt-4">
-                    <div className="grid grid-cols-2 gap-x-3 gap-y-6">
-                      {MOCK_SHOP_ALL_ITEMS.map((item) => (
-                        <div key={item.id} onClick={() => setSelectedShopItem(item)} className="flex flex-col gap-1.5 cursor-pointer group relative">
-                          <div className="relative aspect-[4/5] bg-[#e6e2d6] rounded-3xl border border-[#e5e5e5] overflow-hidden mb-1">
-                            <img src={item.image} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" alt={item.name} />
-                          </div>
-                          <div>
-                            <p className="text-[10px] text-[#999999] uppercase tracking-tight font-bold">{item.brand}</p>
-                            <p className="text-xs font-bold text-[#1a1a1a] line-clamp-1">{item.name}</p>
-                          </div>
-                          <div className="flex items-center gap-1.5 mt-0.5">
-                            <span className="text-sm font-bold text-[#1a1a1a]">{item.price}</span>
-                          </div>
-                        </div>
-                      ))}
-                    </div>
-                  </div>
-                </div>
-              ) : (
-                <div className="px-4 py-2 animate-in slide-in-from-right-4 duration-300">
-                  <div className="flex items-center gap-3 mb-6">
-                    <button onClick={() => setSelectedTrend(null)} className="p-2 bg-white border border-[#e5e5e5] rounded-full text-[#1a1a1a] hover:bg-[#f5f3ef] transition">
-                      <ArrowLeft size={18} />
+                    <img src={item.image} alt="post" className="w-full object-cover pointer-events-none" referrerPolicy="no-referrer" />
+
+                    <button
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        if (isLiked) {
+                          outfitsStore.setState((s) => ({ ...s, outfits: s.outfits.filter((o) => o.id !== item.id) }));
+                          showToast("Removed from Outfits");
+                        } else {
+                          addGlobalOutfit({
+                            id: item.id,
+                            title: `${item.user}'s Look`,
+                            source: "Saved from Community",
+                            coverImage: item.image,
+                            items: getPostBreakdown(item).map((c) => ({ type: "image", content: c.image })),
+                            tags: [{ label: "Wishlist Looks", classes: "bg-white border border-[#e5e5e5] text-[#1a1a1a]" }]
+                          });
+                          showToast("Saved to Outfits");
+                        }
+                      }}
+                      className={`absolute right-3 top-3 z-10 rounded-full bg-white/80 p-2 shadow-sm backdrop-blur transition ${isLiked ? "text-red-500" : "text-[#1a1a1a] hover:text-red-500"}`}
+                    >
+                      <Heart size={16} fill={isLiked ? "currentColor" : "none"} />
                     </button>
-                    <h2 className="text-3xl font-serif text-[#1a1a1a] tracking-tight">{selectedTrend.title}</h2>
-                  </div>
-                  <div className="grid grid-cols-2 gap-x-3 gap-y-6">
-                    {(MOCK_SHOP_ITEMS[selectedTrend.id] || []).map((item) => (
-                      <div key={item.id} className="flex flex-col gap-1.5 cursor-pointer group relative" onClick={() => setSelectedShopItem(item)}>
-                        <div className="relative aspect-[4/5] bg-[#e6e2d6] rounded-3xl border border-[#e5e5e5] overflow-hidden mb-1">
-                          <img src={item.image} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" alt={item.name} />
-                        </div>
-                        <div>
-                          <p className="text-[10px] text-[#999999] uppercase tracking-tight font-bold">{item.brand}</p>
-                          <p className="text-xs font-bold text-[#1a1a1a] line-clamp-1">{item.name}</p>
-                        </div>
-                        <div className="flex items-center gap-1.5 mt-0.5">
-                          <span className="text-sm font-bold text-[#1a1a1a]">{item.price}</span>
+
+                    {contextMenu === item.id && (
+                      <div className="absolute inset-0 z-20 animate-in fade-in duration-200 bg-black/20" onClick={(e) => { e.stopPropagation(); setContextMenu(null); }}>
+                        <div className="absolute bottom-3 left-3 right-3 flex items-center justify-between rounded-3xl bg-white/95 px-3 py-2 shadow-xl backdrop-blur-md animate-in slide-in-from-bottom-2 duration-200" onClick={(e) => e.stopPropagation()}>
+                          <button onClick={(e) => { e.stopPropagation(); handleMenuAction("Saved to Outfits", item, e); }} className="flex flex-col items-center gap-0.5 text-[#1a1a1a] transition-colors hover:text-black">
+                            <Bookmark size={14} />
+                            <span className="text-[8px] font-bold uppercase tracking-wide">Save</span>
+                          </button>
+                          <button onClick={(e) => { e.stopPropagation(); handleMenuAction("Added to Mix", item, e); }} className="flex flex-col items-center gap-0.5 rounded-full border-4 border-[#e6e2d6] bg-black p-2.5 text-white shadow-md transition-transform hover:scale-105 -mt-8">
+                            <Layers size={14} />
+                            <span className="mt-0.5 text-[8px] font-bold">Mix</span>
+                          </button>
+                          <button onClick={(e) => { e.stopPropagation(); handleMenuAction("search", item, e); }} className="flex flex-col items-center gap-0.5 text-[#1a1a1a] transition-colors hover:text-black">
+                            <Search size={14} />
+                            <span className="text-[8px] font-bold uppercase tracking-wide">Similar</span>
+                          </button>
                         </div>
                       </div>
-                    ))}
+                    )}
                   </div>
+
+                  {inlineSearch[item.id] && (
+                    <div className="relative z-10 mt-2 cursor-default rounded-2xl border border-[#e5e5e5] bg-white p-3 shadow-sm animate-in slide-in-from-top-2" onClick={(e) => e.stopPropagation()}>
+                      {inlineSearch[item.id].status === "scanning" ? (
+                        <div className="flex flex-col items-center justify-center py-3">
+                          <Loader2 size={18} className="mb-2 animate-spin text-[#999999]" />
+                          <span className="text-[9px] font-bold uppercase tracking-widest text-[#999999]">Searching Google...</span>
+                        </div>
+                      ) : (
+                        <div className="flex flex-col">
+                          <div className="mb-2 flex items-center justify-between">
+                            <div className="flex items-center gap-1.5">
+                              <Search size={10} className="text-blue-500" />
+                              <span className="text-[9px] font-bold uppercase tracking-widest text-[#1a1a1a]">Shopping Options</span>
+                            </div>
+                            <button
+                              onClick={(e) => {
+                                e.stopPropagation();
+                                setInlineSearch((prev) => {
+                                  const next = { ...prev };
+                                  delete next[item.id];
+                                  return next;
+                                });
+                              }}
+                              className="p-1 -mr-1 text-[#999999] transition-colors hover:text-[#1a1a1a]"
+                            >
+                              <X size={12} />
+                            </button>
+                          </div>
+                          <div className="flex gap-2 overflow-x-auto pb-0.5 scrollbar-hide">
+                            {inlineSearch[item.id].results.map((res) => (
+                              <div
+                                key={res.id}
+                                onClick={(e) => {
+                                  e.stopPropagation();
+                                  window.open(res.link || `https://www.google.com/search?tbm=shop&q=${encodeURIComponent(`${res.brand} ${res.name}`)}`, "_blank");
+                                }}
+                                className="group flex w-16 shrink-0 cursor-pointer flex-col gap-1"
+                              >
+                                <div className="h-16 w-16 overflow-hidden rounded-xl border border-[#e5e5e5] bg-[#f5f3ef]">
+                                  <img src={res.image} className="h-full w-full object-cover transition-transform group-hover:scale-105" alt={res.name} />
+                                </div>
+                                <span className="w-full truncate text-[9px] font-bold text-[#1a1a1a]">{res.price}</span>
+                              </div>
+                            ))}
+                          </div>
+                        </div>
+                      )}
+                    </div>
+                  )}
                 </div>
+              );
+            })}
+          </div>
+
+      </>
+
+      {!selectedPost && (
+        <div className="fixed bottom-6 left-[4.15rem] z-40 w-[calc(100%-5rem)] max-w-[304px]">
+          <form onSubmit={handleAskStylist} className="overflow-hidden rounded-full border border-[#ebe5db] bg-white shadow-[0_8px_26px_rgba(0,0,0,0.05)]">
+            <div className="flex items-center gap-2.5 px-3 py-2">
+              <input
+                type="text"
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+                placeholder="Ask the stylist..."
+                className="min-w-0 flex-1 bg-transparent px-1 text-[12px] text-[#2b2723] outline-none placeholder:text-[#999999]"
+              />
+              {hasTypedInput ? (
+                <button type="submit" className="flex h-8 w-8 items-center justify-center rounded-full bg-black text-white transition hover:bg-gray-800">
+                  <Send size={14} />
+                </button>
+              ) : (
+                <button type="button" onClick={handleVoiceInput} className={`flex h-8 w-8 items-center justify-center rounded-full transition ${isRecording ? "bg-[#1a1a1a] text-white" : "bg-[#f5f3ef] text-[#1a1a1a] hover:bg-[#ece7ff]"}`}>
+                  {isRecording ? <Loader2 size={14} className="animate-spin" /> : <Mic size={14} />}
+                </button>
               )}
             </div>
-          )}
-        </>
+          </form>
+        </div>
       )}
+
       {selectedPost && (
-        <div className="fixed inset-0 z-[80] bg-[#f5f3ef] flex flex-col animate-in slide-in-from-bottom-full duration-300">
-          <div className="flex justify-between items-center px-4 pt-12 pb-4 sm:pt-14 border-b border-[#e5e5e5] bg-[#f5f3ef] sticky top-0 z-10">
+        <div className="fixed inset-0 z-[80] flex flex-col bg-[#f5f3ef] animate-in slide-in-from-bottom-full duration-300">
+          <div className="sticky top-0 z-10 flex items-center justify-between border-b border-[#e5e5e5] bg-[#f5f3ef] px-4 pb-4 pt-12 sm:pt-14">
             <div className="flex items-center gap-3">
-              <button
-                onClick={() => {
-                  setPostHistory((prev) => prev.slice(0, -1));
-                  setIsRemixed(false);
-                }}
-                className="p-2 bg-white rounded-full text-[#1a1a1a] shadow-sm border border-[#e5e5e5] hover:bg-[#e8e5df] transition"
-              >
-                <ArrowLeft size={20} />
+                <button
+                  onClick={() => {
+                    setPostHistory((prev) => prev.slice(0, -1));
+                  }}
+                  className="rounded-full border border-[#e5e5e5] bg-white p-2 text-[#1a1a1a] shadow-sm transition hover:bg-[#e8e5df]"
+                >
+                  <ArrowLeft size={20} />
               </button>
-              <div className="flex items-center gap-3 cursor-pointer group">
-                <img src={selectedPost.avatar || "https://i.pravatar.cc/150?u=default"} alt="avatar" className="w-10 h-10 rounded-full border border-[#e5e5e5] object-cover group-hover:opacity-80 transition" />
-                <div className="flex flex-col group-hover:opacity-80 transition">
-                  <span className="font-bold text-sm text-[#1a1a1a]">{selectedPost.user}</span>
-                  <span className="text-[10px] font-bold text-[#999999] uppercase tracking-widest">10d ago</span>
+              <div className="group flex items-center gap-3">
+                <img src={selectedPost.avatar || "https://i.pravatar.cc/150?u=default"} alt="avatar" className="h-10 w-10 rounded-full border border-[#e5e5e5] object-cover transition group-hover:opacity-80" />
+                <div className="flex flex-col transition group-hover:opacity-80">
+                  <span className="text-sm font-bold text-[#1a1a1a]">{selectedPost.user}</span>
+                  <span className="text-[10px] font-bold uppercase tracking-widest text-[#999999]">10d ago</span>
                 </div>
               </div>
             </div>
-            <button onClick={() => setPostHistory([])} className="text-[#999999] hover:text-[#1a1a1a] ml-2 transition">
+            <button onClick={() => setPostHistory([])} className="ml-2 text-[#999999] transition hover:text-[#1a1a1a]">
               <X size={24} />
             </button>
           </div>
+
           <div className="flex-1 overflow-y-auto pb-20" ref={postScrollRef}>
-            <div className="w-full relative bg-[#e6e2d6]">
-              <img src={selectedPost.image} className="w-full object-cover max-h-[60vh] object-top" alt="post" referrerPolicy="no-referrer" />
+            <div className="relative w-full bg-[#e6e2d6]">
+              <img src={selectedPost.image} className="max-h-[60vh] w-full object-cover object-top" alt="post" referrerPolicy="no-referrer" />
             </div>
+
             <div className="p-6 pb-2">
-              <div className="flex justify-between items-center mb-6">
-                <h3 className="font-serif text-xl text-[#1a1a1a]">Shop the look</h3>
+              <div className="mb-6 flex items-center justify-between gap-3">
+                <div>
+                  <h3 className="text-xl font-serif text-[#1a1a1a]">Shop the look</h3>
+                  <p className="mt-1 text-[12px] leading-5 text-[#6B655F]">{selectedPost.desc}</p>
+                </div>
                 <button
-                  onClick={() => {
-                    const newGarments = MOCK_SHOP_ALL_ITEMS.slice(0, 4).map((item) => ({ id: Date.now() + Math.random(), image: item.image }));
-                    setMixItems((prev) => [...newGarments, ...prev].slice(0, 5));
-                    setIsRemixed(true);
-                    showToast("Items added to Try-On Mix");
-                  }}
-                  className={isRemixed ? "bg-[#e5e5e5] text-[#1a1a1a] px-5 py-2.5 rounded-full text-[10px] font-bold uppercase tracking-widest flex items-center gap-1.5 transition" : "bg-black text-white px-5 py-2.5 rounded-full text-[10px] font-bold uppercase tracking-widest flex items-center gap-1.5 shadow-md hover:bg-gray-800 transition active:scale-95"}
+                  onClick={toggleSelectedPostMix}
+                  className={isSelectedPostMixed ? "flex items-center justify-center rounded-full bg-[#efe8ff] px-5 py-2.5 text-[10px] font-bold uppercase tracking-widest text-[#6c5ce7] shadow-md transition" : "flex items-center justify-center rounded-full bg-black px-5 py-2.5 text-[10px] font-bold uppercase tracking-widest text-white shadow-md transition hover:bg-gray-800 active:scale-95"}
                 >
-                  {isRemixed ? <Check size={14} /> : <Layers size={14} />} {isRemixed ? "Remixed" : "Remix"}
+                  {isSelectedPostMixed ? <Check size={14} className="mr-1.5" /> : null}
+                  {isSelectedPostMixed ? "Mixed" : "+Mix"}
                 </button>
               </div>
-              <div className="grid grid-cols-3 gap-4">
-                {MOCK_SHOP_ALL_ITEMS.slice(0, 4).map((c) => (
-                  <div key={c.id} onClick={() => setSelectedShopItem(c)} className="flex flex-col gap-2 cursor-pointer group relative bg-white p-2 rounded-3xl border border-[#e5e5e5] shadow-sm">
-                    <div className="aspect-[4/5] bg-[#e6e2d6] rounded-2xl overflow-hidden relative">
-                      <img src={c.image} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" alt={c.name} />
+
+              <div className="grid grid-cols-2 gap-4">
+                {selectedPostItems.map((item) => {
+                  const isItemMixed = mixItems.some((mixItem) => mixItem.image === item.image);
+                  return (
+                  <div key={item.id} onClick={() => setSelectedShopItem(item)} className="group relative flex cursor-pointer flex-col gap-2 rounded-3xl border border-[#e5e5e5] bg-white p-2 shadow-sm">
+                    <div className="relative aspect-[4/5] overflow-hidden rounded-2xl bg-[#e6e2d6]">
+                      <img src={item.image} className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-105" alt={item.name} />
+                      <button
+                        onClick={(e) => toggleSingleMixItem(item, e)}
+                        className={`absolute right-2 top-2 z-10 flex h-9 w-9 items-center justify-center rounded-full shadow-sm transition ${
+                          isItemMixed
+                            ? "bg-[#efe8ff] text-[#6c5ce7]"
+                            : "bg-white/92 text-[#1a1a1a] backdrop-blur hover:bg-white"
+                        }`}
+                      >
+                        {isItemMixed ? <Check size={14} /> : <Plus size={14} />}
+                      </button>
                     </div>
-                    <div className="px-1 pb-1 mt-1">
-                      <p className="text-[9px] font-bold text-[#999999] uppercase tracking-widest line-clamp-1">{c.brand}</p>
-                      <p className="text-[11px] font-bold text-[#1a1a1a] line-clamp-1 leading-tight">{c.name}</p>
+                    <div className="px-1 pb-1">
+                      <p className="line-clamp-1 text-[9px] font-bold uppercase tracking-widest text-[#999999]">{item.category}</p>
+                      <p className="line-clamp-1 text-[11px] font-bold leading-tight text-[#1a1a1a]">{item.name}</p>
                     </div>
                   </div>
-                ))}
+                )})}
               </div>
             </div>
           </div>
         </div>
       )}
+
       {selectedShopItem && <ShopItemOverlay initialItem={selectedShopItem} onClose={() => setSelectedShopItem(null)} wishlist={wishlist} toggleWishlist={toggleWishlist} showToast={showToast} />}
     </div>
   );
@@ -2340,7 +2380,7 @@ function WardrobeTab({ aura }) {
                   }}
                   className="bg-black text-white px-5 py-2.5 rounded-full text-[10px] font-bold uppercase tracking-widest flex items-center gap-1.5 shadow-md hover:bg-gray-800 transition active:scale-95"
                 >
-                  <Layers size={14} /> Remix
+                  <Plus size={14} /> + Mix
                 </button>
               </div>
               <div className="grid grid-cols-3 gap-4">
@@ -2487,9 +2527,7 @@ function WardrobeTab({ aura }) {
   );
 }
 
-function TryOnTab() {
-  const [step, setStep] = useState("setup");
-  const [loadingText, setLoadingText] = useState("Analyzing fabric logic...");
+function TryOnTab({ setActiveTab, returnTab }) {
   const [modelImg, setModelImg] = useState("https://cizaro.net/cdn/shop/files/CZ-MF-10369-_7.jpg?v=1769085672&width=1000");
   const fileInputRef = useRef(null);
   const [garments, setGarments] = useGlobalMix();
@@ -2500,6 +2538,9 @@ function TryOnTab() {
   const [isViewingPhoto, setIsViewingPhoto] = useState(false);
   const [, setFeedData] = useStore(feedStore);
   const [myPosts, setMyPosts] = useStore(myPostsStore);
+  const [tryOnStatus, setTryOnStatus] = useStore(tryOnStatusStore);
+  const step = "setup";
+  const loadingText = tryOnStatus.loadingText;
 
   const showToast = (msg) => {
     setToastMessage(msg);
@@ -2511,11 +2552,51 @@ function TryOnTab() {
   }, [garments]);
 
   const handleGenerate = () => {
-    setStep("generating");
-    setTimeout(() => setLoadingText("Mapping garment to body shape..."), 1200);
-    setTimeout(() => setLoadingText("Adjusting lighting and shadows..."), 2400);
-    setTimeout(() => setLoadingText("Finalizing photorealistic render..."), 3600);
-    setTimeout(() => setStep("result"), 4500);
+    const runId = Date.now();
+    const garmentSnapshot = garments.map((g) => ({ id: g.id, image: g.image, name: g.name || "Garment" }));
+    const scenarioSnapshot = scenario;
+    setTryOnStatus({
+      phase: "generating",
+      loadingText: "Analyzing fabric logic...",
+      profileNotificationCount: 0,
+      runId
+    });
+    setActiveTab(returnTab);
+
+    window.setTimeout(() => {
+      if (tryOnStatusStore.getState().runId !== runId) return;
+      tryOnStatusStore.setState((prev) => ({ ...prev, loadingText: "Mapping garment to body shape..." }));
+    }, 1200);
+    window.setTimeout(() => {
+      if (tryOnStatusStore.getState().runId !== runId) return;
+      tryOnStatusStore.setState((prev) => ({ ...prev, loadingText: "Adjusting lighting and shadows..." }));
+    }, 2400);
+    window.setTimeout(() => {
+      if (tryOnStatusStore.getState().runId !== runId) return;
+      tryOnStatusStore.setState((prev) => ({ ...prev, loadingText: "Finalizing photorealistic render..." }));
+    }, 3600);
+    window.setTimeout(() => {
+      if (tryOnStatusStore.getState().runId !== runId) return;
+      setGarments([]);
+      myPostsStore.setState((prev) => [
+        {
+          id: runId,
+          image: resultImg,
+          title: scenarioSnapshot || "My Try-On Mix",
+          date: "Just now",
+          published: false,
+          user: { name: "Alex Schwan", avatar: "A" },
+          components: garmentSnapshot
+        },
+        ...prev.filter((post) => post.id !== runId)
+      ]);
+      tryOnStatusStore.setState((prev) => ({
+        ...prev,
+        phase: "result",
+        loadingText: "Render complete",
+        profileNotificationCount: 1
+      }));
+    }, 4500);
   };
 
   const handlePhotoUpload = (e) => {
@@ -4062,11 +4143,179 @@ function NavItem({ icon, active, onClick, badge, actionIcon, onActionClick }) {
   );
 }
 
+function CollapsibleNavigation({ activeTab, setActiveTab, mixItems, aura }) {
+  const [isOpen, setIsOpen] = useState(false);
+  const fileInputRef = useRef(null);
+  const [tryOnStatus, setTryOnStatus] = useStore(tryOnStatusStore);
+  const isTryOnRunning = tryOnStatus.phase === "generating";
+  const tryOnReadyCount = tryOnStatus.phase === "result" ? tryOnStatus.profileNotificationCount : 0;
+
+  const navItems = [
+    { id: "trending", label: "Discovery", icon: <Activity size={22} strokeWidth={activeTab === "trending" ? 2.6 : 2.2} /> },
+    { id: "wardrobe", label: "My Stuff", icon: <Shirt size={22} strokeWidth={activeTab === "wardrobe" ? 2.6 : 2.2} /> },
+    {
+      id: "tryon",
+      label: "Mix Panel",
+      count: mixItems,
+      highlighted: mixItems > 0,
+      icon: <Sparkles size={22} strokeWidth={activeTab === "tryon" ? 2.6 : 2.2} />
+    },
+    {
+      id: "profile",
+      label: "Profile",
+      count: tryOnReadyCount,
+      notification: tryOnReadyCount > 0,
+      icon: <User size={22} strokeWidth={activeTab === "profile" ? 2.6 : 2.2} />
+    }
+  ];
+
+  const toolItems = [
+    {
+      id: "upload",
+      label: "Upload image",
+      description: "Find similar pieces from photos",
+      icon: <ImageIcon size={19} />,
+      onClick: () => fileInputRef.current?.click()
+    },
+    {
+      id: "stylist",
+      label: "Open stylist",
+      description: "Ask AI stylist with screenshots",
+      icon: <Sparkles size={19} />,
+      onClick: () => aura.openAura()
+    },
+    {
+      id: "tryon",
+      label: "Video try-on",
+      description: "Open virtual try-on workspace",
+      icon: <PlayCircle size={19} />,
+      onClick: () => setActiveTab("tryon")
+    }
+  ];
+
+  return (
+    <>
+      {isOpen && <div className="fixed inset-0 z-40" onClick={() => setIsOpen(false)} />}
+      <div className="pointer-events-none absolute bottom-6 left-4 z-50">
+        <div className="pointer-events-none flex flex-col items-start gap-3">
+          <div
+            className={`pointer-events-auto w-[232px] rounded-[2rem] border border-white/10 bg-[#171717]/96 p-3 shadow-[0_18px_44px_rgba(0,0,0,0.34)] backdrop-blur-xl transition-all duration-300 ${isOpen ? "translate-y-0 opacity-100" : "pointer-events-none translate-y-4 opacity-0"}`}
+            onClick={(e) => e.stopPropagation()}
+          >
+          <div className="mb-2 px-2 text-[10px] font-bold uppercase tracking-[0.22em] text-white/35">Tools</div>
+          <div className="space-y-1.5">
+            {toolItems.map((item) => (
+              <button
+                key={item.id}
+                type="button"
+                onClick={() => {
+                  item.onClick();
+                  setIsOpen(false);
+                }}
+                className="flex w-full items-center gap-3 rounded-[1.25rem] px-3 py-3 text-left text-white/92 transition hover:bg-white/[0.06]"
+              >
+                <div className="flex h-9 w-9 items-center justify-center rounded-full bg-white/[0.05] text-white">{item.icon}</div>
+                <div className="min-w-0">
+                  <div className="text-[14px] font-semibold">{item.label}</div>
+                  <div className="truncate text-[11px] text-white/45">{item.description}</div>
+                </div>
+              </button>
+            ))}
+          </div>
+
+          <div className="my-2 border-t border-white/8" />
+          <div className="mb-2 px-2 text-[10px] font-bold uppercase tracking-[0.22em] text-white/35">Navigate</div>
+          <div className="space-y-1">
+            {navItems.map((item) => (
+              <button
+                key={item.id}
+                type="button"
+                onClick={() => {
+                  setActiveTab(item.id);
+                  if (item.id === "profile" && tryOnReadyCount > 0) {
+                    setTryOnStatus((prev) => ({ ...prev, profileNotificationCount: 0 }));
+                  }
+                  setIsOpen(false);
+                }}
+                className={`flex w-full items-center gap-3 rounded-[1.2rem] px-3 py-2.5 text-left transition ${
+                  activeTab === item.id
+                    ? item.id === "tryon"
+                      ? "bg-[#6c5ce7] text-white"
+                      : item.id === "profile" && item.notification
+                        ? "bg-[#27ae60] text-white"
+                      : "bg-white/[0.08] text-white"
+                    : item.highlighted
+                      ? "bg-[#6c5ce7]/18 text-[#cfc4ff] hover:bg-[#6c5ce7]/24"
+                      : item.notification
+                        ? "bg-[#27ae60]/18 text-[#9be2b5] hover:bg-[#27ae60]/24"
+                      : "text-white/84 hover:bg-white/[0.05]"
+                }`}
+              >
+                <div className={item.notification ? "text-[#9be2b5]" : item.highlighted ? "text-[#cfc4ff]" : "text-white/88"}>{item.icon}</div>
+                <span className="flex-1 text-[14px] font-semibold tracking-[0.01em]">{item.label}</span>
+                {item.count > 0 && (
+                  <span className={`rounded-full px-2 py-0.5 text-[11px] font-bold ${item.notification ? "bg-[#27ae60] text-white" : activeTab === item.id ? "bg-white/18 text-white" : "bg-[#6c5ce7] text-white"}`}>{item.count}</span>
+                )}
+              </button>
+            ))}
+          </div>
+          </div>
+
+          <button
+            type="button"
+            onClick={() => setIsOpen((prev) => !prev)}
+            className={`pointer-events-auto relative flex h-[48px] w-[48px] items-center justify-center rounded-full border border-white/10 bg-[#141414] text-white shadow-[0_10px_24px_rgba(0,0,0,0.24)] transition-all duration-300 ${
+              isOpen ? "rotate-45 bg-[#1b1b1b]" : "hover:bg-[#1d1d1d]"
+            }`}
+          >
+            <Plus size={18} strokeWidth={2.5} />
+            {(isTryOnRunning || tryOnReadyCount > 0 || mixItems > 0) && (
+              <span
+                className={`absolute -right-1 -top-1 flex min-w-[18px] items-center justify-center rounded-full px-1.5 py-[1px] text-center text-[10px] font-bold text-white ${
+                  isTryOnRunning
+                    ? "bg-[#6c5ce7] shadow-[0_6px_14px_rgba(108,92,231,0.35)]"
+                    : tryOnReadyCount > 0
+                      ? "bg-[#27ae60] shadow-[0_6px_14px_rgba(39,174,96,0.35)]"
+                      : "bg-[#6c5ce7] shadow-[0_6px_14px_rgba(108,92,231,0.35)]"
+                }`}
+              >
+                {isTryOnRunning ? <Loader2 size={10} className="animate-spin" /> : tryOnReadyCount > 0 ? tryOnReadyCount : mixItems}
+              </span>
+            )}
+          </button>
+          <input
+            ref={fileInputRef}
+            type="file"
+            accept="image/*"
+            className="hidden"
+            onChange={(e) => {
+              const file = e.target.files?.[0];
+              if (!file) {
+                return;
+              }
+              aura.openAura();
+              aura.handleImageUpload(file);
+              e.target.value = "";
+            }}
+          />
+        </div>
+      </div>
+    </>
+  );
+}
+
 export default function App() {
   const [activeTab, setActiveTab] = useState("trending");
+  const [returnTab, setReturnTab] = useState("trending");
   const [mixItems] = useGlobalMix();
   const [flyingItem] = useStore(flyingStore);
   const aura = useAuraStylist();
+
+  useEffect(() => {
+    if (activeTab !== "tryon") {
+      setReturnTab(activeTab);
+    }
+  }, [activeTab]);
 
   return (
     <div className="min-h-screen bg-[#e8e5df] sm:p-6 flex items-center justify-center font-sans">
@@ -4127,29 +4376,12 @@ export default function App() {
           <div className="absolute inset-0 overflow-y-auto scrollbar-hide">
             {activeTab === "trending" && <TrendingFeed aura={aura} />}
             {activeTab === "wardrobe" && <WardrobeTab aura={aura} />}
-            {activeTab === "tryon" && <TryOnTab aura={aura} />}
+            {activeTab === "tryon" && <TryOnTab setActiveTab={setActiveTab} returnTab={returnTab} />}
             {activeTab === "profile" && <ProfileTab />}
           </div>
           <AuraExtractAndChat aura={aura} />
         </main>
-        <nav className="absolute bottom-6 left-6 right-6 shrink-0 bg-white/75 backdrop-blur-2xl border border-white/60 shadow-[0_8px_32px_rgba(0,0,0,0.08)] z-50 rounded-[2rem] overflow-hidden">
-          <div className="flex justify-around items-center px-2 h-[4.5rem]">
-            <NavItem icon={<Activity strokeWidth={activeTab === "trending" ? 2.5 : 2} size={22} />} active={activeTab === "trending"} onClick={() => setActiveTab("trending")} />
-            <NavItem
-              icon={<Shirt strokeWidth={activeTab === "wardrobe" ? 2.5 : 2} size={22} />}
-              active={activeTab === "wardrobe"}
-              onClick={() => setActiveTab("wardrobe")}
-              actionIcon={<Plus size={14} strokeWidth={3} />}
-              onActionClick={(e) => {
-                e.stopPropagation();
-                setActiveTab("wardrobe");
-                wardrobeUploadStore.setState("selecting");
-              }}
-            />
-            <NavItem icon={<Sparkles size={24} strokeWidth={activeTab === "tryon" ? 2.5 : 2} />} active={activeTab === "tryon"} onClick={() => setActiveTab("tryon")} badge={mixItems.length} />
-            <NavItem icon={<User strokeWidth={activeTab === "profile" ? 2.5 : 2} size={22} />} active={activeTab === "profile"} onClick={() => setActiveTab("profile")} />
-          </div>
-        </nav>
+        <CollapsibleNavigation activeTab={activeTab} setActiveTab={setActiveTab} mixItems={mixItems.length} aura={aura} />
       </div>
       {flyingItem && (
         <img

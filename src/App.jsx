@@ -23,6 +23,7 @@ import {
   LogOut,
   MessageCircle,
   Mic,
+  Minus,
   MoreHorizontal,
   PlayCircle,
   Plus,
@@ -38,6 +39,7 @@ import {
   TrendingUp,
   User,
   Volume2,
+  Wand2,
   X,
   ZoomIn
 } from "lucide-react";
@@ -338,6 +340,206 @@ const MOCK_FEED = [
     tags: ["coastal", "breezy"]
   }
 ];
+
+const HAWAII_FEED = [
+  {
+    id: 901,
+    filter: "beach-day",
+    image: "https://i.pinimg.com/1200x/48/e8/a2/48e8a25b8d14b5260bbca92fb8195350.jpg",
+    user: "Summer Ready",
+    avatar: "https://i.pravatar.cc/150?u=v5",
+    likes: 340,
+    desc: "Bikini, oversized shirt, straw tote — barefoot to the water.",
+    tags: ["hawaii", "beach", "swim"]
+  },
+  {
+    id: 902,
+    filter: "beach-day",
+    image: "https://i.pinimg.com/1200x/d6/04/ad/d604ad4e4a3fe22e874347be6b0154c1.jpg",
+    user: "Breezy Style",
+    avatar: "https://i.pravatar.cc/150?u=v9",
+    likes: 315,
+    desc: "Cover-up over swim, sandals, sunnies. Pool to lounge chair.",
+    tags: ["hawaii", "beach", "poolside"]
+  },
+  {
+    id: 905,
+    filter: "brunch",
+    image: "https://i.pinimg.com/736x/d0/50/01/d050018a2250b92ba154b148d2d6e26f.jpg",
+    user: "Tropical Brunch",
+    avatar: "https://i.pravatar.cc/150?u=v1",
+    likes: 528,
+    desc: "Linen mini dress with raffia bag — beachside brunch with the girls.",
+    tags: ["hawaii", "brunch", "linen"]
+  },
+  {
+    id: 906,
+    filter: "brunch",
+    image: "https://i.pinimg.com/736x/c2/3d/6d/c23d6da086bd35893755ab8cb33ff280.jpg",
+    user: "Island Chic",
+    avatar: "https://i.pravatar.cc/150?u=v3",
+    likes: 412,
+    desc: "Crochet top + flowy skirt — daytime cafe energy.",
+    tags: ["hawaii", "brunch", "crochet"]
+  },
+  {
+    id: 903,
+    filter: "resort-dinner",
+    image: "https://farmrio.com/cdn/shop/files/348438_01.jpg?format=pjpg&v=1770068694&width=1080",
+    user: "Tropical Vibes",
+    avatar: "https://i.pravatar.cc/150?u=v2",
+    likes: 891,
+    desc: "Bold tropical print maxi for sunset cocktails at the resort.",
+    tags: ["hawaii", "resort", "dinner"]
+  },
+  {
+    id: 904,
+    filter: "resort-dinner",
+    image: "https://showmeyourmumu.com/cdn/shop/files/YI5XiqLg_1440x.progressive.jpg?v=1766090892",
+    user: "Show Me Your Mumu",
+    avatar: "https://i.pravatar.cc/150?u=mumu",
+    likes: 1240,
+    desc: "Floral mini dress and heeled sandals — dressy beach dinner.",
+    tags: ["hawaii", "resort", "dressy"]
+  },
+  {
+    id: 907,
+    filter: "sunset-walk",
+    image: "https://i.pinimg.com/1200x/d6/04/ad/d604ad4e4a3fe22e874347be6b0154c1.jpg",
+    user: "Golden Hour",
+    avatar: "https://i.pravatar.cc/150?u=v8",
+    likes: 297,
+    desc: "Slip dress and barefoot — golden hour shoreline stroll.",
+    tags: ["hawaii", "sunset", "slip"]
+  },
+  {
+    id: 908,
+    filter: "sunset-walk",
+    image: "https://i.pinimg.com/736x/f8/be/0f/f8be0ff9016bead77eeaff91060fe826.jpg",
+    user: "Easy Evening",
+    avatar: "https://i.pravatar.cc/150?u=chic",
+    likes: 363,
+    desc: "Light cardigan over slip — breeze-ready after sundown.",
+    tags: ["hawaii", "sunset", "evening"]
+  }
+];
+
+const HAWAII_SCENES = [
+  { label: "Beach Day", slug: "beach-day" },
+  { label: "Brunch", slug: "brunch" },
+  { label: "Resort Dinner", slug: "resort-dinner" },
+  { label: "Sunset Walk", slug: "sunset-walk" }
+];
+
+const NEW_YORK_FEED = [
+  {
+    id: 911,
+    filter: "office",
+    image: "https://i.pinimg.com/736x/f8/be/0f/f8be0ff9016bead77eeaff91060fe826.jpg",
+    user: "Chic Style",
+    avatar: "https://i.pravatar.cc/150?u=chic",
+    likes: 612,
+    desc: "Sharp tailored blazer + trousers — Monday meeting energy.",
+    tags: ["newyork", "office", "tailored"]
+  },
+  {
+    id: 912,
+    filter: "office",
+    image: "https://i.pinimg.com/736x/d0/da/e0/d0dae0f6ecdae7f438a95fcc156e0da7.jpg",
+    user: "Modern Minimal",
+    avatar: "https://i.pravatar.cc/150?u=mod",
+    likes: 844,
+    desc: "Cashmere knit + sleek pants — polished office staple.",
+    tags: ["newyork", "office", "minimal"]
+  },
+  {
+    id: 913,
+    filter: "coffee-run",
+    image: "https://i.pinimg.com/736x/c2/3d/6d/c23d6da086bd35893755ab8cb33ff280.jpg",
+    user: "Neutral Palette",
+    avatar: "https://i.pravatar.cc/150?u=v3",
+    likes: 554,
+    desc: "Oversized sweater, denim, sneakers — casual SoHo coffee run.",
+    tags: ["newyork", "casual", "coffee"]
+  },
+  {
+    id: 914,
+    filter: "coffee-run",
+    image: "https://i.pinimg.com/736x/49/34/46/493446095e8d4f3d4e59263a866ebaba.jpg",
+    user: "Everyday Chic",
+    avatar: "https://i.pravatar.cc/150?u=v6",
+    likes: 610,
+    desc: "Trench + jeans — easy walk-around-the-block layer.",
+    tags: ["newyork", "casual", "trench"]
+  },
+  {
+    id: 915,
+    filter: "night-out",
+    image: "https://i.pinimg.com/736x/74/db/da/74dbda7b91e9f033d41a304c38b2bc1b.jpg",
+    user: "Downtown Edge",
+    avatar: "https://i.pravatar.cc/150?u=v7",
+    likes: 712,
+    desc: "Slinky black dress + heels — downtown bar after-hours.",
+    tags: ["newyork", "night", "dress"]
+  },
+  {
+    id: 916,
+    filter: "night-out",
+    image: "https://i.pinimg.com/736x/aa/70/62/aa70622a9ecdac7f1b54307b61a41207.jpg",
+    user: "Night Mode",
+    avatar: "https://i.pravatar.cc/150?u=v9",
+    likes: 488,
+    desc: "Leather pants + silk top — late dinner reservation look.",
+    tags: ["newyork", "night", "leather"]
+  },
+  {
+    id: 917,
+    filter: "gallery",
+    image: "https://i.pinimg.com/1200x/72/35/1a/72351ac3f9cddc17159afe5490feb0b4.jpg",
+    user: "Gallery Mood",
+    avatar: "https://i.pravatar.cc/150?u=v2",
+    likes: 392,
+    desc: "Sculptural jacket + neutral palette — Chelsea opening night.",
+    tags: ["newyork", "gallery", "art"]
+  },
+  {
+    id: 918,
+    filter: "gallery",
+    image: "https://i.pinimg.com/1200x/96/8b/65/968b65eb73081db085aaeffc04f76546.jpg",
+    user: "Art Walk",
+    avatar: "https://i.pravatar.cc/150?u=v5",
+    likes: 354,
+    desc: "Wide-leg trousers + bold knit — gallery hop in style.",
+    tags: ["newyork", "gallery", "knit"]
+  }
+];
+
+const NEW_YORK_SCENES = [
+  { label: "Office", slug: "office" },
+  { label: "Coffee Run", slug: "coffee-run" },
+  { label: "Night Out", slug: "night-out" },
+  { label: "Gallery", slug: "gallery" }
+];
+
+const DEFAULT_FILTER_TAGS = [
+  { label: "Y2K", slug: "y2k" },
+  { label: "Going Out", slug: "going-out" },
+  { label: "Minimalist", slug: "minimalist" },
+  { label: "Coastal", slug: "coastal" }
+];
+
+const UPLOADED_ITEM_STYLE_FEED = [
+  MOCK_FEED.find((item) => item.id === 401),
+  MOCK_FEED.find((item) => item.id === 402),
+  MOCK_FEED.find((item) => item.id === 503),
+  MOCK_FEED.find((item) => item.id === 506),
+  MOCK_FEED.find((item) => item.id === 302),
+  MOCK_FEED.find((item) => item.id === 508)
+].filter(Boolean).map((item, index) => ({
+  ...item,
+  id: 930 + index,
+  tags: ["uploaded", "style", ...(item.tags || [])]
+}));
 
 const INITIAL_WARDROBE = [
   {
@@ -836,8 +1038,12 @@ const mixStore = createStore([]);
 const feedStore = createStore(MOCK_FEED);
 const myPostsStore = createStore(MOCK_MIX_GALLERY);
 const wishlistStore = createStore(MOCK_WISHLIST);
+const cartStore = createStore([]);
 const wardrobeStore = createStore(INITIAL_WARDROBE);
 const wardrobeUploadStore = createStore(null);
+const wardrobeNoticeStore = createStore(0);
+const wardrobeMainTabStore = createStore("Owned");
+const videoStylistStore = createStore(false);
 const tryOnStatusStore = createStore({
   phase: "idle",
   loadingText: "Analyzing fabric logic...",
@@ -873,6 +1079,7 @@ const outfitsStore = createStore({
   unread: 0
 });
 const flyingStore = createStore(null);
+const TRY_ON_RESULT_IMAGE = "https://images.unsplash.com/photo-1483985988355-763728e1935b?auto=format&fit=crop&w=1200&q=80";
 
 const triggerFlyingAnimation = (src, e) => {
   if (!e?.currentTarget) {
@@ -912,6 +1119,54 @@ const addGlobalOutfit = (outfit) => {
   }));
 };
 
+const startBackgroundTryOnRun = ({ garments, title = "My Try-On Mix" }) => {
+  const runId = Date.now();
+  tryOnStatusStore.setState({
+    phase: "generating",
+    loadingText: "Analyzing fabric logic...",
+    profileNotificationCount: 0,
+    runId
+  });
+
+  window.setTimeout(() => {
+    if (tryOnStatusStore.getState().runId !== runId) return;
+    tryOnStatusStore.setState((prev) => ({ ...prev, loadingText: "Mapping garment to body shape..." }));
+  }, 1200);
+
+  window.setTimeout(() => {
+    if (tryOnStatusStore.getState().runId !== runId) return;
+    tryOnStatusStore.setState((prev) => ({ ...prev, loadingText: "Adjusting lighting and shadows..." }));
+  }, 2400);
+
+  window.setTimeout(() => {
+    if (tryOnStatusStore.getState().runId !== runId) return;
+    tryOnStatusStore.setState((prev) => ({ ...prev, loadingText: "Finalizing photorealistic render..." }));
+  }, 3600);
+
+  window.setTimeout(() => {
+    if (tryOnStatusStore.getState().runId !== runId) return;
+    mixStore.setState([]);
+    myPostsStore.setState((prev) => [
+      {
+        id: runId,
+        image: TRY_ON_RESULT_IMAGE,
+        title,
+        date: "Just now",
+        published: false,
+        user: { name: "Alex Schwan", avatar: "A" },
+        components: garments
+      },
+      ...prev.filter((post) => post.id !== runId)
+    ]);
+    tryOnStatusStore.setState((prev) => ({
+      ...prev,
+      phase: "result",
+      loadingText: "Render complete",
+      profileNotificationCount: 1
+    }));
+  }, 4500);
+};
+
 const useWishlist = () => {
   const [wishlist] = useStore(wishlistStore);
   const toggleWishlist = (item) => {
@@ -934,6 +1189,39 @@ const useWishlist = () => {
     }
   };
   return [wishlist, toggleWishlist, wishlistStore.setState.bind(wishlistStore)];
+};
+
+const normalizeCartItem = (item) => ({
+  id: item.id || `${item.brand || "item"}-${item.name || item.image}`,
+  brand: item.brand || item.user || "Saved",
+  name: item.name || item.desc || "Style item",
+  price: item.price || "-",
+  image: item.image,
+  link: item.link || "",
+  category: item.category || "Apparel",
+  quantity: item.quantity || 1
+});
+
+const addCartItemToStore = (item) => {
+  const nextItem = normalizeCartItem(item);
+  cartStore.setState((current) => {
+    const existing = current.find((cartItem) => cartItem.id === nextItem.id);
+    if (existing) {
+      return current.map((cartItem) => (cartItem.id === nextItem.id ? { ...cartItem, quantity: cartItem.quantity + 1 } : cartItem));
+    }
+    return [nextItem, ...current];
+  });
+};
+
+const useCart = () => {
+  const [cart, setCart] = useStore(cartStore);
+  const addToCart = (item) => addCartItemToStore(item);
+  const removeFromCart = (id) => setCart((current) => current.filter((item) => item.id !== id));
+  const updateQuantity = (id, quantity) => {
+    setCart((current) => current.map((item) => (item.id === id ? { ...item, quantity: Math.max(1, quantity) } : item)));
+  };
+  const clearCart = () => setCart([]);
+  return { cart, addToCart, removeFromCart, updateQuantity, clearCart };
 };
 
 function OutfitBento({ items }) {
@@ -1157,6 +1445,7 @@ function ShopItemOverlay({ initialItem, onClose, wishlist, toggleWishlist, showT
   const [history, setHistory] = useState([initialItem]);
   const currentItem = history[history.length - 1];
   const scrollRef = useRef(null);
+  const { addToCart } = useCart();
 
   useEffect(() => {
     setHistory([initialItem]);
@@ -1184,7 +1473,7 @@ function ShopItemOverlay({ initialItem, onClose, wishlist, toggleWishlist, showT
         <button onClick={handleBack} className="p-2 bg-white rounded-full text-[#1a1a1a] shadow-sm border border-[#e5e5e5] hover:bg-gray-50 transition-colors">
           <ArrowLeft size={20} />
         </button>
-        <span className="font-serif text-[#1a1a1a] text-lg">Shop Item</span>
+        <span className="font-serif text-[#1a1a1a] text-lg">Item Details</span>
         <div className="w-10" />
       </div>
       <div ref={scrollRef} className="flex-1 overflow-y-auto pb-20">
@@ -1217,17 +1506,12 @@ function ShopItemOverlay({ initialItem, onClose, wishlist, toggleWishlist, showT
           </div>
           <button
             onClick={() => {
-              showToast("Opening Shop...");
-              setTimeout(() => {
-                window.open(
-                  currentItem.link || `https://www.google.com/search?tbm=shop&q=${encodeURIComponent(`${currentItem.brand || ""} ${currentItem.name || ""}`)}`,
-                  "_blank"
-                );
-              }, 1000);
+              addToCart(currentItem);
+              showToast("Added to cart");
             }}
             className="w-full py-4 bg-black text-white rounded-full font-bold text-xs uppercase tracking-widest flex items-center justify-center gap-2 hover:bg-[#2a2a2a] transition-all active:scale-[0.98] shadow-[0_8px_20px_rgba(0,0,0,0.15)]"
           >
-            <ShoppingCart size={16} /> SHOP ITEM
+            <ShoppingCart size={16} /> ADD TO CART
           </button>
           <div className="mt-2 pt-6 border-t border-[#e5e5e5]">
             <div className="flex items-center gap-2 mb-6">
@@ -1282,6 +1566,18 @@ const buildStylistShopOptions = (term) => [
   }
 ];
 
+const formatUploadItemName = (fileName = "") => {
+  const clean = fileName.replace(/\.[^.]+$/, "").replace(/[_-]+/g, " ").trim();
+  if (!clean) {
+    return "Saved Piece";
+  }
+  return clean
+    .split(/\s+/)
+    .slice(0, 5)
+    .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
+    .join(" ");
+};
+
 const getPostBreakdown = (post) => {
   if (post.shoppingItems?.length) {
     return post.shoppingItems;
@@ -1298,11 +1594,12 @@ const getPostBreakdown = (post) => {
   }));
 };
 
-function TrendingFeed({ aura }) {
+function TrendingFeed({ aura, uploadIntent, onUploadPromptSubmit, onCancelUpload }) {
   const [searchQuery, setSearchQuery] = useState("");
+  const [selectedUploadSuggestion, setSelectedUploadSuggestion] = useState(null);
   const [activeCommunityFilter, setActiveCommunityFilter] = useState("All");
   const [mixItems, setMixItems] = useGlobalMix();
-  const [feedData] = useStore(feedStore);
+  const [feedData, setFeedData] = useStore(feedStore);
   const [wishlist, toggleWishlist] = useWishlist();
   const [outfitsState] = useStore(outfitsStore);
   const localOutfits = outfitsState.outfits;
@@ -1312,17 +1609,21 @@ function TrendingFeed({ aura }) {
   const [selectedShopItem, setSelectedShopItem] = useState(null);
   const [postHistory, setPostHistory] = useState([]);
   const [stylistReply, setStylistReply] = useState("Tell me the occasion and I will help style it.");
+  const [isStylistCollapsed, setIsStylistCollapsed] = useState(false);
   const [isRecording, setIsRecording] = useState(false);
   const postScrollRef = useRef(null);
   const pressTimer = useRef(null);
   const isLongPress = useRef(false);
   const recognitionRef = useRef(null);
+  const stylistCollapseTimerRef = useRef(null);
 
-  const filterTags = [
-    { label: "Y2K", slug: "y2k" },
-    { label: "Going Out", slug: "going-out" },
-    { label: "Minimalist", slug: "minimalist" },
-    { label: "Coastal", slug: "coastal" }
+  const [filterTags, setFilterTags] = useState(DEFAULT_FILTER_TAGS);
+
+  const uploadPromptSuggestions = [
+    { id: "shop", label: "Shop similar", prompt: "Find similar pieces I can buy." },
+    { id: "style-inspo", label: "More like this", prompt: "Show me more influencer outfits with this style." },
+    { id: "save-wardrobe", label: "Save as inspiration", prompt: "Save this as outfit inspiration and show me similar looks." },
+    { id: "try-on", label: "Try on me", prompt: "Try this on me." }
   ];
 
   const showToast = (msg) => {
@@ -1332,31 +1633,96 @@ function TrendingFeed({ aura }) {
 
   const activeStylistMessage = stylistReply;
 
+  const buildQueryFeed = useCallback((query, lowerQuery) => {
+    if (lowerQuery.includes("hawaii") || lowerQuery.includes("夏威夷")) {
+      return {
+        reply: "Hawaii has a few different vibes — I split it into the scenes you'll actually live in: Beach Day for swim + sun, Brunch for chic daytime, Resort Dinner for sunset cocktails, and Sunset Walk for breezy evenings. Tap a scene to filter.",
+        items: HAWAII_FEED,
+        tags: HAWAII_SCENES
+      };
+    }
+
+    if (lowerQuery.includes("new york") || lowerQuery.includes("newyork") || lowerQuery.includes("nyc")) {
+      return {
+        reply: "NYC moves through a few scenes a day — I broke it down: Office for tailored mornings, Coffee Run for casual SoHo errands, Night Out for downtown dinners, and Gallery for art-walk energy. Tap a scene to filter.",
+        items: NEW_YORK_FEED,
+        tags: NEW_YORK_SCENES
+      };
+    }
+
+    const scored = [...MOCK_FEED]
+      .map((item) => {
+        const haystack = [item.filter, item.user, item.desc, ...(item.tags || [])].join(" ").toLowerCase();
+        const terms = lowerQuery.split(/\s+/).filter(Boolean);
+        const score = terms.reduce((sum, term) => sum + (haystack.includes(term) ? 2 : 0), 0) + (haystack.includes(lowerQuery) ? 3 : 0);
+        return { item, score };
+      })
+      .sort((a, b) => b.score - a.score)
+      .map(({ item }) => item);
+
+    return {
+      reply: `I pulled a fresh set of looks for ${query}.`,
+      items: scored,
+      tags: DEFAULT_FILTER_TAGS
+    };
+  }, []);
+
   const runStylistFeed = useCallback(
     (rawQuery) => {
       const query = rawQuery.trim();
       if (!query) {
         return;
       }
-      const lower = query.toLowerCase();
-      if (lower.includes("hawaii") || lower.includes("夏威夷")) {
-        setStylistReply("For Hawaii, think easy resort pieces: airy dresses, sandals, woven bags, and light layers.");
-      } else {
-        setStylistReply(`Styling note: ${query}`);
-      }
+
+      const { reply, items, tags } = buildQueryFeed(query, query.toLowerCase());
+      setStylistReply(reply);
+      setFeedData(items);
+      setFilterTags(tags || DEFAULT_FILTER_TAGS);
+      setActiveCommunityFilter("All");
       setSearchQuery("");
-      setShowDemoPrompt(false);
     },
-    []
+    [buildQueryFeed, setFeedData]
   );
 
   const handleAskStylist = (e) => {
     e.preventDefault();
+    if (uploadIntent) {
+      const prompt = searchQuery.trim() || selectedUploadSuggestion?.prompt || "";
+      if (!prompt) {
+        return;
+      }
+      onUploadPromptSubmit({ prompt });
+      setSelectedUploadSuggestion(null);
+      setSearchQuery("");
+      return;
+    }
     runStylistFeed(searchQuery);
   };
 
   useEffect(() => {
+    if (!uploadIntent) {
+      setSelectedUploadSuggestion(null);
+      return;
+    }
+    setSelectedUploadSuggestion(null);
+    setSearchQuery("");
+  }, [uploadIntent]);
+
+  useEffect(() => {
+    recognitionRef.current?.stop?.();
     return () => recognitionRef.current?.stop?.();
+  }, []);
+
+  useEffect(() => {
+    setIsStylistCollapsed(false);
+  }, [stylistReply]);
+
+  const collapseStylistReply = useCallback(() => {
+    if (stylistCollapseTimerRef.current) {
+      window.clearTimeout(stylistCollapseTimerRef.current);
+      stylistCollapseTimerRef.current = null;
+    }
+    setIsStylistCollapsed(true);
   }, []);
 
   const handleInlineSearch = (item) => {
@@ -1482,9 +1848,10 @@ function TrendingFeed({ aura }) {
     selectedPostItems.length > 0 &&
     selectedPostItems.every((item) => mixItems.some((mixItem) => mixItem.image === item.image));
   const hasTypedInput = searchQuery.trim().length > 0;
+  const canSendComposer = uploadIntent ? hasTypedInput || Boolean(selectedUploadSuggestion) : hasTypedInput;
 
   return (
-    <div className="relative min-h-full bg-[#f5f3ef] pb-44">
+    <div className={`relative min-h-full bg-[#f5f3ef] ${uploadIntent ? "pb-64" : "pb-44"}`} onWheel={collapseStylistReply} onTouchMove={collapseStylistReply}>
       {toastMessage && (
         <div className="fixed left-1/2 top-32 z-50 flex -translate-x-1/2 items-center gap-2 whitespace-nowrap rounded-full bg-[#1a1a1a] px-5 py-2.5 text-sm font-medium text-white shadow-lg animate-in slide-in-from-top-4 fade-in duration-300">
           {toastMessage}
@@ -1493,7 +1860,7 @@ function TrendingFeed({ aura }) {
 
       <div className="sticky top-0 z-30 bg-[#f5f3ef]/92 backdrop-blur-xl">
         <div className="px-4 pb-3 pt-12 sm:pt-14">
-          <div className="flex w-full items-center gap-2.5 rounded-full border border-[#ebe5db] bg-white px-3 py-2 shadow-[0_8px_26px_rgba(0,0,0,0.05)]">
+          <div className={`flex w-full gap-2.5 border border-[#ebe5db] bg-white px-3 shadow-[0_8px_26px_rgba(0,0,0,0.05)] transition-all duration-300 ${isStylistCollapsed ? "items-center rounded-full py-2" : "items-start rounded-[1.6rem] py-2.5"}`}>
             <div className="shrink-0">
               <div className="h-9 w-9 overflow-hidden rounded-full border border-[#ebe5db] shadow-sm">
                 <img
@@ -1504,7 +1871,13 @@ function TrendingFeed({ aura }) {
               </div>
             </div>
             <div className="min-w-0 flex-1">
-              <p className="truncate text-[12px] text-[#2b2723]">{activeStylistMessage}</p>
+              <p
+                className={`text-[12px] text-[#2b2723] transition-all duration-300 ${
+                  isStylistCollapsed ? "truncate whitespace-nowrap" : "whitespace-normal break-words leading-5"
+                }`}
+              >
+                {activeStylistMessage}
+              </p>
             </div>
           </div>
         </div>
@@ -1650,16 +2023,69 @@ function TrendingFeed({ aura }) {
 
       {!selectedPost && (
         <div className="fixed bottom-6 left-[4.15rem] z-40 w-[calc(100%-5rem)] max-w-[304px]">
-          <form onSubmit={handleAskStylist} className="overflow-hidden rounded-full border border-[#ebe5db] bg-white shadow-[0_8px_26px_rgba(0,0,0,0.05)]">
+          {uploadIntent && (
+            <div className="mb-2 flex gap-2 overflow-x-auto pb-1 scrollbar-hide">
+              {selectedUploadSuggestion ? (
+                <>
+                  <button
+                    type="button"
+                    onClick={() => {
+                      setSelectedUploadSuggestion(null);
+                      setSearchQuery("");
+                    }}
+                    className="shrink-0 rounded-full border border-[#ded8cf] bg-white px-3 py-1.5 text-[12px] font-bold text-[#1a1a1a] shadow-sm"
+                  >
+                    Back
+                  </button>
+                  <button type="button" className="shrink-0 rounded-full bg-[#1a1a1a] px-4 py-1.5 text-[12px] font-bold text-white shadow-sm">
+                    {selectedUploadSuggestion.label}
+                  </button>
+                </>
+              ) : (
+                uploadPromptSuggestions.map((suggestion) => (
+                  <button
+                    key={suggestion.id}
+                    type="button"
+                    onClick={() => {
+                      setSelectedUploadSuggestion(suggestion);
+                      setSearchQuery(suggestion.prompt);
+                    }}
+                    className="shrink-0 rounded-full border border-[#ded8cf] bg-white px-4 py-1.5 text-[12px] font-bold text-[#1a1a1a] shadow-sm transition active:scale-[0.98]"
+                  >
+                    {suggestion.label}
+                  </button>
+                ))
+              )}
+            </div>
+          )}
+          <form onSubmit={handleAskStylist} className={`overflow-hidden border border-[#ebe5db] bg-white shadow-[0_8px_26px_rgba(0,0,0,0.05)] ${uploadIntent ? "rounded-[1.65rem]" : "rounded-full"}`}>
+            {uploadIntent && (
+              <div className="flex gap-2 px-3 pt-3">
+                <div className="relative h-16 w-16 shrink-0 overflow-hidden rounded-2xl bg-[#f5f3ef] shadow-sm">
+                  <img src={uploadIntent.previewUrl} alt="Uploaded preview" className="h-full w-full object-cover" />
+                  <button
+                    type="button"
+                    onClick={() => {
+                      setSelectedUploadSuggestion(null);
+                      setSearchQuery("");
+                      onCancelUpload();
+                    }}
+                    className="absolute right-1 top-1 flex h-5 w-5 items-center justify-center rounded-full bg-black/85 text-white"
+                  >
+                    <X size={12} strokeWidth={3} />
+                  </button>
+                </div>
+              </div>
+            )}
             <div className="flex items-center gap-2.5 px-3 py-2">
               <input
                 type="text"
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
-                placeholder="Ask the stylist..."
+                placeholder={uploadIntent ? "Ask about this photo..." : "Ask the stylist..."}
                 className="min-w-0 flex-1 bg-transparent px-1 text-[12px] text-[#2b2723] outline-none placeholder:text-[#999999]"
               />
-              {hasTypedInput ? (
+              {canSendComposer ? (
                 <button type="submit" className="flex h-8 w-8 items-center justify-center rounded-full bg-black text-white transition hover:bg-gray-800">
                   <Send size={14} />
                 </button>
@@ -1777,8 +2203,9 @@ function WardrobeTab({ aura }) {
   const [outfitsState] = useStore(outfitsStore);
   const localOutfits = outfitsState.outfits;
   const [editingOutfit, setEditingOutfit] = useState(null);
-  const [activeMainTab, setActiveMainTab] = useState("Wardrobe");
+  const [activeMainTab, setActiveMainTab] = useStore(wardrobeMainTabStore);
   const [wishlist, toggleWishlist, setWishlistState] = useWishlist();
+  const { addToCart } = useCart();
   const [activeMenu, setActiveMenu] = useState(null);
   const [wishlistFilter, setWishlistFilter] = useState("All");
   const [searchQuery, setSearchQuery] = useState("");
@@ -1949,22 +2376,15 @@ function WardrobeTab({ aura }) {
           <div className="flex px-4 pt-2 border-b border-[#e5e5e5]">
             <div className="flex gap-6 w-full">
               {[
-                { id: "Wardrobe", label: "Wardrobe" },
-                { id: "Wishlist", label: "Wishlist" },
-                { id: "Outfits", label: "Outfits" }
+                { id: "Owned", label: "Owned" },
+                { id: "Wishlist", label: "Wishlist" }
               ].map((tab) => (
                 <button
                   key={tab.id}
-                  onClick={() => {
-                    setActiveMainTab(tab.id);
-                    if (tab.id === "Outfits") {
-                      clearUnreadOutfits();
-                    }
-                  }}
+                  onClick={() => setActiveMainTab(tab.id)}
                   className={`flex-1 relative pb-3 text-xs font-bold uppercase tracking-widest transition-colors border-b-2 ${activeMainTab === tab.id ? "border-[#1a1a1a] text-[#1a1a1a]" : "border-transparent text-[#999999] hover:text-[#1a1a1a]"}`}
                 >
                   {tab.label}
-                  {tab.id === "Outfits" && unreadOutfits > 0 && <span className="ml-1 text-red-500">({unreadOutfits})</span>}
                 </button>
               ))}
             </div>
@@ -2011,7 +2431,7 @@ function WardrobeTab({ aura }) {
       )}
       {!isSearchFocused && (
         <>
-          {activeMainTab === "Wardrobe" && (
+          {activeMainTab === "Owned" && (
             <div className="flex gap-2 overflow-x-auto px-4 py-3 bg-[#f5f3ef] border-b border-[#e5e5e5] scrollbar-hide animate-in slide-in-from-top-2 items-center">
               <button onClick={() => setShowFilters(!showFilters)} className="w-8 h-8 rounded-full border border-[#e5e5e5] bg-white flex items-center justify-center text-[#1a1a1a] transition-colors shadow-sm shrink-0">
                 {!showFilters ? <ChevronUp size={18} strokeWidth={2.5} /> : <ChevronDown size={18} strokeWidth={2.5} />}
@@ -2047,7 +2467,7 @@ function WardrobeTab({ aura }) {
           )}
           {activeMenu && <div className="fixed inset-0 z-[45]" onClick={() => setActiveMenu(null)} />}
           <div className="p-4">
-            {activeMainTab === "Wardrobe" && (
+            {activeMainTab === "Owned" && (
               <div className="grid grid-cols-2 gap-4">
                 {filteredWardrobe.map((item) => (
                   <div
@@ -2199,15 +2619,13 @@ function WardrobeTab({ aura }) {
                           <button
                             onClick={(e) => {
                               e.stopPropagation();
-                              showToast("Opening Shop...");
-                              if (item.link) {
-                                setTimeout(() => window.open(item.link, "_blank"), 1000);
-                              }
+                              addToCart(item);
+                              showToast("Added to cart");
                               setActiveMenu(null);
                             }}
                             className="w-full text-left px-4 py-2.5 text-[13px] font-bold text-[#1a1a1a] hover:bg-[#f5f3ef] flex items-center gap-2"
                           >
-                            <ShoppingCart size={16} /> Shop Item
+                            <ShoppingCart size={16} /> Add to cart
                           </button>
                           <button
                             onClick={(e) => {
@@ -2246,32 +2664,6 @@ function WardrobeTab({ aura }) {
                 ))}
               </div>
             )}
-            {activeMainTab === "Outfits" && (
-              <div className="grid grid-cols-2 gap-4 animate-in fade-in slide-in-from-bottom-2 duration-300">
-                {localOutfits.map((outfit) => (
-                  <div key={outfit.id} className="bg-white rounded-2xl border border-[#e5e5e5] shadow-sm flex flex-col overflow-hidden">
-                    <div onClick={() => setViewingOutfit(outfit)} className="relative w-full aspect-[2/3] bg-[#f5f3ef] cursor-pointer group overflow-hidden isolate">
-                      <button onClick={(e) => { e.stopPropagation(); setEditingOutfit({ ...outfit, _wardrobeSearch: "" }); }} className="absolute top-2 right-2 p-2 text-[#1a1a1a] hover:bg-white transition bg-white/80 backdrop-blur rounded-full z-20 shadow-sm">
-                        <Edit2 size={12} />
-                      </button>
-                      {outfit.coverImage ? <img src={outfit.coverImage} className="absolute inset-0 w-full h-full object-cover group-hover:scale-105 transition-transform duration-300" alt="Outfit cover" /> : <OutfitCollage items={outfit.items} />}
-                    </div>
-                    <div className="p-3 flex flex-col gap-1.5 bg-white relative z-20 border-t border-[#e5e5e5]">
-                      <h3 className="font-bold text-[#1a1a1a] text-[13px] leading-tight line-clamp-1">{outfit.title}</h3>
-                      {outfit.tags && outfit.tags.length > 0 && (
-                        <div className="flex flex-wrap gap-1">
-                          {outfit.tags.slice(0, 2).map((tag, i) => (
-                            <span key={i} className="inline-block px-2.5 py-0.5 bg-[#f5f3ef] text-[#6B655F] text-[9px] font-bold uppercase tracking-widest rounded-full border border-[#e5e5e5]">
-                              {tag.label}
-                            </span>
-                          ))}
-                        </div>
-                      )}
-                    </div>
-                  </div>
-                ))}
-              </div>
-            )}
           </div>
         </>
       )}
@@ -2280,7 +2672,7 @@ function WardrobeTab({ aura }) {
           <div className="absolute inset-0 bg-black/60 backdrop-blur-[2px] transition-opacity animate-in fade-in" onClick={() => setUploadState(null)} />
           <div className="bg-[#f5f3ef] rounded-t-[3rem] p-6 relative z-10 animate-in slide-in-from-bottom-full duration-300 pb-safe">
             <div className="w-12 h-1.5 bg-[#d1d1d1] rounded-full mx-auto mb-6" />
-            <h3 className="font-serif text-[#1a1a1a] text-xl mb-4 text-center">{activeMainTab === "Wishlist" ? "Save an Item" : "Add to Wardrobe"}</h3>
+            <h3 className="font-serif text-[#1a1a1a] text-xl mb-4 text-center">{activeMainTab === "Wishlist" ? "Save an Item" : "Add Item"}</h3>
             <div className="space-y-3">
               <button onClick={() => cameraInputRef.current?.click()} className="w-full py-4 bg-white text-[#1a1a1a] rounded-2xl font-bold flex items-center justify-center gap-3 hover:bg-[#e8e5df] transition border border-[#e5e5e5]">
                 <Camera size={20} className="text-black" /> Take Photo
@@ -2333,14 +2725,12 @@ function WardrobeTab({ aura }) {
               {viewingItem.price ? <p className="text-xl font-bold text-[#1a1a1a] mt-2">{viewingItem.price}</p> : <p className="text-sm font-bold text-[#6B655F] mt-2 capitalize">{viewingItem.category}</p>}
               <button
                 onClick={() => {
-                  showToast("Opening Shop...");
-                  setTimeout(() => {
-                    window.open(viewingItem.link || `https://www.google.com/search?tbm=shop&q=${encodeURIComponent(`${viewingItem.brand || ""} ${viewingItem.name || ""}`)}`, "_blank");
-                  }, 1000);
+                  addToCart(viewingItem);
+                  showToast("Added to cart");
                 }}
                 className="w-full py-4 mt-6 bg-black text-white rounded-2xl font-bold uppercase tracking-widest text-xs flex justify-center items-center gap-2 hover:bg-gray-800 transition active:scale-[0.98] shadow-md"
               >
-                <ShoppingCart size={16} /> SHOP ITEM
+                <ShoppingCart size={16} /> ADD TO CART
               </button>
             </div>
           </div>
@@ -2532,7 +2922,7 @@ function TryOnTab({ setActiveTab, returnTab }) {
   const fileInputRef = useRef(null);
   const [garments, setGarments] = useGlobalMix();
   const [scenario, setScenario] = useState("");
-  const resultImg = "https://images.unsplash.com/photo-1483985988355-763728e1935b?auto=format&fit=crop&w=1200&q=80";
+  const resultImg = TRY_ON_RESULT_IMAGE;
   const [toastMessage, setToastMessage] = useState(null);
   const [isSavedMix, setIsSavedMix] = useState(false);
   const [isViewingPhoto, setIsViewingPhoto] = useState(false);
@@ -2816,8 +3206,9 @@ function ListItem({ icon, title, subtitle, onClick }) {
   );
 }
 
-function ProfileTab() {
+function ProfileTab({ setActiveTab }) {
   const [view, setView] = useState("main");
+  const [wardrobe] = useStore(wardrobeStore);
   const [profileTab, setProfileTab] = useState("mixes");
   const [preferences, setPreferences] = useState(["Minimal", "Feminine", "Street"]);
   const [newStyle, setNewStyle] = useState("");
@@ -2996,7 +3387,7 @@ function ProfileTab() {
     <div className="bg-[#f5f3ef] min-h-full pb-24 relative">
       {toastMessage && <div className="fixed top-32 left-1/2 -translate-x-1/2 z-[100] bg-[#1a1a1a] text-white px-5 py-2.5 rounded-full shadow-lg text-sm font-medium animate-in slide-in-from-top-4 fade-in duration-300 whitespace-nowrap flex items-center gap-2">{toastMessage}</div>}
       <div className="flex justify-between items-center px-4 pt-12 pb-4 sm:pt-14">
-        <h2 className="text-3xl font-serif italic text-[#1a1a1a]">Profile</h2>
+        <h2 className="text-3xl font-serif italic text-[#1a1a1a]">Me</h2>
         <div className="flex items-center gap-4 text-[#1a1a1a]">
           <button onClick={() => showToast("No new notifications")} className="text-[#1a1a1a] hover:text-black transition">
             <Bell size={22} />
@@ -3020,6 +3411,40 @@ function ProfileTab() {
             <span>342 following</span>
           </div>
         </div>
+      </div>
+      <div className="px-4 pb-4 grid grid-cols-2 gap-3">
+        <button
+          type="button"
+          onClick={() => {
+            setActiveTab?.("wardrobe");
+            wardrobeMainTabStore.setState("Owned");
+          }}
+          className="flex items-center gap-3 rounded-2xl bg-white border border-[#e5e5e5] px-4 py-3.5 text-left shadow-sm active:scale-[0.98] transition"
+        >
+          <div className="flex h-10 w-10 items-center justify-center rounded-full bg-[#f5f3ef]">
+            <Shirt size={18} className="text-[#1a1a1a]" />
+          </div>
+          <div className="min-w-0">
+            <div className="text-[13px] font-bold text-[#1a1a1a]">Closet</div>
+            <div className="text-[11px] text-[#999999]">{wardrobe.length} items</div>
+          </div>
+        </button>
+        <button
+          type="button"
+          onClick={() => {
+            setActiveTab?.("wardrobe");
+            wardrobeMainTabStore.setState("Wishlist");
+          }}
+          className="flex items-center gap-3 rounded-2xl bg-white border border-[#e5e5e5] px-4 py-3.5 text-left shadow-sm active:scale-[0.98] transition"
+        >
+          <div className="flex h-10 w-10 items-center justify-center rounded-full bg-[#f5f3ef]">
+            <Heart size={18} className="text-[#1a1a1a]" />
+          </div>
+          <div className="min-w-0">
+            <div className="text-[13px] font-bold text-[#1a1a1a]">Wishlist</div>
+            <div className="text-[11px] text-[#999999]">{wishlist.length} saved</div>
+          </div>
+        </button>
       </div>
       <div className="flex w-full border-b border-[#e5e5e5] mb-4">
         <button onClick={() => setProfileTab("mixes")} className={`flex-1 pb-3 text-[10px] font-bold uppercase tracking-widest transition-colors ${profileTab === "mixes" ? "text-[#1a1a1a] border-b-2 border-[#1a1a1a]" : "text-[#999999] border-b-2 border-transparent hover:text-[#1a1a1a]"}`}>
@@ -3311,13 +3736,14 @@ function useAuraStylist() {
   }, []);
 
   const processPrompt = useCallback(
-    (text = inputText) => {
-      if (!text.trim() && attachedImages.length === 0) {
+    (text = inputText, attachedOverride = null) => {
+      const resolvedAttachedImages = attachedOverride ?? attachedImages;
+      if (!text.trim() && resolvedAttachedImages.length === 0) {
         return;
       }
-      if (attachedImages.length > 0 && !text.trim()) {
-        if (attachedImages.length === 1) {
-          setUploadedImage(attachedImages[0]);
+      if (resolvedAttachedImages.length > 0 && !text.trim()) {
+        if (resolvedAttachedImages.length === 1) {
+          setUploadedImage(resolvedAttachedImages[0]);
           setStep("extract");
           setAttachedImages([]);
           setInputText("");
@@ -3329,7 +3755,7 @@ function useAuraStylist() {
       setInputText("");
       setStep("search_results");
       setIsAuraLoading(true);
-      const currentAttached = attachedImages;
+      const currentAttached = resolvedAttachedImages;
       setAttachedImages([]);
 
       setTimeout(() => {
@@ -4089,8 +4515,8 @@ function AuraExtractAndChat({ aura }) {
                 <p className="text-[11px] font-bold text-[#999999] uppercase tracking-widest font-serif mb-1">{viewingItem.brand}</p>
                 <h2 className="text-2xl font-serif text-[#1a1a1a] leading-tight">{viewingItem.name}</h2>
                 {viewingItem.price && <p className="text-xl font-bold text-[#1a1a1a] mt-2">{viewingItem.price}</p>}
-                <button onClick={() => { window.open(viewingItem.link || `https://www.google.com/search?tbm=shop&q=${encodeURIComponent(`${viewingItem.brand || ""} ${viewingItem.name || ""}`)}`, "_blank"); }} className="w-full py-4 mt-6 bg-black text-white rounded-2xl font-bold uppercase tracking-widest text-xs flex justify-center items-center gap-2 hover:bg-gray-800 transition active:scale-[0.98] shadow-md">
-                  <ShoppingCart size={16} /> SHOP ITEM
+                <button onClick={() => addToCart(viewingItem)} className="w-full py-4 mt-6 bg-black text-white rounded-2xl font-bold uppercase tracking-widest text-xs flex justify-center items-center gap-2 hover:bg-gray-800 transition active:scale-[0.98] shadow-md">
+                  <ShoppingCart size={16} /> ADD TO CART
                 </button>
                 <div className="mt-8 pt-6 border-t border-[#e5e5e5]">
                   <div className="flex items-center gap-2 mb-6">
@@ -4143,29 +4569,336 @@ function NavItem({ icon, active, onClick, badge, actionIcon, onActionClick }) {
   );
 }
 
-function CollapsibleNavigation({ activeTab, setActiveTab, mixItems, aura }) {
+const inferUploadIntentAction = (prompt) => {
+  const text = prompt.toLowerCase();
+  if (/\b(try on|try-on|on me|wear it|fit check|virtual fit)\b/.test(text)) {
+    return "try-on";
+  }
+  if (/\b(buy|shop|link|url|where to get|find this item|purchase|similar item)\b/.test(text)) {
+    return "shop";
+  }
+  if (/\b(save|keep|bookmark).*\b(inspiration|moodboard|style|look)\b|\b(save|add).*\b(wardrobe|closet)\b|\b(wardrobe|closet).*\b(save|add)\b/.test(text)) {
+    return "save-wardrobe";
+  }
+  if (/\b(more like this|similar looks|similar style|influencer outfits|inspo|inspiration|same vibe|this style|style like)\b/.test(text)) {
+    return "style-inspo";
+  }
+  return "custom";
+};
+
+function UploadIntentSheet({ uploadIntent, onClose, onSubmit }) {
+  const [prompt, setPrompt] = useState("");
+  const [selectedAction, setSelectedAction] = useState(null);
+
+  useEffect(() => {
+    if (uploadIntent) {
+      setPrompt("");
+      setSelectedAction(null);
+    }
+  }, [uploadIntent]);
+
+  if (!uploadIntent) {
+    return null;
+  }
+
+  const actionItems = [
+    {
+      id: "shop",
+      label: "Find where to buy it",
+      subtitle: "Break down the look and search shoppable links",
+      prompt: "Find where I can buy items like this.",
+      icon: <ShoppingCart size={18} />
+    },
+    {
+      id: "style-inspo",
+      label: "More like this",
+      subtitle: "Use this photo as style inspiration",
+      prompt: "Show me more influencer outfits with this style.",
+      icon: <Sparkles size={18} />
+    },
+    {
+      id: "save-wardrobe",
+      label: "Save as inspiration",
+      subtitle: "Keep this look and refresh similar outfit ideas",
+      prompt: "Save this as outfit inspiration and show me similar looks.",
+      icon: <Shirt size={18} />
+    },
+    {
+      id: "try-on",
+      label: "Try it on me",
+      subtitle: "Run try-on in the background and save it to My Mixes",
+      prompt: "Try this on me.",
+      icon: <PlayCircle size={18} />
+    }
+  ];
+  const selectedItem = actionItems.find((item) => item.id === selectedAction);
+  const canSubmit = prompt.trim().length > 0 || Boolean(selectedItem);
+  const submitUploadPrompt = () => {
+    const text = prompt.trim() || selectedItem?.prompt || "";
+    if (!text) return;
+    onSubmit({
+      actionId: selectedAction || inferUploadIntentAction(text),
+      prompt: text
+    });
+  };
+
+  return (
+    <div className="fixed inset-0 z-[95] flex flex-col justify-end">
+      <button type="button" aria-label="Close upload options" className="absolute inset-0 bg-black/30 backdrop-blur-[1px]" onClick={onClose} />
+      <div className="relative rounded-t-[2.5rem] bg-[#f5f3ef] px-5 pb-safe pt-5 shadow-[0_-18px_60px_rgba(0,0,0,0.18)] animate-in slide-in-from-bottom-full duration-300">
+        <div className="mx-auto mb-4 h-1.5 w-12 rounded-full bg-[#d6d0c7]" />
+        <div className="mb-5 flex items-center gap-4">
+          <div className="h-[88px] w-[88px] shrink-0 overflow-hidden rounded-[1.6rem] border border-[#e5e5e5] bg-white shadow-sm">
+            <img src={uploadIntent.previewUrl} alt="Uploaded preview" className="h-full w-full object-cover" />
+          </div>
+          <div className="min-w-0 flex-1">
+            <p className="text-[11px] font-bold uppercase tracking-[0.18em] text-[#9a9188]">Upload image</p>
+            <h3 className="mt-1 text-[26px] leading-7 font-serif text-[#1a1a1a]">What should I do with this photo?</h3>
+            <p className="mt-2 text-[13px] leading-5 text-[#6b655f]">Type your own prompt or pick a shortcut.</p>
+          </div>
+        </div>
+        <div className="pb-5">
+          {selectedItem ? (
+            <div className="mb-4 rounded-[1.6rem] border border-[#e5e5e5] bg-white p-4 shadow-sm">
+              <button type="button" onClick={() => setSelectedAction(null)} className="mb-4 flex items-center gap-2 text-[12px] font-bold uppercase tracking-[0.14em] text-[#8c847d]">
+                <ArrowLeft size={15} /> Back
+              </button>
+              <div className="flex items-center gap-3">
+                <div className="flex h-10 w-10 items-center justify-center rounded-full bg-[#f5f3ef] text-[#1a1a1a]">{selectedItem.icon}</div>
+                <div className="min-w-0 flex-1">
+                  <div className="text-[16px] font-semibold text-[#1a1a1a]">{selectedItem.label}</div>
+                  <div className="mt-1 text-[12px] leading-5 text-[#8c847d]">{selectedItem.subtitle}</div>
+                </div>
+              </div>
+            </div>
+          ) : (
+            <div className="mb-4 grid grid-cols-2 gap-2">
+              {actionItems.map((item) => (
+                <button
+                  key={item.id}
+                  type="button"
+                  onClick={() => {
+                    setSelectedAction(item.id);
+                    setPrompt(item.prompt);
+                  }}
+                  className="flex min-h-[92px] flex-col items-start gap-2 rounded-[1.45rem] border border-[#e5e5e5] bg-white p-3 text-left shadow-sm transition hover:border-black active:scale-[0.99]"
+                >
+                  <div className="flex h-9 w-9 items-center justify-center rounded-full bg-[#f5f3ef] text-[#1a1a1a]">{item.icon}</div>
+                  <div className="text-[13px] font-bold leading-4 text-[#1a1a1a]">{item.label}</div>
+                </button>
+              ))}
+            </div>
+          )}
+          <div className="flex items-center gap-2 rounded-full border border-[#e5e5e5] bg-white p-2 pl-4 shadow-sm focus-within:border-black">
+            <input
+              value={prompt}
+              onChange={(e) => setPrompt(e.target.value)}
+              onKeyDown={(e) => {
+                if (e.key === "Enter" && canSubmit) submitUploadPrompt();
+              }}
+              placeholder="Ask the stylist anything..."
+              className="min-w-0 flex-1 bg-transparent text-[14px] font-medium text-[#1a1a1a] outline-none placeholder:text-[#999999]"
+            />
+            <button
+              type="button"
+              disabled={!canSubmit}
+              onClick={submitUploadPrompt}
+              className={`flex h-10 w-10 shrink-0 items-center justify-center rounded-full transition ${canSubmit ? "bg-black text-white" : "bg-[#e5e5e5] text-[#999999]"}`}
+            >
+              <Send size={16} />
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+function VideoStylistOverlay({ isOpen, onClose }) {
+  if (!isOpen) {
+    return null;
+  }
+
+  const tips = ["Raise the belt slightly", "Front-tuck the shirt", "Smooth the shoulder seam", "Pull hair behind one ear"];
+  const homeStylingPreview = "https://f1m2wvuqxivimpbz.public.blob.vercel-storage.com/uploads/images/cmkjtwjlb0000l804u0lxg42w/20241008_163702-PIdCLLy6LDcFhSJ1RlI8qDrrK6nTMt.webp";
+
+  return (
+    <div className="fixed inset-0 z-[92] flex flex-col bg-[#101010] text-white animate-in fade-in duration-200">
+      <div className="flex items-center justify-between px-5 pt-12 pb-4 sm:pt-14">
+        <button onClick={onClose} className="flex h-10 w-10 items-center justify-center rounded-full bg-white/10 text-white backdrop-blur transition hover:bg-white/15">
+          <ArrowLeft size={20} />
+        </button>
+        <div className="text-center">
+          <p className="text-[10px] font-bold uppercase tracking-[0.22em] text-white/45">Live Styling</p>
+          <h2 className="font-serif text-xl">Stylist Call</h2>
+        </div>
+        <button onClick={onClose} className="flex h-10 w-10 items-center justify-center rounded-full bg-white/10 text-white backdrop-blur transition hover:bg-white/15">
+          <X size={20} />
+        </button>
+      </div>
+
+      <div className="relative mx-5 flex-1 overflow-hidden rounded-[2rem] border border-white/10 bg-[#252525] shadow-2xl">
+        <img src={homeStylingPreview} alt="Live stylist preview" className="h-full w-full object-cover object-center opacity-80" />
+        <div className="absolute inset-x-5 top-5 rounded-3xl bg-black/45 p-4 backdrop-blur-md">
+          <p className="text-[11px] font-bold uppercase tracking-[0.18em] text-white/55">Stylist says</p>
+          <p className="mt-1 text-sm font-semibold leading-5">Move the belt a bit higher, tuck only the front, then clean up the hair around your neckline.</p>
+        </div>
+        <div className="absolute bottom-5 left-5 right-5 grid grid-cols-2 gap-2">
+          {tips.map((tip) => (
+            <div key={tip} className="rounded-full bg-white/90 px-3 py-2 text-center text-[11px] font-bold text-[#1a1a1a] shadow-sm">
+              {tip}
+            </div>
+          ))}
+        </div>
+      </div>
+
+      <div className="flex items-center justify-center gap-4 px-6 py-6 pb-safe">
+        <button className="flex h-12 w-12 items-center justify-center rounded-full bg-white/10 text-white">
+          <Mic size={20} />
+        </button>
+        <button className="flex h-14 w-14 items-center justify-center rounded-full bg-white text-black shadow-lg">
+          <Camera size={22} />
+        </button>
+        <button onClick={onClose} className="flex h-12 w-12 items-center justify-center rounded-full bg-red-500 text-white">
+          <X size={20} />
+        </button>
+      </div>
+    </div>
+  );
+}
+
+function ShoppingCartTab() {
+  const { cart, removeFromCart, updateQuantity, clearCart } = useCart();
+  const [selectedIds, setSelectedIds] = useState(new Set());
+
+  useEffect(() => {
+    setSelectedIds(new Set(cart.map((item) => item.id)));
+  }, [cart]);
+
+  const selectedItems = cart.filter((item) => selectedIds.has(item.id));
+  const selectedCount = selectedItems.reduce((sum, item) => sum + item.quantity, 0);
+  const total = selectedItems.reduce((sum, item) => {
+    const price = parseFloat(String(item.price || "").replace(/[^0-9.]/g, ""));
+    return sum + (Number.isFinite(price) ? price * item.quantity : 0);
+  }, 0);
+
+  const toggleItem = (id) => {
+    setSelectedIds((current) => {
+      const next = new Set(current);
+      if (next.has(id)) next.delete(id);
+      else next.add(id);
+      return next;
+    });
+  };
+
+  return (
+    <div className="flex flex-col h-full bg-[#f5f3ef]">
+      <div className="sticky top-0 z-20 bg-[#f5f3ef]/90 px-4 pb-4 pt-12 backdrop-blur-xl sm:pt-14 shrink-0">
+        <div className="flex items-center justify-between">
+          <h2 className="font-serif text-3xl italic text-[#1a1a1a]">Cart</h2>
+          {cart.length > 0 && (
+            <button onClick={clearCart} className="rounded-full border border-[#e5e5e5] bg-white px-4 py-2 text-[11px] font-bold uppercase tracking-widest text-[#1a1a1a] shadow-sm">
+              Clear
+            </button>
+          )}
+        </div>
+      </div>
+
+      <div className="flex-1 overflow-y-auto px-4 pb-4">
+        {cart.length === 0 ? (
+          <div className="mt-24 flex flex-col items-center justify-center text-center text-[#999999]">
+            <ShoppingCart size={34} className="mb-4 opacity-40" />
+            <p className="text-[10px] font-bold uppercase tracking-widest">Your cart is empty</p>
+          </div>
+        ) : (
+          <div className="space-y-3">
+            {cart.map((item) => {
+              const isSelected = selectedIds.has(item.id);
+              return (
+                <div key={item.id} className="flex gap-3 rounded-3xl border border-[#e5e5e5] bg-white p-3 shadow-sm">
+                  <button onClick={() => toggleItem(item.id)} className={`mt-1 flex h-6 w-6 shrink-0 items-center justify-center rounded-full border ${isSelected ? "border-black bg-black text-white" : "border-[#d8d2ca] bg-white text-transparent"}`}>
+                    <Check size={13} strokeWidth={3} />
+                  </button>
+                  <div className="h-24 w-20 shrink-0 overflow-hidden rounded-2xl bg-[#e6e2d6]">
+                    <img src={item.image} alt={item.name} className="h-full w-full object-cover" />
+                  </div>
+                  <div className="min-w-0 flex-1">
+                    <p className="text-[10px] font-bold uppercase tracking-widest text-[#999999]">{item.brand}</p>
+                    <p className="mt-1 line-clamp-2 text-sm font-bold leading-5 text-[#1a1a1a]">{item.name}</p>
+                    <p className="mt-1 text-sm font-bold text-[#1a1a1a]">{item.price}</p>
+                    <div className="mt-3 flex items-center justify-between">
+                      <div className="flex items-center rounded-full border border-[#e5e5e5] bg-[#f5f3ef]">
+                        <button onClick={() => updateQuantity(item.id, item.quantity - 1)} className="flex h-8 w-8 items-center justify-center text-[#1a1a1a]">
+                          <Minus size={13} />
+                        </button>
+                        <span className="w-6 text-center text-xs font-bold">{item.quantity}</span>
+                        <button onClick={() => updateQuantity(item.id, item.quantity + 1)} className="flex h-8 w-8 items-center justify-center text-[#1a1a1a]">
+                          <Plus size={13} />
+                        </button>
+                      </div>
+                      <button onClick={() => removeFromCart(item.id)} className="text-[#999999] hover:text-red-500">
+                        <Trash2 size={17} />
+                      </button>
+                    </div>
+                  </div>
+                </div>
+              );
+            })}
+          </div>
+        )}
+      </div>
+
+      {cart.length > 0 && (
+        <div className="shrink-0 px-4 pb-6 pt-2">
+          <div className="ml-[4.15rem] rounded-full border border-[#ebe5db] bg-white p-2 pl-5 shadow-[0_8px_26px_rgba(0,0,0,0.08)]">
+            <div className="flex items-center gap-3">
+              <div className="min-w-0 flex-1">
+                <p className="text-[10px] font-bold uppercase tracking-widest text-[#999999]">{selectedCount} selected</p>
+                <p className="text-sm font-bold text-[#1a1a1a]">{total > 0 ? `$${total.toFixed(2)}` : "Ready to checkout"}</p>
+              </div>
+              <button disabled={selectedCount === 0} className={`rounded-full px-5 py-3 text-[11px] font-bold uppercase tracking-widest ${selectedCount === 0 ? "bg-[#e5e5e5] text-[#999999]" : "bg-black text-white"}`}>
+                Checkout
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+    </div>
+  );
+}
+
+function CollapsibleNavigation({ activeTab, setActiveTab, mixItems, aura, onUploadImageSelected }) {
   const [isOpen, setIsOpen] = useState(false);
   const fileInputRef = useRef(null);
   const [tryOnStatus, setTryOnStatus] = useStore(tryOnStatusStore);
+  const [wardrobeNoticeCount, setWardrobeNoticeCount] = useStore(wardrobeNoticeStore);
+  const [cart] = useStore(cartStore);
   const isTryOnRunning = tryOnStatus.phase === "generating";
   const tryOnReadyCount = tryOnStatus.phase === "result" ? tryOnStatus.profileNotificationCount : 0;
+  const cartCount = cart.reduce((sum, item) => sum + item.quantity, 0);
+
+  const navActive = activeTab === "wardrobe" || activeTab === "cart" ? "profile" : activeTab;
 
   const navItems = [
-    { id: "trending", label: "Discovery", icon: <Activity size={22} strokeWidth={activeTab === "trending" ? 2.6 : 2.2} /> },
-    { id: "wardrobe", label: "My Stuff", icon: <Shirt size={22} strokeWidth={activeTab === "wardrobe" ? 2.6 : 2.2} /> },
+    { id: "trending", label: "Discover", icon: <Activity size={22} strokeWidth={navActive === "trending" ? 2.6 : 2.2} /> },
+    {
+      id: "skills",
+      label: "Skills",
+      icon: <Wand2 size={22} strokeWidth={navActive === "skills" ? 2.6 : 2.2} />
+    },
     {
       id: "tryon",
-      label: "Mix Panel",
+      label: "Mix",
       count: mixItems,
       highlighted: mixItems > 0,
-      icon: <Sparkles size={22} strokeWidth={activeTab === "tryon" ? 2.6 : 2.2} />
+      icon: <Sparkles size={22} strokeWidth={navActive === "tryon" ? 2.6 : 2.2} />
     },
     {
       id: "profile",
-      label: "Profile",
-      count: tryOnReadyCount,
-      notification: tryOnReadyCount > 0,
-      icon: <User size={22} strokeWidth={activeTab === "profile" ? 2.6 : 2.2} />
+      label: "Me",
+      count: (tryOnReadyCount > 0 ? tryOnReadyCount : 0) + (wardrobeNoticeCount > 0 ? wardrobeNoticeCount : 0),
+      notification: tryOnReadyCount > 0 || wardrobeNoticeCount > 0,
+      icon: <User size={22} strokeWidth={navActive === "profile" ? 2.6 : 2.2} />
     }
   ];
 
@@ -4178,18 +4911,11 @@ function CollapsibleNavigation({ activeTab, setActiveTab, mixItems, aura }) {
       onClick: () => fileInputRef.current?.click()
     },
     {
-      id: "stylist",
-      label: "Open stylist",
-      description: "Ask AI stylist with screenshots",
-      icon: <Sparkles size={19} />,
-      onClick: () => aura.openAura()
-    },
-    {
-      id: "tryon",
-      label: "Video try-on",
-      description: "Open virtual try-on workspace",
+      id: "stylist-call",
+      label: "Stylist Call",
+      description: "Live fit check and detail advice",
       icon: <PlayCircle size={19} />,
-      onClick: () => setActiveTab("tryon")
+      onClick: () => videoStylistStore.setState(true)
     }
   ];
 
@@ -4232,13 +4958,16 @@ function CollapsibleNavigation({ activeTab, setActiveTab, mixItems, aura }) {
                 type="button"
                 onClick={() => {
                   setActiveTab(item.id);
+                  if (item.id === "wardrobe" && wardrobeNoticeCount > 0) {
+                    setWardrobeNoticeCount(0);
+                  }
                   if (item.id === "profile" && tryOnReadyCount > 0) {
                     setTryOnStatus((prev) => ({ ...prev, profileNotificationCount: 0 }));
                   }
                   setIsOpen(false);
                 }}
                 className={`flex w-full items-center gap-3 rounded-[1.2rem] px-3 py-2.5 text-left transition ${
-                  activeTab === item.id
+                  navActive === item.id
                     ? item.id === "tryon"
                       ? "bg-[#6c5ce7] text-white"
                       : item.id === "profile" && item.notification
@@ -4254,7 +4983,7 @@ function CollapsibleNavigation({ activeTab, setActiveTab, mixItems, aura }) {
                 <div className={item.notification ? "text-[#9be2b5]" : item.highlighted ? "text-[#cfc4ff]" : "text-white/88"}>{item.icon}</div>
                 <span className="flex-1 text-[14px] font-semibold tracking-[0.01em]">{item.label}</span>
                 {item.count > 0 && (
-                  <span className={`rounded-full px-2 py-0.5 text-[11px] font-bold ${item.notification ? "bg-[#27ae60] text-white" : activeTab === item.id ? "bg-white/18 text-white" : "bg-[#6c5ce7] text-white"}`}>{item.count}</span>
+                  <span className={`rounded-full px-2 py-0.5 text-[11px] font-bold ${item.notification ? "bg-[#27ae60] text-white" : navActive === item.id ? "bg-white/18 text-white" : "bg-[#6c5ce7] text-white"}`}>{item.count}</span>
                 )}
               </button>
             ))}
@@ -4269,17 +4998,17 @@ function CollapsibleNavigation({ activeTab, setActiveTab, mixItems, aura }) {
             }`}
           >
             <Plus size={18} strokeWidth={2.5} />
-            {(isTryOnRunning || tryOnReadyCount > 0 || mixItems > 0) && (
+            {(isTryOnRunning || tryOnReadyCount > 0 || mixItems > 0 || cartCount > 0) && (
               <span
                 className={`absolute -right-1 -top-1 flex min-w-[18px] items-center justify-center rounded-full px-1.5 py-[1px] text-center text-[10px] font-bold text-white ${
                   isTryOnRunning
                     ? "bg-[#6c5ce7] shadow-[0_6px_14px_rgba(108,92,231,0.35)]"
-                    : tryOnReadyCount > 0
+                    : tryOnReadyCount > 0 || cartCount > 0
                       ? "bg-[#27ae60] shadow-[0_6px_14px_rgba(39,174,96,0.35)]"
                       : "bg-[#6c5ce7] shadow-[0_6px_14px_rgba(108,92,231,0.35)]"
                 }`}
               >
-                {isTryOnRunning ? <Loader2 size={10} className="animate-spin" /> : tryOnReadyCount > 0 ? tryOnReadyCount : mixItems}
+                {isTryOnRunning ? <Loader2 size={10} className="animate-spin" /> : tryOnReadyCount > 0 ? tryOnReadyCount : cartCount > 0 ? cartCount : mixItems}
               </span>
             )}
           </button>
@@ -4293,8 +5022,7 @@ function CollapsibleNavigation({ activeTab, setActiveTab, mixItems, aura }) {
               if (!file) {
                 return;
               }
-              aura.openAura();
-              aura.handleImageUpload(file);
+              onUploadImageSelected(file);
               e.target.value = "";
             }}
           />
@@ -4304,18 +5032,387 @@ function CollapsibleNavigation({ activeTab, setActiveTab, mixItems, aura }) {
   );
 }
 
+const MOCK_SKILLS = [
+  {
+    id: "diana-royal",
+    name: "Diana's Off-Duty Royal",
+    author: "@anna_curates",
+    tagline: "Polo + high-rise denim + loafers. 80s royal pre-paparazzi.",
+    followers: 12400,
+    usedCount: 3200,
+    rating: 4.8,
+    cover: "https://picsum.photos/seed/diana1/600/800",
+    moodboard: [
+      "https://picsum.photos/seed/diana1/400/600",
+      "https://picsum.photos/seed/diana2/400/600",
+      "https://picsum.photos/seed/diana3/400/600",
+      "https://picsum.photos/seed/diana4/400/600",
+      "https://picsum.photos/seed/diana5/400/600",
+      "https://picsum.photos/seed/diana6/400/600",
+      "https://picsum.photos/seed/diana7/400/600",
+      "https://picsum.photos/seed/diana8/400/600",
+      "https://picsum.photos/seed/diana9/400/600",
+      "https://picsum.photos/seed/diana10/400/600"
+    ],
+    rules: [
+      "High-waisted bottoms, tucked tops",
+      "Loafers or low-heel pumps, never sneakers",
+      "Pearl jewelry, never statement pieces"
+    ]
+  },
+  {
+    id: "hailey-offduty",
+    name: "Hailey's Off-Duty",
+    author: "@lina_styles",
+    tagline: "Oversized blazer, baggy denim, bike shorts. NYC model-on-coffee-run.",
+    followers: 28100,
+    usedCount: 7900,
+    rating: 4.9,
+    cover: "https://picsum.photos/seed/hailey1/600/800",
+    moodboard: Array.from({ length: 10 }, (_, i) => `https://picsum.photos/seed/hailey${i + 1}/400/600`),
+    rules: [
+      "Oversized on top, fitted on bottom (or reverse)",
+      "Neutral palette: black, white, grey, beige",
+      "One streetwear accent: cap, hoop earrings, or chunky sneakers"
+    ]
+  },
+  {
+    id: "old-money",
+    name: "Quiet Old Money",
+    author: "@maison_curated",
+    tagline: "Cashmere, cream, gold trim. No logos, ever.",
+    followers: 8700,
+    usedCount: 2100,
+    rating: 4.7,
+    cover: "https://picsum.photos/seed/oldmoney1/600/800",
+    moodboard: Array.from({ length: 10 }, (_, i) => `https://picsum.photos/seed/oldmoney${i + 1}/400/600`),
+    rules: ["No visible logos", "Tonal layering in neutrals", "Gold (never silver) hardware"]
+  },
+  {
+    id: "y2k-revival",
+    name: "Y2K Revival",
+    author: "@bella99",
+    tagline: "Low-rise, baby tees, bedazzled everything. The 2000s, refined.",
+    followers: 15200,
+    usedCount: 4400,
+    rating: 4.6,
+    cover: "https://picsum.photos/seed/y2k1/600/800",
+    moodboard: Array.from({ length: 10 }, (_, i) => `https://picsum.photos/seed/y2k${i + 1}/400/600`),
+    rules: ["Low-rise bottoms", "Cropped or baby-tee tops", "One bedazzled / metallic accent"]
+  },
+  {
+    id: "minimal-jp",
+    name: "Tokyo Minimal",
+    author: "@sora.jp",
+    tagline: "Wide-leg, oversized linen, monochrome. Quiet & architectural.",
+    followers: 19800,
+    usedCount: 5300,
+    rating: 4.8,
+    cover: "https://picsum.photos/seed/jp1/600/800",
+    moodboard: Array.from({ length: 10 }, (_, i) => `https://picsum.photos/seed/jp${i + 1}/400/600`),
+    rules: ["Loose silhouette top and bottom", "Single-color outfits", "Natural fabrics: linen, cotton, wool"]
+  }
+];
+
+function SkillCard({ skill, onClick, isFollowed }) {
+  return (
+    <button
+      type="button"
+      onClick={onClick}
+      className="group relative flex w-full flex-col overflow-hidden rounded-3xl bg-white shadow-[0_2px_10px_rgba(0,0,0,0.04)] transition active:scale-[0.99]"
+    >
+      <div className="relative aspect-[3/4] w-full overflow-hidden bg-neutral-100">
+        <img src={skill.cover} alt={skill.name} className="h-full w-full object-cover transition group-hover:scale-105" />
+        {isFollowed && (
+          <div className="absolute top-3 right-3 rounded-full bg-white/95 px-2.5 py-1 text-[10px] font-bold uppercase tracking-wider text-[#6c5ce7]">
+            Following
+          </div>
+        )}
+      </div>
+      <div className="flex flex-col gap-1 px-3.5 py-3 text-left">
+        <div className="flex items-center justify-between gap-2">
+          <h3 className="truncate text-[15px] font-semibold text-neutral-900">{skill.name}</h3>
+          <div className="flex shrink-0 items-center gap-0.5 text-[11px] font-semibold text-amber-500">
+            <span>★</span>
+            <span>{skill.rating}</span>
+          </div>
+        </div>
+        <p className="text-[11px] text-neutral-500">{skill.author}</p>
+        <p className="line-clamp-2 text-[12px] leading-snug text-neutral-700">{skill.tagline}</p>
+        <div className="mt-1 flex items-center gap-3 text-[11px] text-neutral-500">
+          <span>{skill.followers.toLocaleString()} following</span>
+          <span>•</span>
+          <span>{skill.usedCount.toLocaleString()} styled</span>
+        </div>
+      </div>
+    </button>
+  );
+}
+
+function SkillDetailView({ skill, isFollowed, onToggleFollow, onBack, onUseSkill }) {
+  return (
+    <div className="absolute inset-0 flex flex-col bg-[#f5f3ef]">
+      <div className="flex items-center justify-between px-4 pt-12 pb-3">
+        <button type="button" onClick={onBack} className="flex h-10 w-10 items-center justify-center rounded-full bg-white shadow-sm">
+          <ChevronLeft size={20} />
+        </button>
+        <button
+          type="button"
+          onClick={onToggleFollow}
+          className={`rounded-full px-4 py-2 text-[12px] font-bold transition ${
+            isFollowed ? "bg-neutral-200 text-neutral-700" : "bg-[#6c5ce7] text-white"
+          }`}
+        >
+          {isFollowed ? "Following" : "+ Follow"}
+        </button>
+      </div>
+      <div className="flex-1 overflow-y-auto px-4 pb-32 scrollbar-hide">
+        <div className="mb-1 text-[11px] font-bold uppercase tracking-[0.18em] text-[#6c5ce7]">{skill.author}</div>
+        <h1 className="text-[26px] font-bold leading-tight text-neutral-900">{skill.name}</h1>
+        <p className="mt-2 text-[14px] text-neutral-600">{skill.tagline}</p>
+        <div className="mt-3 flex items-center gap-4 text-[12px] text-neutral-500">
+          <span>★ {skill.rating}</span>
+          <span>{skill.followers.toLocaleString()} following</span>
+          <span>{skill.usedCount.toLocaleString()} styled</span>
+        </div>
+
+        <div className="mt-6 mb-2 text-[11px] font-bold uppercase tracking-[0.18em] text-neutral-400">Style DNA</div>
+        <div className="space-y-2">
+          {skill.rules.map((rule, i) => (
+            <div key={i} className="flex items-start gap-3 rounded-2xl bg-white px-4 py-3">
+              <div className="mt-0.5 flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-[#6c5ce7]/12 text-[11px] font-bold text-[#6c5ce7]">{i + 1}</div>
+              <p className="text-[13px] leading-snug text-neutral-700">{rule}</p>
+            </div>
+          ))}
+        </div>
+
+        <div className="mt-6 mb-2 text-[11px] font-bold uppercase tracking-[0.18em] text-neutral-400">Moodboard</div>
+        <div className="grid grid-cols-2 gap-2">
+          {skill.moodboard.map((src, i) => (
+            <div key={i} className="aspect-[3/4] overflow-hidden rounded-2xl bg-neutral-200">
+              <img src={src} alt="" className="h-full w-full object-cover" />
+            </div>
+          ))}
+        </div>
+      </div>
+      <div className="absolute inset-x-0 bottom-0 px-4 pb-8 pt-3 bg-gradient-to-t from-[#f5f3ef] via-[#f5f3ef] to-transparent">
+        <button
+          type="button"
+          onClick={onUseSkill}
+          className="w-full rounded-full bg-[#6c5ce7] py-4 text-[15px] font-bold text-white shadow-[0_8px_24px_rgba(108,92,231,0.35)] active:scale-[0.98]"
+        >
+          Style my wardrobe with this skill
+        </button>
+      </div>
+    </div>
+  );
+}
+
+function SkillsTab() {
+  const [subTab, setSubTab] = useState("discover");
+  const [followed, setFollowed] = useState(() => new Set(["hailey-offduty"]));
+  const [selectedSkill, setSelectedSkill] = useState(null);
+
+  const toggleFollow = (id) => {
+    setFollowed((prev) => {
+      const next = new Set(prev);
+      if (next.has(id)) next.delete(id);
+      else next.add(id);
+      return next;
+    });
+  };
+
+  const visibleSkills = subTab === "discover" ? MOCK_SKILLS : MOCK_SKILLS.filter((s) => followed.has(s.id));
+
+  if (selectedSkill) {
+    return (
+      <SkillDetailView
+        skill={selectedSkill}
+        isFollowed={followed.has(selectedSkill.id)}
+        onToggleFollow={() => toggleFollow(selectedSkill.id)}
+        onBack={() => setSelectedSkill(null)}
+        onUseSkill={() => {
+          alert(`(Demo) Styling your wardrobe with "${selectedSkill.name}"...`);
+        }}
+      />
+    );
+  }
+
+  return (
+    <div className="px-4 pt-12 pb-8">
+      <h1 className="text-[28px] font-bold tracking-tight text-neutral-900">Skills</h1>
+      <p className="mt-1 text-[13px] text-neutral-500">Borrow a stylist's eye for your closet.</p>
+
+      <div className="mt-5 flex gap-1.5 rounded-full bg-neutral-200/70 p-1">
+        {[
+          { id: "discover", label: "Discover" },
+          { id: "mine", label: `My Skills${followed.size > 0 ? ` · ${followed.size}` : ""}` }
+        ].map((tab) => (
+          <button
+            key={tab.id}
+            type="button"
+            onClick={() => setSubTab(tab.id)}
+            className={`flex-1 rounded-full px-4 py-2 text-[13px] font-semibold transition ${
+              subTab === tab.id ? "bg-white text-neutral-900 shadow-sm" : "text-neutral-500"
+            }`}
+          >
+            {tab.label}
+          </button>
+        ))}
+      </div>
+
+      {visibleSkills.length === 0 ? (
+        <div className="mt-12 flex flex-col items-center text-center">
+          <Wand2 size={32} className="text-neutral-300" />
+          <p className="mt-3 text-[14px] font-semibold text-neutral-700">No skills yet</p>
+          <p className="mt-1 text-[12px] text-neutral-500">Follow a stylist's skill from Discover to see it here.</p>
+          <button
+            type="button"
+            onClick={() => setSubTab("discover")}
+            className="mt-4 rounded-full bg-[#6c5ce7] px-5 py-2 text-[12px] font-bold text-white"
+          >
+            Browse Discover
+          </button>
+        </div>
+      ) : (
+        <div className="mt-5 grid grid-cols-2 gap-3">
+          {visibleSkills.map((skill) => (
+            <SkillCard
+              key={skill.id}
+              skill={skill}
+              isFollowed={followed.has(skill.id)}
+              onClick={() => setSelectedSkill(skill)}
+            />
+          ))}
+        </div>
+      )}
+    </div>
+  );
+}
+
 export default function App() {
   const [activeTab, setActiveTab] = useState("trending");
   const [returnTab, setReturnTab] = useState("trending");
+  const [uploadIntent, setUploadIntent] = useState(null);
+  const [wardrobeToast, setWardrobeToast] = useState(null);
   const [mixItems] = useGlobalMix();
+  const [cart] = useStore(cartStore);
   const [flyingItem] = useStore(flyingStore);
+  const [isVideoStylistOpen, setIsVideoStylistOpen] = useStore(videoStylistStore);
   const aura = useAuraStylist();
+  const wardrobeToastTimerRef = useRef(null);
 
   useEffect(() => {
     if (activeTab !== "tryon") {
       setReturnTab(activeTab);
     }
   }, [activeTab]);
+
+  useEffect(() => {
+    if (activeTab === "wardrobe") {
+      wardrobeNoticeStore.setState(0);
+    }
+  }, [activeTab]);
+
+  useEffect(() => {
+    return () => {
+      if (wardrobeToastTimerRef.current) {
+        window.clearTimeout(wardrobeToastTimerRef.current);
+      }
+    };
+  }, []);
+
+  const showWardrobeSavedToast = useCallback(() => {
+    if (wardrobeToastTimerRef.current) {
+      window.clearTimeout(wardrobeToastTimerRef.current);
+    }
+    setWardrobeToast({
+      message: "Saved to your wardrobe",
+      cta: "View wardrobe"
+    });
+    wardrobeToastTimerRef.current = window.setTimeout(() => {
+      setWardrobeToast(null);
+    }, 3200);
+  }, []);
+
+  const handleUploadImageSelected = useCallback(async (file) => {
+    const previewUrl = await new Promise((resolve, reject) => {
+      const reader = new FileReader();
+      reader.onloadend = () => resolve(reader.result);
+      reader.onerror = reject;
+      reader.readAsDataURL(file);
+    });
+    setUploadIntent({
+      file,
+      fileName: file.name,
+      previewUrl
+    });
+    setActiveTab("trending");
+  }, []);
+
+  const handleUploadIntentAction = useCallback(
+    (payload) => {
+      const currentIntent = uploadIntent;
+      if (!currentIntent) {
+        return;
+      }
+
+      const prompt = typeof payload === "string" ? "" : payload.prompt;
+      const actionId = typeof payload === "string" ? payload : payload.actionId || inferUploadIntentAction(prompt || "");
+      const itemName = formatUploadItemName(currentIntent.fileName);
+      setUploadIntent(null);
+
+      if (actionId === "shop") {
+        aura.openAura();
+        aura.handleImageUpload(currentIntent.file);
+        return;
+      }
+
+      if (actionId === "style-inspo") {
+        feedStore.setState(UPLOADED_ITEM_STYLE_FEED);
+        aura.setAuraMessage("I refreshed the feed with influencer looks that carry a similar vibe.");
+        setActiveTab("trending");
+        return;
+      }
+
+      if (actionId === "save-wardrobe") {
+        wardrobeStore.setState((prev) => [
+          {
+            id: Date.now(),
+            brand: "Uploaded",
+            name: itemName,
+            image: currentIntent.previewUrl,
+            category: "Tops",
+            link: ""
+          },
+          ...prev
+        ]);
+        wardrobeNoticeStore.setState((count) => count + 1);
+        showWardrobeSavedToast();
+        feedStore.setState(UPLOADED_ITEM_STYLE_FEED);
+        aura.setAuraMessage("Saved as inspiration. I refreshed the feed with similar influencer-style looks.");
+        setActiveTab("trending");
+        return;
+      }
+
+      if (actionId === "try-on") {
+        const garment = {
+          id: Date.now(),
+          image: currentIntent.previewUrl,
+          name: itemName
+        };
+        mixStore.setState([garment]);
+        startBackgroundTryOnRun({
+          garments: [garment],
+          title: `${itemName} Try-On`
+        });
+        return;
+      }
+
+      aura.processPrompt(prompt || "Help me style this photo.", [currentIntent.previewUrl]);
+    },
+    [uploadIntent, aura, showWardrobeSavedToast, setActiveTab]
+  );
 
   return (
     <div className="min-h-screen bg-[#e8e5df] sm:p-6 flex items-center justify-center font-sans">
@@ -4369,19 +5466,60 @@ export default function App() {
         className="w-full h-[100dvh] sm:h-[844px] sm:max-w-[390px] bg-[#f5f3ef] sm:rounded-[3rem] shadow-[0_20px_60px_-15px_rgba(0,0,0,0.2)] overflow-hidden sm:border-[8px] border-[#1a1a1a] relative flex flex-col text-[#1a1a1a]"
         style={{ transform: "translateZ(0)" }}
       >
+        {wardrobeToast && (
+          <div className="absolute left-1/2 top-24 z-[98] flex -translate-x-1/2 items-center gap-3 rounded-full border border-[#e5e5e5] bg-white px-4 py-2.5 shadow-[0_10px_26px_rgba(0,0,0,0.08)]">
+            <span className="text-[13px] font-semibold text-[#1a1a1a]">{wardrobeToast.message}</span>
+            <button
+              type="button"
+              onClick={() => {
+                setWardrobeToast(null);
+                wardrobeNoticeStore.setState(0);
+                setActiveTab("wardrobe");
+              }}
+              className="text-[12px] font-bold text-[#6c5ce7]"
+            >
+              {wardrobeToast.cta}
+            </button>
+          </div>
+        )}
         <div className="absolute top-2 left-1/2 -translate-x-1/2 w-[120px] h-[34px] bg-black rounded-full z-[9999] hidden sm:flex items-center justify-end px-3 shadow-md pointer-events-none">
           <div className="w-3 h-3 bg-[#121212] rounded-full shadow-inner shadow-black/50 border border-white/5" />
         </div>
         <main className="flex-1 overflow-hidden relative bg-[#f5f3ef]" style={{ transform: "translateZ(0)" }}>
           <div className="absolute inset-0 overflow-y-auto scrollbar-hide">
-            {activeTab === "trending" && <TrendingFeed aura={aura} />}
+            {activeTab === "trending" && (
+              <TrendingFeed
+                aura={aura}
+                uploadIntent={uploadIntent}
+                onUploadPromptSubmit={handleUploadIntentAction}
+                onCancelUpload={() => setUploadIntent(null)}
+              />
+            )}
+            {activeTab === "skills" && <SkillsTab />}
             {activeTab === "wardrobe" && <WardrobeTab aura={aura} />}
             {activeTab === "tryon" && <TryOnTab setActiveTab={setActiveTab} returnTab={returnTab} />}
-            {activeTab === "profile" && <ProfileTab />}
+            {activeTab === "profile" && <ProfileTab setActiveTab={setActiveTab} />}
+            {activeTab === "cart" && <ShoppingCartTab />}
           </div>
           <AuraExtractAndChat aura={aura} />
         </main>
-        <CollapsibleNavigation activeTab={activeTab} setActiveTab={setActiveTab} mixItems={mixItems.length} aura={aura} />
+        {activeTab !== "cart" && (
+          <button
+            type="button"
+            onClick={() => setActiveTab("cart")}
+            className="absolute top-12 right-4 z-50 flex h-11 w-11 items-center justify-center rounded-full bg-white shadow-[0_6px_18px_rgba(0,0,0,0.12)] border border-[#e5e5e5] transition active:scale-95"
+            aria-label="Cart"
+          >
+            <ShoppingCart size={19} className="text-[#1a1a1a]" />
+            {cart.reduce((sum, item) => sum + item.quantity, 0) > 0 && (
+              <span className="absolute -right-1 -top-1 flex min-w-[18px] items-center justify-center rounded-full bg-[#6c5ce7] px-1.5 py-[1px] text-[10px] font-bold text-white">
+                {cart.reduce((sum, item) => sum + item.quantity, 0)}
+              </span>
+            )}
+          </button>
+        )}
+        <CollapsibleNavigation activeTab={activeTab} setActiveTab={setActiveTab} mixItems={mixItems.length} aura={aura} onUploadImageSelected={handleUploadImageSelected} />
+        <VideoStylistOverlay isOpen={isVideoStylistOpen} onClose={() => setIsVideoStylistOpen(false)} />
       </div>
       {flyingItem && (
         <img

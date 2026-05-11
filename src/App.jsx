@@ -248,6 +248,210 @@ const playPCM16Audio = (base64Data, sampleRate = 24000) =>
     }
   });
 
+const PROFILE_VISIBILITY = { PUBLIC: "PUBLIC", FOLLOWERS: "FOLLOWERS", PRIVATE: "PRIVATE" };
+
+const MOCK_USERS = [
+  {
+    id: "chic-style",
+    name: "Chic Style",
+    handle: "chic.style",
+    avatar: "https://i.pravatar.cc/150?u=chic",
+    bio: "Tailoring + clean lines. NYC.",
+    followers: 12400,
+    following: 286,
+    skills: ["minimalist", "tailored", "layering"],
+    wardrobeIds: [1, 2, 5, 9],
+    wishlistIds: [101, 104],
+    wardrobeVisibility: PROFILE_VISIBILITY.PUBLIC,
+    wishlistVisibility: PROFILE_VISIBILITY.PUBLIC
+  },
+  {
+    id: "modern-minimal",
+    name: "Modern Minimal",
+    handle: "modern.minimal",
+    avatar: "https://i.pravatar.cc/150?u=mod",
+    bio: "Less is more.",
+    followers: 8200,
+    following: 142,
+    skills: ["minimalist", "neutral", "clean"],
+    wardrobeIds: [5, 6, 11, 12],
+    wishlistIds: [103, 104],
+    wardrobeVisibility: PROFILE_VISIBILITY.PUBLIC,
+    wishlistVisibility: PROFILE_VISIBILITY.PUBLIC
+  },
+  {
+    id: "night-out-wardrobe",
+    name: "Night Out Wardrobe",
+    handle: "nightout.wardrobe",
+    avatar: "https://i.pravatar.cc/150?u=night",
+    bio: "Built for evenings.",
+    followers: 5400,
+    following: 410,
+    skills: ["going-out", "evening", "sleek"],
+    wardrobeIds: [3, 4, 11],
+    wishlistIds: [101, 102],
+    wardrobeVisibility: PROFILE_VISIBILITY.PUBLIC,
+    wishlistVisibility: PROFILE_VISIBILITY.PUBLIC
+  },
+  {
+    id: "show-me-your-mumu",
+    name: "Show Me Your Mumu",
+    handle: "showmeyourmumu",
+    avatar: "https://i.pravatar.cc/150?u=mumu",
+    bio: "Boho dreams, floral schemes.",
+    followers: 22100,
+    following: 98,
+    skills: ["boho", "floral", "spring"],
+    wardrobeIds: [4, 7, 8, 12],
+    wishlistIds: [101, 103],
+    wardrobeVisibility: PROFILE_VISIBILITY.FOLLOWERS,
+    wishlistVisibility: PROFILE_VISIBILITY.PUBLIC
+  },
+  {
+    id: "vintage-finds",
+    name: "Vintage Finds",
+    handle: "vintage.finds",
+    avatar: "https://i.pravatar.cc/150?u=v1",
+    bio: "2002 was a vibe.",
+    followers: 3100,
+    following: 540,
+    skills: ["y2k", "vintage", "retro"],
+    wardrobeIds: [2, 4, 9],
+    wishlistIds: [102, 104],
+    wardrobeVisibility: PROFILE_VISIBILITY.PRIVATE,
+    wishlistVisibility: PROFILE_VISIBILITY.PUBLIC
+  },
+  {
+    id: "neutral-palette",
+    name: "Neutral Palette",
+    handle: "neutral.palette",
+    avatar: "https://i.pravatar.cc/150?u=v3",
+    bio: "Beige all day.",
+    followers: 6700,
+    following: 220,
+    skills: ["neutral", "minimalist", "clean"],
+    wardrobeIds: [1, 5, 6, 7],
+    wishlistIds: [103, 104],
+    wardrobeVisibility: PROFILE_VISIBILITY.PUBLIC,
+    wishlistVisibility: PROFILE_VISIBILITY.PUBLIC
+  },
+  {
+    id: "glamour-look",
+    name: "Glamour Look",
+    handle: "glamour.look",
+    avatar: "https://i.pravatar.cc/150?u=v8",
+    bio: "After dark.",
+    followers: 9800,
+    following: 175,
+    skills: ["evening", "sophisticated", "satin"],
+    wardrobeIds: [3, 4, 11],
+    wishlistIds: [101, 102],
+    wardrobeVisibility: PROFILE_VISIBILITY.PUBLIC,
+    wishlistVisibility: PROFILE_VISIBILITY.FOLLOWERS
+  },
+  {
+    id: "trend-setter",
+    name: "Trend Setter",
+    handle: "trend.setter",
+    avatar: "https://i.pravatar.cc/150?u=v7",
+    bio: "Early adopter.",
+    followers: 14500,
+    following: 312,
+    skills: ["y2k", "trendy", "statement"],
+    wardrobeIds: [2, 9, 11, 12],
+    wishlistIds: [102, 104],
+    wardrobeVisibility: PROFILE_VISIBILITY.PUBLIC,
+    wishlistVisibility: PROFILE_VISIBILITY.PUBLIC
+  },
+  {
+    id: "breezy-style",
+    name: "Breezy Style",
+    handle: "breezy.style",
+    avatar: "https://i.pravatar.cc/150?u=v9",
+    bio: "Beach to brunch.",
+    followers: 4200,
+    following: 188,
+    skills: ["coastal", "breezy", "summer"],
+    wardrobeIds: [7, 8, 10],
+    wishlistIds: [101, 103],
+    wardrobeVisibility: PROFILE_VISIBILITY.PUBLIC,
+    wishlistVisibility: PROFILE_VISIBILITY.PUBLIC
+  },
+  {
+    id: "everyday-chic",
+    name: "Everyday Chic",
+    handle: "everyday.chic",
+    avatar: "https://i.pravatar.cc/150?u=v6",
+    bio: "Easy outfits, everyday.",
+    followers: 5800,
+    following: 240,
+    skills: ["casual", "easy", "layering"],
+    wardrobeIds: [1, 7, 10, 11],
+    wishlistIds: [104],
+    wardrobeVisibility: PROFILE_VISIBILITY.PUBLIC,
+    wishlistVisibility: PROFILE_VISIBILITY.PUBLIC
+  },
+  {
+    id: "downtown-edge",
+    name: "Downtown Edge",
+    handle: "downtown.edge",
+    avatar: "https://i.pravatar.cc/150?u=v7",
+    bio: "NYC nights.",
+    followers: 7300,
+    following: 154,
+    skills: ["edgy", "night", "leather"],
+    wardrobeIds: [5, 11, 12],
+    wishlistIds: [101, 102],
+    wardrobeVisibility: PROFILE_VISIBILITY.PUBLIC,
+    wishlistVisibility: PROFILE_VISIBILITY.PUBLIC
+  },
+  {
+    id: "night-mode",
+    name: "Night Mode",
+    handle: "night.mode",
+    avatar: "https://i.pravatar.cc/150?u=v9",
+    bio: "Dinner reservation core.",
+    followers: 4400,
+    following: 132,
+    skills: ["night", "leather", "slinky"],
+    wardrobeIds: [3, 11],
+    wishlistIds: [102],
+    wardrobeVisibility: PROFILE_VISIBILITY.PUBLIC,
+    wishlistVisibility: PROFILE_VISIBILITY.PUBLIC
+  },
+  {
+    id: "gallery-mood",
+    name: "Gallery Mood",
+    handle: "gallery.mood",
+    avatar: "https://i.pravatar.cc/150?u=v2",
+    bio: "Chelsea opening regular.",
+    followers: 6100,
+    following: 89,
+    skills: ["art", "sculptural", "neutral"],
+    wardrobeIds: [1, 5, 9],
+    wishlistIds: [103, 104],
+    wardrobeVisibility: PROFILE_VISIBILITY.PUBLIC,
+    wishlistVisibility: PROFILE_VISIBILITY.PUBLIC
+  },
+  {
+    id: "art-walk",
+    name: "Art Walk",
+    handle: "art.walk",
+    avatar: "https://i.pravatar.cc/150?u=v5",
+    bio: "Bold knits, wide legs.",
+    followers: 3800,
+    following: 210,
+    skills: ["bold-knit", "gallery", "wide-leg"],
+    wardrobeIds: [6, 10],
+    wishlistIds: [101, 104],
+    wardrobeVisibility: PROFILE_VISIBILITY.PUBLIC,
+    wishlistVisibility: PROFILE_VISIBILITY.PUBLIC
+  }
+];
+
+const USER_ID_BY_NAME = Object.fromEntries(MOCK_USERS.map((u) => [u.name, u.id]));
+const findUserById = (id) => MOCK_USERS.find((u) => u.id === id);
+
 const MOCK_FEED = [
   {
     id: 401,
@@ -540,6 +744,13 @@ const UPLOADED_ITEM_STYLE_FEED = [
   id: 930 + index,
   tags: ["uploaded", "style", ...(item.tags || [])]
 }));
+
+// Attach userId to every feed item so cards can link to a profile.
+[MOCK_FEED, NEW_YORK_FEED, UPLOADED_ITEM_STYLE_FEED].forEach((arr) => {
+  arr.forEach((item) => {
+    if (item && !item.userId) item.userId = USER_ID_BY_NAME[item.user];
+  });
+});
 
 const INITIAL_WARDROBE = [
   {
@@ -1043,6 +1254,7 @@ const wardrobeStore = createStore(INITIAL_WARDROBE);
 const wardrobeUploadStore = createStore(null);
 const wardrobeNoticeStore = createStore(0);
 const wardrobeMainTabStore = createStore("Owned");
+const profileTabStore = createStore("closet");
 const videoStylistStore = createStore(false);
 const tryOnStatusStore = createStore({
   phase: "idle",
@@ -1079,6 +1291,32 @@ const outfitsStore = createStore({
   unread: 0
 });
 const flyingStore = createStore(null);
+
+const loadFromStorage = (key, fallback) => {
+  try {
+    if (typeof window === "undefined") return fallback;
+    const raw = window.localStorage.getItem(key);
+    return raw ? JSON.parse(raw) : fallback;
+  } catch {
+    return fallback;
+  }
+};
+const persistedFollowedIds = loadFromStorage("faishion.followedUsers", []);
+const persistedPrivacy = loadFromStorage("faishion.privacy", {
+  wardrobe: PROFILE_VISIBILITY.PUBLIC,
+  wishlist: PROFILE_VISIBILITY.PUBLIC
+});
+const followedUsersStore = createStore(Array.isArray(persistedFollowedIds) ? persistedFollowedIds : []);
+const userPrivacyStore = createStore(persistedPrivacy);
+const viewingProfileStore = createStore(null); // userId being viewed, or null
+
+followedUsersStore.subscribe((s) => {
+  try { window.localStorage.setItem("faishion.followedUsers", JSON.stringify(s)); } catch {}
+});
+userPrivacyStore.subscribe((s) => {
+  try { window.localStorage.setItem("faishion.privacy", JSON.stringify(s)); } catch {}
+});
+
 const TRY_ON_RESULT_IMAGE = "https://images.unsplash.com/photo-1483985988355-763728e1935b?auto=format&fit=crop&w=1200&q=80";
 
 const triggerFlyingAnimation = (src, e) => {
@@ -1965,6 +2203,22 @@ function TrendingFeed({ aura, uploadIntent, onUploadPromptSubmit, onCancelUpload
                     )}
                   </div>
 
+                  {item.userId && (
+                    <button
+                      type="button"
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        viewingProfileStore.setState(item.userId);
+                      }}
+                      className="mt-1.5 flex items-center gap-1.5 px-1 py-1 text-left transition active:scale-[0.98]"
+                    >
+                      <div className="h-5 w-5 overflow-hidden rounded-full border border-[#e5e5e5]">
+                        <img src={item.avatar} alt={item.user} className="h-full w-full object-cover" referrerPolicy="no-referrer" />
+                      </div>
+                      <span className="truncate text-[11px] font-bold text-[#1a1a1a]">{item.user}</span>
+                    </button>
+                  )}
+
                   {inlineSearch[item.id] && (
                     <div className="relative z-10 mt-2 cursor-default rounded-2xl border border-[#e5e5e5] bg-white p-3 shadow-sm animate-in slide-in-from-top-2" onClick={(e) => e.stopPropagation()}>
                       {inlineSearch[item.id].status === "scanning" ? (
@@ -2179,7 +2433,7 @@ function TrendingFeed({ aura, uploadIntent, onUploadPromptSubmit, onCancelUpload
   );
 }
 
-function WardrobeTab({ aura }) {
+function WardrobeTab({ aura, embedded = false }) {
   const [wardrobe, setWardrobe] = useStore(wardrobeStore);
   const [uploadState, setUploadState] = useStore(wardrobeUploadStore);
   const [showFilters, setShowFilters] = useState(true);
@@ -2344,6 +2598,7 @@ function WardrobeTab({ aura }) {
   return (
     <div className="bg-[#f5f3ef] min-h-full pb-24 relative">
       {toastMessage && <div className="fixed top-32 left-1/2 -translate-x-1/2 z-[100] bg-[#1a1a1a] text-white px-5 py-2.5 rounded-full shadow-lg text-sm font-medium animate-in slide-in-from-top-4 fade-in duration-300 whitespace-nowrap flex items-center gap-2">{toastMessage}</div>}
+      {!embedded && (
       <div className="sticky top-0 z-30 flex flex-col bg-[#f5f3ef]/90 backdrop-blur-xl">
         <div className="px-4 pt-12 pb-2 sm:pt-14">
           <form onSubmit={handleAskStylist} className={`flex flex-col gap-3 bg-white rounded-full px-5 py-3.5 shadow-[0_4px_20px_rgb(0,0,0,0.05)] border transition-all ${isSearchFocused ? "border-black ring-4 ring-black/5" : "border-[#e5e5e5] focus-within:border-black focus-within:ring-4 focus-within:ring-black/5"}`}>
@@ -2391,7 +2646,8 @@ function WardrobeTab({ aura }) {
           </div>
         )}
       </div>
-      {aura.auraMessage && !isSearchFocused && (
+      )}
+      {!embedded && aura.auraMessage && !isSearchFocused && (
         <div className="px-4 mb-6 mt-4 flex items-start justify-between gap-3 animate-in fade-in bg-white p-4 rounded-2xl border border-[#e5e5e5] shadow-sm">
           <div className="flex items-start gap-2">
             <Sparkles size={16} className="text-purple-600 shrink-0 mt-0.5" />
@@ -3206,10 +3462,10 @@ function ListItem({ icon, title, subtitle, onClick }) {
   );
 }
 
-function ProfileTab({ setActiveTab }) {
+function ProfileTab({ setActiveTab, aura }) {
   const [view, setView] = useState("main");
   const [wardrobe] = useStore(wardrobeStore);
-  const [profileTab, setProfileTab] = useState("mixes");
+  const [profileTab, setProfileTab] = useStore(profileTabStore);
   const [preferences, setPreferences] = useState(["Minimal", "Feminine", "Street"]);
   const [newStyle, setNewStyle] = useState("");
   const [userProfile, setUserProfile] = useState({
@@ -3412,49 +3668,28 @@ function ProfileTab({ setActiveTab }) {
           </div>
         </div>
       </div>
-      <div className="px-4 pb-4 grid grid-cols-2 gap-3">
-        <button
-          type="button"
-          onClick={() => {
-            setActiveTab?.("wardrobe");
-            wardrobeMainTabStore.setState("Owned");
-          }}
-          className="flex items-center gap-3 rounded-2xl bg-white border border-[#e5e5e5] px-4 py-3.5 text-left shadow-sm active:scale-[0.98] transition"
-        >
-          <div className="flex h-10 w-10 items-center justify-center rounded-full bg-[#f5f3ef]">
-            <Shirt size={18} className="text-[#1a1a1a]" />
-          </div>
-          <div className="min-w-0">
-            <div className="text-[13px] font-bold text-[#1a1a1a]">Closet</div>
-            <div className="text-[11px] text-[#999999]">{wardrobe.length} items</div>
-          </div>
-        </button>
-        <button
-          type="button"
-          onClick={() => {
-            setActiveTab?.("wardrobe");
-            wardrobeMainTabStore.setState("Wishlist");
-          }}
-          className="flex items-center gap-3 rounded-2xl bg-white border border-[#e5e5e5] px-4 py-3.5 text-left shadow-sm active:scale-[0.98] transition"
-        >
-          <div className="flex h-10 w-10 items-center justify-center rounded-full bg-[#f5f3ef]">
-            <Heart size={18} className="text-[#1a1a1a]" />
-          </div>
-          <div className="min-w-0">
-            <div className="text-[13px] font-bold text-[#1a1a1a]">Wishlist</div>
-            <div className="text-[11px] text-[#999999]">{wishlist.length} saved</div>
-          </div>
-        </button>
-      </div>
       <div className="flex w-full border-b border-[#e5e5e5] mb-4">
-        <button onClick={() => setProfileTab("mixes")} className={`flex-1 pb-3 text-[10px] font-bold uppercase tracking-widest transition-colors ${profileTab === "mixes" ? "text-[#1a1a1a] border-b-2 border-[#1a1a1a]" : "text-[#999999] border-b-2 border-transparent hover:text-[#1a1a1a]"}`}>
-          My Mixes
-        </button>
-        <button onClick={() => setProfileTab("published")} className={`flex-1 pb-3 text-[10px] font-bold uppercase tracking-widest transition-colors ${profileTab === "published" ? "text-[#1a1a1a] border-b-2 border-[#1a1a1a]" : "text-[#999999] border-b-2 border-transparent hover:text-[#1a1a1a]"}`}>
-          Published
-        </button>
+        {[
+          { id: "closet", label: "Closet" },
+          { id: "wishlist", label: "Wishlist" },
+          { id: "mixes", label: "Mixes" },
+          { id: "published", label: "Published" }
+        ].map((tab) => (
+          <button
+            key={tab.id}
+            onClick={() => {
+              setProfileTab(tab.id);
+              if (tab.id === "closet") wardrobeMainTabStore.setState("Owned");
+              if (tab.id === "wishlist") wardrobeMainTabStore.setState("Wishlist");
+            }}
+            className={`flex-1 pb-3 text-[10px] font-bold uppercase tracking-widest transition-colors ${profileTab === tab.id ? "text-[#1a1a1a] border-b-2 border-[#1a1a1a]" : "text-[#999999] border-b-2 border-transparent hover:text-[#1a1a1a]"}`}
+          >
+            {tab.label}
+          </button>
+        ))}
       </div>
-      <div className="px-2">
+      <div className={profileTab === "closet" || profileTab === "wishlist" ? "" : "px-2"}>
+        {(profileTab === "closet" || profileTab === "wishlist") && <WardrobeTab aura={aura} embedded />}
         {profileTab === "mixes" && (
           <div className="grid grid-cols-2 gap-3 px-2">
             {myPosts.filter((p) => !p.published).map((post) => (
@@ -4767,6 +5002,249 @@ function VideoStylistOverlay({ isOpen, onClose }) {
   );
 }
 
+function formatStat(n) {
+  if (n == null) return "0";
+  if (n >= 1000000) return (n / 1000000).toFixed(1).replace(/\.0$/, "") + "m";
+  if (n >= 1000) return (n / 1000).toFixed(1).replace(/\.0$/, "") + "k";
+  return String(n);
+}
+
+function UserProfileScreen({ userId, onClose }) {
+  const targetUser = findUserById(userId);
+  const [feed] = useStore(feedStore);
+  const [followedIds] = useStore(followedUsersStore);
+  const [activeTab, setActiveTab] = useState("posts");
+  const [openItem, setOpenItem] = useState(null); // expanded post
+
+  if (!targetUser) {
+    return null;
+  }
+
+  const isFollowing = followedIds.includes(targetUser.id);
+  const followerCount = targetUser.followers + (isFollowing ? 1 : 0);
+
+  const toggleFollow = () => {
+    const cur = followedUsersStore.getState();
+    followedUsersStore.setState(
+      isFollowing ? cur.filter((id) => id !== targetUser.id) : [...cur, targetUser.id]
+    );
+  };
+
+  const userPosts = feed.filter((p) => p.userId === targetUser.id);
+  const userMixes = userPosts; // mock: published mixes = posts for now
+  const wardrobeItems = (targetUser.wardrobeIds || []).map((id) => INITIAL_WARDROBE.find((w) => w.id === id)).filter(Boolean);
+  const wishlistItems = (targetUser.wishlistIds || []).map((id) => MOCK_WISHLIST.find((w) => w.id === id)).filter(Boolean);
+
+  const sectionAccess = (visibility) => {
+    if (visibility === PROFILE_VISIBILITY.PUBLIC) return "visible";
+    if (visibility === PROFILE_VISIBILITY.PRIVATE) return "private";
+    return isFollowing ? "visible" : "followers-only";
+  };
+  const wardrobeAccess = sectionAccess(targetUser.wardrobeVisibility);
+  const wishlistAccess = sectionAccess(targetUser.wishlistVisibility);
+
+  const Locked = ({ access, label }) => (
+    <div className="flex flex-col items-center justify-center py-16 px-6 text-center">
+      <div className="mb-3 flex h-14 w-14 items-center justify-center rounded-full bg-[#f5f3ef]">
+        {access === "followers-only" ? <User size={22} className="text-[#999999]" /> : <X size={22} className="text-[#999999]" />}
+      </div>
+      <p className="text-sm font-bold text-[#1a1a1a]">
+        {access === "followers-only" ? `${label} is for followers` : `${label} is private`}
+      </p>
+      <p className="mt-1 text-[11px] text-[#999999]">
+        {access === "followers-only" ? "Follow to unlock this section." : "The owner has chosen not to share this."}
+      </p>
+      {access === "followers-only" && (
+        <button
+          onClick={toggleFollow}
+          className="mt-4 rounded-full bg-black px-5 py-2 text-[11px] font-bold uppercase tracking-widest text-white active:scale-[0.98]"
+        >
+          Follow
+        </button>
+      )}
+    </div>
+  );
+
+  const tabs = [
+    { id: "posts", label: "Posts" },
+    { id: "wardrobe", label: "Wardrobe" },
+    { id: "wishlist", label: "Wishlist" },
+    { id: "mixes", label: "Mixes" }
+  ];
+
+  return (
+    <div className="fixed inset-0 z-50 flex flex-col bg-[#f5f3ef] animate-in slide-in-from-right duration-300">
+      {/* Header bar */}
+      <div className="sticky top-0 z-10 flex items-center justify-between border-b border-[#e5e5e5] bg-[#f5f3ef] px-3 pt-12 pb-3 sm:pt-14">
+        <button onClick={onClose} className="rounded-full border border-[#e5e5e5] bg-white p-2 text-[#1a1a1a] hover:bg-[#e8e5df] transition">
+          <ArrowLeft size={20} />
+        </button>
+        <span className="text-sm font-bold text-[#1a1a1a]">@{targetUser.handle}</span>
+        <button className="rounded-full border border-[#e5e5e5] bg-white p-2 text-[#1a1a1a] hover:bg-[#e8e5df] transition">
+          <MoreHorizontal size={18} />
+        </button>
+      </div>
+
+      <div className="flex-1 overflow-y-auto pb-12">
+        {/* Profile header */}
+        <div className="px-4 pt-5">
+          <div className="flex items-start gap-4">
+            <div className="h-20 w-20 shrink-0 overflow-hidden rounded-full border border-[#e5e5e5]">
+              <img src={targetUser.avatar} alt={targetUser.name} className="h-full w-full object-cover" referrerPolicy="no-referrer" />
+            </div>
+            <div className="min-w-0 flex-1">
+              <h1 className="font-serif text-2xl text-[#1a1a1a] leading-tight">{targetUser.name}</h1>
+              <p className="mt-0.5 text-[11px] font-bold text-[#999999]">@{targetUser.handle}</p>
+              {targetUser.bio && <p className="mt-2 text-[13px] text-[#1a1a1a] leading-snug">{targetUser.bio}</p>}
+            </div>
+          </div>
+
+          <div className="mt-4 flex gap-5 text-[#1a1a1a]">
+            <div><span className="text-base font-bold">{formatStat(followerCount)}</span> <span className="text-[10px] font-bold uppercase tracking-widest text-[#999999]">followers</span></div>
+            <div><span className="text-base font-bold">{formatStat(targetUser.following)}</span> <span className="text-[10px] font-bold uppercase tracking-widest text-[#999999]">following</span></div>
+            <div><span className="text-base font-bold">{userPosts.length}</span> <span className="text-[10px] font-bold uppercase tracking-widest text-[#999999]">posts</span></div>
+          </div>
+
+          {targetUser.skills?.length > 0 && (
+            <div className="mt-3 flex flex-wrap gap-1.5">
+              <span className="text-[10px] font-bold uppercase tracking-widest text-[#999999] self-center mr-1">Skills</span>
+              {targetUser.skills.map((s) => (
+                <span key={s} className="rounded-full bg-white border border-[#e5e5e5] px-3 py-1 text-[10px] font-bold text-[#1a1a1a]">
+                  {s}
+                </span>
+              ))}
+            </div>
+          )}
+
+          <button
+            onClick={toggleFollow}
+            className={`mt-4 w-full rounded-full py-3 text-xs font-bold uppercase tracking-widest transition active:scale-[0.98] ${
+              isFollowing ? "bg-white text-[#1a1a1a] border border-[#e5e5e5]" : "bg-black text-white"
+            }`}
+          >
+            {isFollowing ? "Following" : "Follow"}
+          </button>
+        </div>
+
+        {/* Tabs */}
+        <div className="mt-5 flex w-full border-b border-[#e5e5e5] px-4">
+          {tabs.map((t) => (
+            <button
+              key={t.id}
+              onClick={() => setActiveTab(t.id)}
+              className={`flex-1 pb-3 text-[10px] font-bold uppercase tracking-widest transition-colors border-b-2 ${
+                activeTab === t.id ? "border-[#1a1a1a] text-[#1a1a1a]" : "border-transparent text-[#999999] hover:text-[#1a1a1a]"
+              }`}
+            >
+              {t.label}
+            </button>
+          ))}
+        </div>
+
+        {/* Tab content */}
+        <div className="px-2 pt-3">
+          {activeTab === "posts" && (
+            userPosts.length === 0 ? (
+              <div className="py-12 text-center text-[10px] font-bold uppercase tracking-widest text-[#999999]">No posts yet</div>
+            ) : (
+              <div className="columns-2 gap-3 px-2">
+                {userPosts.map((p) => (
+                  <div
+                    key={p.id}
+                    onClick={() => setOpenItem(p)}
+                    className="mb-3 break-inside-avoid relative cursor-pointer overflow-hidden rounded-3xl bg-[#e6e2d6] border border-[#e5e5e5] active:scale-[0.98] transition"
+                  >
+                    <img src={p.image} alt={p.desc || "post"} className="w-full object-cover" referrerPolicy="no-referrer" />
+                    {p.likes != null && (
+                      <div className="absolute bottom-2 left-2 flex items-center gap-1 rounded-full bg-black/55 px-2 py-0.5 text-[10px] font-bold text-white backdrop-blur">
+                        <Heart size={10} fill="currentColor" /> {p.likes}
+                      </div>
+                    )}
+                  </div>
+                ))}
+              </div>
+            )
+          )}
+
+          {activeTab === "wardrobe" && (
+            wardrobeAccess !== "visible" ? (
+              <Locked access={wardrobeAccess} label="Wardrobe" />
+            ) : wardrobeItems.length === 0 ? (
+              <div className="py-12 text-center text-[10px] font-bold uppercase tracking-widest text-[#999999]">No items</div>
+            ) : (
+              <div className="grid grid-cols-2 gap-3 px-2">
+                {wardrobeItems.map((it) => (
+                  <div key={it.id} className="relative aspect-square overflow-hidden rounded-3xl border border-[#e5e5e5] bg-white shadow-sm">
+                    <img src={it.image} alt={it.name} className="h-full w-full object-cover" referrerPolicy="no-referrer" />
+                    <div className="absolute inset-x-0 bottom-0 bg-gradient-to-t from-black/70 to-transparent p-2.5">
+                      <p className="text-[9px] font-bold uppercase tracking-widest text-white/80">{it.brand}</p>
+                      <p className="text-[11px] font-bold text-white line-clamp-1">{it.name}</p>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            )
+          )}
+
+          {activeTab === "wishlist" && (
+            wishlistAccess !== "visible" ? (
+              <Locked access={wishlistAccess} label="Wishlist" />
+            ) : wishlistItems.length === 0 ? (
+              <div className="py-12 text-center text-[10px] font-bold uppercase tracking-widest text-[#999999]">Nothing saved</div>
+            ) : (
+              <div className="grid grid-cols-2 gap-3 px-2">
+                {wishlistItems.map((it) => (
+                  <div key={it.id} className="relative aspect-[3/4] overflow-hidden rounded-3xl border border-[#e5e5e5] bg-white shadow-sm">
+                    <img src={it.image} alt={it.name} className="h-full w-full object-cover" referrerPolicy="no-referrer" />
+                    <div className="absolute inset-x-0 bottom-0 bg-gradient-to-t from-black/70 to-transparent p-2.5">
+                      <p className="text-[9px] font-bold uppercase tracking-widest text-white/80">{it.brand}</p>
+                      <p className="text-[11px] font-bold text-white line-clamp-1">{it.name}</p>
+                      {it.price && <p className="mt-0.5 text-[10px] font-bold text-white/90">{it.price}</p>}
+                    </div>
+                  </div>
+                ))}
+              </div>
+            )
+          )}
+
+          {activeTab === "mixes" && (
+            userMixes.length === 0 ? (
+              <div className="py-12 text-center text-[10px] font-bold uppercase tracking-widest text-[#999999]">No mixes published</div>
+            ) : (
+              <div className="grid grid-cols-3 gap-1 px-2">
+                {userMixes.map((p) => (
+                  <div key={p.id} onClick={() => setOpenItem(p)} className="relative aspect-[3/4] overflow-hidden cursor-pointer bg-[#e6e2d6] active:scale-[0.98] transition">
+                    <img src={p.image} alt="mix" className="h-full w-full object-cover" referrerPolicy="no-referrer" />
+                  </div>
+                ))}
+              </div>
+            )
+          )}
+        </div>
+      </div>
+
+      {/* Post detail overlay */}
+      {openItem && (
+        <div className="fixed inset-0 z-[60] flex flex-col bg-[#f5f3ef] animate-in fade-in duration-200">
+          <div className="sticky top-0 z-10 flex items-center justify-between border-b border-[#e5e5e5] bg-[#f5f3ef] px-3 pt-12 pb-3 sm:pt-14">
+            <button onClick={() => setOpenItem(null)} className="rounded-full border border-[#e5e5e5] bg-white p-2 text-[#1a1a1a] hover:bg-[#e8e5df] transition">
+              <ArrowLeft size={20} />
+            </button>
+            <span className="text-sm font-bold text-[#1a1a1a]">{targetUser.name}</span>
+            <div className="w-9" />
+          </div>
+          <div className="flex-1 overflow-y-auto p-4">
+            <div className="overflow-hidden rounded-3xl border border-[#e5e5e5] bg-white shadow-sm">
+              <img src={openItem.image} alt={openItem.desc || "post"} className="w-full object-cover" referrerPolicy="no-referrer" />
+              {openItem.desc && <p className="px-4 py-3 text-sm text-[#1a1a1a]">{openItem.desc}</p>}
+            </div>
+          </div>
+        </div>
+      )}
+    </div>
+  );
+}
+
 function ShoppingCartTab() {
   const { cart, removeFromCart, updateQuantity, clearCart } = useCart();
   const [selectedIds, setSelectedIds] = useState(new Set());
@@ -5474,7 +5952,9 @@ export default function App() {
               onClick={() => {
                 setWardrobeToast(null);
                 wardrobeNoticeStore.setState(0);
-                setActiveTab("wardrobe");
+                profileTabStore.setState("closet");
+                wardrobeMainTabStore.setState("Owned");
+                setActiveTab("profile");
               }}
               className="text-[12px] font-bold text-[#6c5ce7]"
             >
@@ -5498,26 +5978,11 @@ export default function App() {
             {activeTab === "skills" && <SkillsTab />}
             {activeTab === "wardrobe" && <WardrobeTab aura={aura} />}
             {activeTab === "tryon" && <TryOnTab setActiveTab={setActiveTab} returnTab={returnTab} />}
-            {activeTab === "profile" && <ProfileTab setActiveTab={setActiveTab} />}
+            {activeTab === "profile" && <ProfileTab setActiveTab={setActiveTab} aura={aura} />}
             {activeTab === "cart" && <ShoppingCartTab />}
           </div>
           <AuraExtractAndChat aura={aura} />
         </main>
-        {activeTab !== "cart" && (
-          <button
-            type="button"
-            onClick={() => setActiveTab("cart")}
-            className="absolute top-12 right-4 z-50 flex h-11 w-11 items-center justify-center rounded-full bg-white shadow-[0_6px_18px_rgba(0,0,0,0.12)] border border-[#e5e5e5] transition active:scale-95"
-            aria-label="Cart"
-          >
-            <ShoppingCart size={19} className="text-[#1a1a1a]" />
-            {cart.reduce((sum, item) => sum + item.quantity, 0) > 0 && (
-              <span className="absolute -right-1 -top-1 flex min-w-[18px] items-center justify-center rounded-full bg-[#6c5ce7] px-1.5 py-[1px] text-[10px] font-bold text-white">
-                {cart.reduce((sum, item) => sum + item.quantity, 0)}
-              </span>
-            )}
-          </button>
-        )}
         <CollapsibleNavigation activeTab={activeTab} setActiveTab={setActiveTab} mixItems={mixItems.length} aura={aura} onUploadImageSelected={handleUploadImageSelected} />
         <VideoStylistOverlay isOpen={isVideoStylistOpen} onClose={() => setIsVideoStylistOpen(false)} />
       </div>

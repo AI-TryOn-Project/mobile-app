@@ -10,6 +10,7 @@ import {
   ChevronLeft,
   ChevronRight,
   ChevronUp,
+  Compass,
   CreditCard,
   Edit2,
   FileText,
@@ -1315,41 +1316,30 @@ const MOCK_SHOP_ALL_ITEMS = [
 
 const MOCK_MIX_GALLERY = [
   {
+    id: "m888",
+    title: "Summer Weekend Look",
+    date: "Yesterday",
+    published: false,
+    isResult: false,
+    user: { name: "Alex Schwan", avatar: "https://i.pravatar.cc/150?u=chic" },
+    components: [
+      { id: "c101", image: "https://i.pinimg.com/1200x/e9/4c/27/e94c27c886d87d47d655a85b8a98fe44.jpg" },
+      { id: "c102", image: "https://i.pinimg.com/736x/98/8c/44/988c44232d4e09159f3820c238e3586c.jpg" },
+      { id: "c103", image: "https://i.pinimg.com/736x/74/db/da/74dbda7b91e9f033d41a304c38b2bc1b.jpg" },
+      { id: "c104", image: "https://i.pinimg.com/736x/66/e9/47/66e9479e255e594de1f29fe1c3c27067.jpg" }
+    ]
+  },
+  {
     id: "m999",
     image: "https://images.unsplash.com/photo-1515886657613-9f3515b0c78f?auto=format&fit=crop&q=80&w=600",
     title: "Tropical Resort Mix",
     date: "2h ago",
     published: false,
     isResult: true,
-    user: { name: "Alex Schwan", avatar: "A" },
+    user: { name: "Alex Schwan", avatar: "https://i.pravatar.cc/150?u=chic" },
     components: [
       { id: "c101", image: "https://i.pinimg.com/1200x/e9/4c/27/e94c27c886d87d47d655a85b8a98fe44.jpg" },
       { id: "c102", image: "https://i.pinimg.com/736x/e4/b7/dc/e4b7dc51ed6b81854e9d9b777c49cc22.jpg" }
-    ]
-  },
-  {
-    id: "m1",
-    image: "https://i.pinimg.com/736x/14/05/40/140540fb8d71f81d3faee97ae16c13d6.jpg",
-    title: "Look #2",
-    date: "17d",
-    published: true,
-    user: { name: "Alex Schwan", avatar: "A" },
-    components: [
-      {
-        id: "c1",
-        image: "https://i.pinimg.com/1200x/a8/4a/d8/a84ad8cca0937277c206578757b1e234.jpg",
-        name: "Top"
-      },
-      {
-        id: "c2",
-        image: "https://www.gap.com/webcontent/0062/045/335/cn62045335.jpg",
-        name: "Bottoms"
-      },
-      {
-        id: "c3",
-        image: "https://i.pinimg.com/1200x/4c/4e/8f/4c4e8f7994b4264ea9d047aa0807dbb7.jpg",
-        name: "Shoes"
-      }
     ]
   }
 ];
@@ -1596,7 +1586,7 @@ const startBackgroundTryOnRun = ({ garments, title = "My Try-on" }) => {
         title,
         date: "Just now",
         published: false,
-        user: { name: "Alex Schwan", avatar: "A" },
+        user: { name: "Alex Schwan", avatar: "https://i.pravatar.cc/150?u=chic" },
         components: garments
       },
       ...prev.filter((post) => post.id !== runId)
@@ -2219,7 +2209,7 @@ function TrendingFeed({ aura, setActiveTab, uploadIntent, onUploadPromptSubmit, 
       handleInlineSearch(item);
     } else if (action === "Added to Try-on") {
       triggerFlyingAnimation(item.image, e);
-      const combined = [{ id: Date.now(), image: item.image }, ...mixItems].slice(0, 5);
+      const combined = [{ id: Date.now(), image: item.image }, ...mixItems];
       setMixItems(combined);
       showToast("Added to Try-on");
     } else {
@@ -2239,7 +2229,7 @@ function TrendingFeed({ aura, setActiveTab, uploadIntent, onUploadPromptSubmit, 
       return;
     }
 
-    if (isSelectedPostAdded) {
+    if (isSelectedPostMixed) {
       const selectedImages = new Set(selectedPostItems.map((item) => item.image));
       setMixItems((prev) => prev.filter((item) => !selectedImages.has(item.image)));
       showToast("Removed from Try-on");
@@ -2250,8 +2240,10 @@ function TrendingFeed({ aura, setActiveTab, uploadIntent, onUploadPromptSubmit, 
       .filter((item) => !mixItems.some((mixItem) => mixItem.image === item.image))
       .map((item) => ({ id: Date.now() + Math.random(), image: item.image }));
 
-    setMixItems((prev) => [...itemsToAdd, ...prev].slice(0, 5));
-    showToast("Items added to Try-on");
+    setMixItems((prev) => [...itemsToAdd, ...prev]);
+    showToast("Items added to Try-on", {
+      onClick: () => setActiveTab("tryon")
+    });
   };
 
   const toggleSingleMixItem = (item, e) => {
@@ -2264,9 +2256,11 @@ function TrendingFeed({ aura, setActiveTab, uploadIntent, onUploadPromptSubmit, 
       return;
     }
 
-    setMixItems((prev) => [{ id: Date.now() + Math.random(), image: item.image }, ...prev].slice(0, 5));
+    setMixItems((prev) => [{ id: Date.now() + Math.random(), image: item.image }, ...prev]);
     triggerFlyingAnimation(item.image, e);
-    showToast("Added to Try-on");
+    showToast("Added to Try-on", {
+      onClick: () => setActiveTab("tryon")
+    });
   };
 
   const handleVoiceInput = () => {
@@ -2315,25 +2309,28 @@ function TrendingFeed({ aura, setActiveTab, uploadIntent, onUploadPromptSubmit, 
   return (
     <div className={`relative min-h-full bg-[#f5f3ef] ${uploadIntent ? "pb-64" : "pb-44"}`} onWheel={collapseStylistReply} onTouchMove={collapseStylistReply}>
       {toastMessage && (
-        <div className="fixed left-1/2 top-32 z-[100] flex -translate-x-1/2 items-center gap-2 whitespace-nowrap rounded-full bg-[#1a1a1a] px-5 py-2.5 text-sm font-medium text-white shadow-lg animate-in slide-in-from-top-4 fade-in duration-300 border border-white/10">
-          <div 
-            onClick={() => { 
-              if (toastMessage.action) {
-                toastMessage.action.onClick(); 
-                setToastMessage(null); 
-              }
-            }} 
-            className={toastMessage.action ? "cursor-pointer" : ""}
-          >
-            {toastMessage.msg?.includes("Wishlist Style") ? (
+        <div className="fixed left-1/2 top-32 z-[100] flex -translate-x-1/2 items-center gap-2 whitespace-nowrap rounded-full bg-[#1a1a1a] px-5 py-2.5 text-sm font-medium text-white shadow-lg animate-in slide-in-from-top-4 fade-in duration-300 border border-white/10 cursor-pointer"
+             onClick={() => { if (toastMessage.action) { toastMessage.action.onClick(); setToastMessage(null); } }}>
+          <div className="flex items-center gap-1.5">
+            {toastMessage.action ? (
               <>
-                {toastMessage.msg.split("Wishlist Style")[0]}
-                <span className="underline decoration-white/40 underline-offset-4 font-bold text-white">Wishlist Style</span>
-                {toastMessage.msg.split("Wishlist Style")[1]}
+                {toastMessage.msg?.includes("Wishlist Style") ? (
+                  <>
+                    {toastMessage.msg.split("Wishlist Style")[0]}
+                    <span className="underline decoration-white/40 underline-offset-4 font-bold">Wishlist Style</span>
+                  </>
+                ) : toastMessage.msg?.includes("Try-on") ? (
+                  <>
+                    {toastMessage.msg.split("Try-on")[0]}
+                    <span className="underline decoration-white/40 underline-offset-4 font-bold">Try-on</span>
+                    {toastMessage.msg.split("Try-on")[1]}
+                  </>
+                ) : (
+                  toastMessage.msg || toastMessage
+                )}
+                <span className="text-xs opacity-60 ml-1">→</span>
               </>
-            ) : (
-              <span>{toastMessage.msg || ""}</span>
-            )}
+            ) : (toastMessage.msg || toastMessage)}
           </div>
         </div>
       )}
@@ -2664,7 +2661,7 @@ function TrendingFeed({ aura, setActiveTab, uploadIntent, onUploadPromptSubmit, 
                         }
                       }}
                       className={`p-2 transition-all ${
-                        localOutfits.some((o) => o.id === selectedPost.id) ? "text-[#1a1a1a]" : "text-[#999999]"
+                        localOutfits.some((o) => o.id === selectedPost.id) ? "text-[#1a1a1a] " : "text-[#999999]"
                       }`}
                     >
                       <Bookmark size={24} fill={localOutfits.some((o) => o.id === selectedPost.id) ? "currentColor" : "none"} />
@@ -2861,7 +2858,7 @@ function WardrobeTab({ aura, setActiveTab, embedded = false }) {
   const handleMenuAction = (action, item, e) => {
     if (action === "Added to Try-on" && item) {
       triggerFlyingAnimation(item.image, e);
-      const combined = [{ id: Date.now(), image: item.image }, ...mixItems].slice(0, 5);
+      const combined = [{ id: Date.now(), image: item.image }, ...mixItems];
       setMixItems(combined);
       showToast("Added to Try-on");
     } else if (action === "Added to Wardrobe" && item) {
@@ -2920,7 +2917,25 @@ function WardrobeTab({ aura, setActiveTab, embedded = false }) {
 
   return (
     <div className="bg-[#f5f3ef] min-h-full pb-24 relative">
-      {toastMessage && <div className="fixed top-32 left-1/2 -translate-x-1/2 z-[100] bg-[#1a1a1a] text-white px-5 py-2.5 rounded-full shadow-lg text-sm font-medium animate-in slide-in-from-top-4 fade-in duration-300 whitespace-nowrap flex items-center gap-2">{toastMessage}</div>}
+      {toastMessage && (
+        <div className="fixed top-32 left-1/2 -translate-x-1/2 z-[100] bg-[#1a1a1a] text-white px-5 py-2.5 rounded-full shadow-lg text-sm font-medium animate-in slide-in-from-top-4 fade-in duration-300 whitespace-nowrap border border-white/10 cursor-pointer"
+             onClick={() => { if (toastMessage.action) { toastMessage.action.onClick(); setToastMessage(null); } }}>
+          <div className="flex items-center gap-1.5">
+            {toastMessage.action ? (
+              <>
+                {toastMessage.msg?.includes("Try-on") ? (
+                  <>
+                    {toastMessage.msg.split("Try-on")[0]}
+                    <span className="underline decoration-white/40 underline-offset-4 font-bold">Try-on</span>
+                    {toastMessage.msg.split("Try-on")[1]}
+                  </>
+                ) : toastMessage.msg}
+                <span className="text-xs opacity-60 ml-1">→</span>
+              </>
+            ) : (toastMessage.msg || toastMessage)}
+          </div>
+        </div>
+      )}
       {!embedded && (
       <div className="sticky top-0 z-30 flex flex-col bg-[#f5f3ef]/90 backdrop-blur-xl">
         <div className="flex items-center gap-3 px-4 pt-12 pb-3 sm:pt-14">
@@ -3356,7 +3371,7 @@ function WardrobeTab({ aura, setActiveTab, embedded = false }) {
                 <button
                   onClick={() => {
                     const newItems = viewingOutfit.items.filter((i) => i.type === "image").map((item) => ({ id: Date.now() + Math.random(), image: item.content }));
-                    setMixItems((prev) => [...newItems, ...prev].slice(0, 5));
+                    setMixItems((prev) => [...newItems, ...prev]);
                     showToast("Items added to Try-on");
                   }}
                   className="bg-black text-white px-5 py-2.5 rounded-full text-[10px] font-bold uppercase tracking-widest flex items-center gap-1.5 shadow-md hover:bg-gray-800 transition active:scale-95 whitespace-nowrap"
@@ -3522,6 +3537,9 @@ function TryOnTab({ setActiveTab, returnTab }) {
   const [myPosts, setMyPosts] = useStore(myPostsStore);
   const [tryOnStatus, setTryOnStatus] = useStore(tryOnStatusStore);
   const [lastSavedDraftId, setLastSavedDraftId] = useState(null);
+  const [selectedShopItem, setSelectedShopItem] = useState(null);
+  const [wardrobe] = useStore(wardrobeStore);
+  const [wishlist, setWishlistState] = useStore(wishlistStore);
   const step = tryOnStatus.phase || "setup";
   const loadingText = tryOnStatus.loadingText;
 
@@ -3584,7 +3602,7 @@ function TryOnTab({ setActiveTab, returnTab }) {
           date: "Just now",
           published: false,
           isResult: true,
-          user: { name: "Alex Schwan", avatar: "A" },
+          user: { name: "Alex Schwan", avatar: "https://i.pravatar.cc/150?u=chic" },
           components: garmentSnapshot
         },
         ...prev.filter((post) => post.id !== runId)
@@ -3638,7 +3656,19 @@ function TryOnTab({ setActiveTab, returnTab }) {
   if (step === "result") {
     return (
       <div className="p-4 h-full flex flex-col pb-24 bg-[#f5f3ef] animate-in fade-in relative">
-        {toastMessage && <div className="fixed top-32 left-1/2 -translate-x-1/2 z-50 bg-[#1a1a1a] text-white px-5 py-2.5 rounded-full shadow-lg text-sm font-medium animate-in slide-in-from-top-4 fade-in duration-300 whitespace-nowrap">{toastMessage}</div>}
+        {toastMessage && (
+          <div className="fixed top-32 left-1/2 -translate-x-1/2 z-[100] bg-[#1a1a1a] text-white px-5 py-2.5 rounded-full shadow-lg text-sm font-medium animate-in slide-in-from-top-4 fade-in duration-300 whitespace-nowrap border border-white/10"
+               onClick={() => { if (toastMessage.action) { toastMessage.action.onClick(); setToastMessage(null); } }}>
+            <div className="flex items-center gap-2">
+              {toastMessage.action ? (
+                <>
+                  {toastMessage.msg}
+                  <span className="text-xs opacity-60">→</span>
+                </>
+              ) : (toastMessage.msg || toastMessage)}
+            </div>
+          </div>
+        )}
         <div className="flex items-center gap-3 px-4 pt-12 pb-4 sm:pt-14 bg-[#f5f3ef] sticky top-0 z-20">
           <button onClick={() => setStep("setup")} className="p-2 bg-white rounded-full text-[#1a1a1a] shadow-sm border border-[#e5e5e5] hover:bg-[#e8e5df] transition">
             <ArrowLeft size={18} />
@@ -3662,12 +3692,16 @@ function TryOnTab({ setActiveTab, returnTab }) {
                   date: "Just now",
                   published: false,
                   isResult: false,
-                  user: { name: "Alex Schwan", avatar: "A" },
+                  user: { name: "Alex Schwan", avatar: "https://i.pravatar.cc/150?u=chic" },
                   components: garments.map((g) => ({ id: g.id, image: g.image, name: g.name || "Garment" }))
                 },
                 ...prev
               ]);
               showToast("Saved to My Mixes");
+              // Reset try-on state and notification
+              tryOnStatusStore.setState({ phase: "setup", profileNotificationCount: 0 });
+              setGarments([]);
+              setScenario("");
             }}
             className="flex-1 py-4 bg-white text-[#1a1a1a] rounded-full font-bold uppercase tracking-widest text-xs flex justify-center items-center gap-2 hover:bg-[#e8e5df] transition border border-[#e5e5e5] shadow-sm"
           >
@@ -3683,7 +3717,7 @@ function TryOnTab({ setActiveTab, returnTab }) {
                   title: "My Try-On Mix",
                   date: "Just now",
                   published: true,
-                  user: { name: "Alex Schwan", avatar: "A" },
+                  user: { name: "Alex Schwan", avatar: "https://i.pravatar.cc/150?u=chic" },
                   components: garments.map((g) => ({ id: g.id, image: g.image, name: g.name || "Garment" }))
                 },
                 ...prev
@@ -3693,7 +3727,7 @@ function TryOnTab({ setActiveTab, returnTab }) {
                   id: newPostId,
                   image: resultImg,
                   user: "Alex Schwan",
-                  avatar: "https://i.pravatar.cc/150?u=alex",
+                  avatar: "https://i.pravatar.cc/150?u=chic",
                   likes: 0,
                   desc: scenario || "My latest virtual try-on mix! ✨",
                   tags: ["ai", "tryon"]
@@ -3701,6 +3735,10 @@ function TryOnTab({ setActiveTab, returnTab }) {
                 ...prev
               ]);
               showToast("Posted to Community!");
+              // Reset try-on state and notification
+              tryOnStatusStore.setState({ phase: "setup", profileNotificationCount: 0 });
+              setGarments([]);
+              setScenario("");
             }}
             className="flex-1 py-4 bg-black text-white rounded-full font-bold uppercase tracking-widest text-xs flex justify-center items-center gap-2 shadow-lg hover:bg-gray-800 transition"
           >
@@ -3714,25 +3752,21 @@ function TryOnTab({ setActiveTab, returnTab }) {
   return (
     <div className="bg-[#f5f3ef] min-h-full pb-24 relative">
       {toastMessage && (
-        <div className="fixed top-32 left-1/2 -translate-x-1/2 z-[100] bg-[#1a1a1a] text-white px-6 py-3 rounded-full shadow-[0_12px_32px_rgba(0,0,0,0.3)] text-sm font-medium animate-in slide-in-from-top-4 fade-in duration-300 whitespace-nowrap flex items-center gap-3 border border-white/10">
-          <div 
-            onClick={() => { 
-              if (toastMessage.action) {
-                toastMessage.action.onClick(); 
-                setToastMessage(null); 
-              }
-            }} 
-            className={toastMessage.action ? "cursor-pointer" : ""}
-          >
-            {toastMessage.msg?.includes("Try-on Drafts") ? (
+        <div className="fixed top-32 left-1/2 -translate-x-1/2 z-[100] bg-[#1a1a1a] text-white px-5 py-2.5 rounded-full shadow-lg text-sm font-medium animate-in slide-in-from-top-4 fade-in duration-300 whitespace-nowrap border border-white/10 cursor-pointer"
+             onClick={() => { if (toastMessage.action) { toastMessage.action.onClick(); setToastMessage(null); } }}>
+          <div className="flex items-center gap-1.5">
+            {toastMessage.action ? (
               <>
-                {toastMessage.msg.split("Try-on Drafts")[0]}
-                <span className="underline decoration-white/40 underline-offset-4 font-bold">Try-on Drafts</span>
-                {toastMessage.msg.split("Try-on Drafts")[1]}
+                {toastMessage.msg?.includes("Try-on") ? (
+                  <>
+                    {toastMessage.msg.split("Try-on")[0]}
+                    <span className="underline decoration-white/40 underline-offset-4 font-bold">Try-on</span>
+                    {toastMessage.msg.split("Try-on")[1]}
+                  </>
+                ) : toastMessage.msg}
+                <span className="text-xs opacity-60 ml-1">→</span>
               </>
-            ) : (
-              <span>{toastMessage.msg || ""}</span>
-            )}
+            ) : (toastMessage.msg || toastMessage)}
           </div>
         </div>
       )}
@@ -3755,28 +3789,50 @@ function TryOnTab({ setActiveTab, returnTab }) {
         </div>
       </div>
       <div className="p-4 animate-in fade-in duration-300 mt-2">
-        <div className="flex justify-between items-center mb-3">
-          <p className="text-[10px] font-bold text-[#999999] uppercase tracking-widest">Outfit Pieces · {garments.length} OF 5</p>
+        <div className="flex justify-between items-center mb-4">
+          <p className="text-[10px] font-bold text-[#999999] uppercase tracking-widest">Outfit Pieces · {garments.length}</p>
           {garments.length > 0 && (
             <button onClick={() => setGarments([])} className="text-[10px] font-bold text-[#1a1a1a] uppercase tracking-widest hover:text-red-500 transition">
               Clear All
             </button>
           )}
         </div>
-        <div className="grid grid-cols-2 gap-3 mb-6">
-          {garments.map((g) => (
-            <div key={g.id} className="relative aspect-[3/4] bg-white rounded-3xl overflow-hidden border border-[#e5e5e5] shadow-sm group">
-              <img src={g.image} className="w-full h-full object-cover" alt="Garment" />
-              <button onClick={() => setGarments(garments.filter((item) => item.id !== g.id))} className="absolute top-3 right-3 w-7 h-7 bg-white rounded-full flex items-center justify-center text-[#1a1a1a] shadow-sm hover:bg-gray-100 transition">
-                <X size={14} />
-              </button>
+        <div className="grid grid-cols-2 gap-4 mb-8">
+          {garments.map((g) => {
+            const matchedItem = [...wardrobe, ...wishlist].find((w) => w.image === g.image) || {
+              id: g.id,
+              brand: "Custom Item",
+              name: "Garment",
+              image: g.image,
+              category: "Apparel"
+            };
+            return (
+              <div key={g.id} onClick={() => setSelectedShopItem(matchedItem)} className="relative aspect-[3/4] bg-white rounded-3xl overflow-hidden border border-[#e5e5e5] shadow-sm group cursor-pointer">
+                <img src={g.image} className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105" alt="Garment" />
+                <button 
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    setGarments(garments.filter((item) => item.id !== g.id));
+                  }} 
+                  className="absolute top-2.5 right-2.5 w-7 h-7 bg-white/90 backdrop-blur-md rounded-full flex items-center justify-center text-[#1a1a1a] shadow-sm hover:bg-white transition border border-black/5"
+                >
+                  <X size={14} />
+                </button>
+              </div>
+            );
+          })}
+          <button 
+            onClick={() => {
+              setActiveTab("closet");
+              wardrobeMainTabStore.setState("Owned");
+            }}
+            className="aspect-[3/4] bg-white border border-dashed border-[#d1d1d1] rounded-3xl flex flex-col items-center justify-center text-[#999999] hover:border-black hover:text-black transition gap-2 active:scale-[0.98]"
+          >
+            <div className="w-10 h-10 rounded-full bg-[#f5f5f7] flex items-center justify-center">
+              <Plus size={20} />
             </div>
-          ))}
-          {garments.length < 5 && (
-            <button className="aspect-[3/4] bg-transparent border border-dashed border-[#d1d1d1] rounded-3xl flex flex-col items-center justify-center text-[#999999] hover:border-black hover:text-black transition gap-2 active:scale-[0.98]">
-              <Plus size={28} />
-            </button>
-          )}
+            <span className="text-[10px] font-bold uppercase tracking-widest">Add More</span>
+          </button>
         </div>
         <div className="mb-6">
           <div className="flex items-center gap-2 mb-3">
@@ -3809,7 +3865,7 @@ function TryOnTab({ setActiveTab, returnTab }) {
                     title: scenario || "Try-on Draft",
                     date: "Just now",
                     published: false,
-                    user: { name: "Alex Schwan", avatar: "A" },
+                    user: { name: "Alex Schwan", avatar: "https://i.pravatar.cc/150?u=chic" },
                     components: garments.map((g) => ({ id: g.id, image: g.image, name: g.name || "Garment" }))
                   },
                   ...prev
@@ -3823,6 +3879,10 @@ function TryOnTab({ setActiveTab, returnTab }) {
                     mixesSubTabStore.setState("Drafts");
                   }
                 });
+                // Clear inputs after saving draft
+                setGarments([]);
+                setScenario("");
+                setIsSavedMix(false);
               }
             }}
             className={`w-14 shrink-0 flex items-center justify-center border rounded-2xl transition active:scale-[0.98] ${isSavedMix ? "bg-black border-black text-white" : "bg-white border-[#e5e5e5] text-[#1a1a1a] hover:bg-gray-50"}`}
@@ -3836,7 +3896,7 @@ function TryOnTab({ setActiveTab, returnTab }) {
       </div>
       {isViewingPhoto && (
         <div className="fixed inset-0 z-[100] bg-[#f5f3ef] flex flex-col animate-in fade-in duration-200">
-          <div className="flex justify-between items-center px-4 pt-12 pb-4 sm:pt-14 sticky top-0 z-10 border-b border-[#e5e5e5]">
+          <div className="flex justify-between items-center px-4 pt-12 pb-4 sm:pt-14 border-b border-[#e5e5e5] sticky top-0 z-10">
             <button onClick={() => setIsViewingPhoto(false)} className="p-2 bg-white rounded-full text-[#1a1a1a] shadow-sm border border-[#e5e5e5] hover:bg-[#e8e5df] transition">
               <ArrowLeft size={20} />
             </button>
@@ -3852,6 +3912,21 @@ function TryOnTab({ setActiveTab, returnTab }) {
             </button>
           </div>
         </div>
+      )}
+      {selectedShopItem && (
+        <ShopItemOverlay 
+          initialItem={selectedShopItem} 
+          onClose={() => setSelectedShopItem(null)} 
+          wishlist={wishlist} 
+          toggleWishlist={(item) => {
+            if (wishlist.some(i => i.id === item.id)) {
+              setWishlistState(wishlist.filter(i => i.id !== item.id));
+            } else {
+              setWishlistState([item, ...wishlist]);
+            }
+          }} 
+          showToast={showToast} 
+        />
       )}
     </div>
   );
@@ -3934,7 +4009,7 @@ function ProfileTab({ setActiveTab, aura }) {
     name: "Alex Schwan",
     handle: "alex",
     email: "alexandria.schwan@gmail.com",
-    avatar: "/Users/jiapan/.gemini/antigravity/brain/feb53d17-efed-4b6a-b959-97b4a879ee9a/fashionista_avatar_1778603839495.png"
+    avatar: "https://i.pravatar.cc/150?u=chic"
   });
   const avatarInputRef = useRef(null);
   const [, setFeedData] = useStore(feedStore);
@@ -4104,7 +4179,24 @@ function ProfileTab({ setActiveTab, aura }) {
       {/* Xiaohongshu-style Gradient Header Background */}
       <div className="absolute top-0 left-0 right-0 h-72 bg-gradient-to-b from-[#f5f5f7] to-white pointer-events-none" />
       
-      {toastMessage && <div className="fixed top-32 left-1/2 -translate-x-1/2 z-[100] bg-[#1a1a1a] text-white px-5 py-2.5 rounded-full shadow-lg text-sm font-medium animate-in slide-in-from-top-4 fade-in duration-300 whitespace-nowrap flex items-center gap-2">{toastMessage}</div>}
+      {toastMessage && (
+        <div className="fixed top-32 left-1/2 -translate-x-1/2 z-[100] bg-[#1a1a1a] text-white px-5 py-2.5 rounded-full shadow-lg text-sm font-medium animate-in slide-in-from-top-4 fade-in duration-300 whitespace-nowrap border border-white/10 cursor-pointer"
+             onClick={() => { if (toastMessage.action) { toastMessage.action.onClick(); setToastMessage(null); } }}>
+          <div className="flex items-center gap-1.5">
+            {toastMessage.action ? (
+              <>
+                {toastMessage.msg?.includes("Wishlist Style") ? (
+                  <>
+                    {toastMessage.msg.split("Wishlist Style")[0]}
+                    <span className="underline decoration-white/40 underline-offset-4 font-bold">Wishlist Style</span>
+                  </>
+                ) : toastMessage.msg}
+                <span className="text-xs opacity-60 ml-1">→</span>
+              </>
+            ) : (toastMessage.msg || toastMessage)}
+          </div>
+        </div>
+      )}
       
       <div className="relative z-10">
         <div className="flex justify-between items-center px-4 pt-10 pb-2">
@@ -4218,8 +4310,8 @@ function ProfileTab({ setActiveTab, aura }) {
         {profileTab === "mixes" && (
           <div className="flex gap-2 overflow-x-auto px-4 py-3 bg-white border-b border-[#f9f9f9] scrollbar-hide items-center">
             {[
-              { label: "Generated", count: myPosts.filter(p => p.published).length },
-              { label: "Drafts", count: myPosts.filter(p => !p.published).length }
+              { label: "Generated", count: myPosts.filter(p => !p.published && p.isResult).length },
+              { label: "Drafts", count: myPosts.filter(p => !p.published && !p.isResult).length }
             ].map((item) => {
               const isActive = activeSubTab === item.label;
               return (
@@ -4239,28 +4331,59 @@ function ProfileTab({ setActiveTab, aura }) {
 
       </div>
 
-      <div className={profileTab === "closet" || profileTab === "wishlist" ? "bg-white" : "px-2 bg-white"}>
+      <div className={profileTab === "closet" || profileTab === "wishlist" ? "bg-white px-2" : "px-2 bg-white"}>
         {profileTab === "closet" && <WardrobeTab aura={aura} embedded />}
-        {profileTab === "wishlist" && activeCategory !== "Styles" && <WardrobeTab aura={aura} embedded />}
         
-        {profileTab === "wishlist" && activeCategory === "Styles" && (
-          <div className="grid grid-cols-2 gap-3 px-2 pt-4">
-            {outfitsState.outfits.filter(o => o.tags?.some(t => t.label === "Wishlist Style")).map((outfit) => (
-              <div key={outfit.id} className="relative aspect-[3/4] bg-[#f0f0f0] rounded-2xl overflow-hidden shadow-sm border border-[#f0f0f0] group cursor-pointer active:scale-[0.98] transition-transform">
-                <img src={outfit.coverImage || (outfit.items[0]?.content)} className="w-full h-full object-cover" alt={outfit.title} referrerPolicy="no-referrer" />
-                <div className="absolute bottom-0 left-0 w-full p-4 bg-gradient-to-t from-black/60 to-transparent">
-                  <p className="text-[10px] font-bold text-white line-clamp-1">{outfit.title}</p>
-                </div>
-              </div>
-            ))}
+        {profileTab === "wishlist" && (
+          <div className="pt-4 pb-20">
+            <div className="grid grid-cols-2 gap-3">
+              {[
+                ...outfitsState.outfits
+                  .filter(o => o.tags?.some(t => t.label === "Wishlist Style"))
+                  .map(o => ({ ...o, type: "STYLE", isWishlist: true })),
+                ...wardrobe.filter(i => {
+                  if (!i.wishlist) return false;
+                  if (activeCategory === "All") return true;
+                  if (activeCategory === "Styles") return false;
+                  return i.category === activeCategory;
+                }).map(i => ({ ...i, type: "ITEM", isWishlist: true }))
+              ]
+              .sort((a, b) => b.id - a.id)
+              .map((item) => {
+                if (item.type === "STYLE") {
+                  return (
+                    <div key={`style-${item.id}`} className="relative aspect-[3/4] bg-[#f0f0f0] rounded-2xl overflow-hidden shadow-sm border border-[#f0f0f0] group cursor-pointer active:scale-[0.98] transition-transform">
+                      <img src={item.coverImage || (item.items[0]?.content)} className="w-full h-full object-cover" alt={item.title} referrerPolicy="no-referrer" />
+                      <div className="absolute bottom-0 left-0 w-full p-4 bg-gradient-to-t from-black/60 to-transparent">
+                        <p className="text-[10px] font-bold text-white line-clamp-1">{item.title}</p>
+                      </div>
+                    </div>
+                  );
+                }
+                return (
+                  <div key={`item-${item.id}`} className="flex flex-col cursor-pointer active:scale-[0.98] transition-all relative">
+                    <div className="aspect-[4/5] bg-[#e6e2d6] rounded-2xl shadow-sm hover:shadow-md transition-shadow relative mb-2 overflow-hidden select-none">
+                      <img src={item.image} alt={item.name} className="w-full h-full object-cover pointer-events-none" />
+                    </div>
+                    <div className="px-1 flex flex-col">
+                      <p className="text-[10px] font-bold text-[#1a1a1a] uppercase tracking-widest truncate">{item.brand}</p>
+                      <p className="text-[12px] text-[#4a4a4a] mt-0.5 line-clamp-1">{item.name}</p>
+                      <p className="text-[12px] font-bold text-[#1a1a1a] mt-1">{item.price || "$--"}</p>
+                    </div>
+                  </div>
+                );
+              })}
+            </div>
           </div>
         )}
         
         {profileTab === "mixes" && (
           <div className="grid grid-cols-2 gap-3 px-2 pt-4">
             {myPosts.filter((p) => {
-              if (activeSubTab === "Generated") return !p.published && p.isResult;
-              return !p.published && !p.isResult;
+              if (p.published) return false;
+              if (activeSubTab === "Generated") return p.isResult;
+              if (activeSubTab === "Drafts") return !p.isResult;
+              return false;
             }).map((post) => {
               const isDraft = !post.isResult;
               return (
@@ -4947,7 +5070,7 @@ function AuraExtractAndChat({ aura }) {
 
   const handleAddToMix = (item, e) => {
     e.stopPropagation();
-    const combined = [{ id: Date.now(), image: item.image }, ...mixItems].slice(0, 5);
+    const combined = [{ id: Date.now(), image: item.image }, ...mixItems];
     setMixItems(combined);
     setAddedItems((prev) => new Set([...prev, item.id]));
     triggerFlyingAnimation(item.image, e);
@@ -5848,7 +5971,7 @@ function CollapsibleNavigation({ activeTab, setActiveTab, mixItems, aura, onUplo
   const navActive = activeTab === "wardrobe" ? "profile" : activeTab;
 
   const navItems = [
-    { id: "trending", label: "Discover", icon: <Activity size={22} strokeWidth={navActive === "trending" ? 2.6 : 2.2} /> },
+    { id: "trending", label: "Discover", icon: <Compass size={22} strokeWidth={navActive === "trending" ? 2.6 : 2.2} /> },
     {
       id: "skills",
       label: "Skills",
@@ -5926,11 +6049,11 @@ function CollapsibleNavigation({ activeTab, setActiveTab, mixItems, aura, onUplo
                 type="button"
                 onClick={() => {
                   setActiveTab(item.id);
-                  if ((item.id === "profile" || item.id === "wardrobe") && wardrobeNoticeCount > 0) {
-                    setWardrobeNoticeCount(0);
-                  }
-                  if (item.id === "profile" && tryOnReadyCount > 0) {
-                    setTryOnStatus((prev) => ({ ...prev, profileNotificationCount: 0 }));
+                  // Clear notification badges as requested, but PRESERVE item data
+                  setWardrobeNoticeCount(0);
+                  setTryOnStatus((prev) => ({ ...prev, profileNotificationCount: 0 }));
+                  
+                  if (item.id === "profile") {
                     profileTabStore.setState("mixes");
                     mixesSubTabStore.setState("Generated");
                   }
@@ -5965,7 +6088,12 @@ function CollapsibleNavigation({ activeTab, setActiveTab, mixItems, aura, onUplo
 
           <button
             type="button"
-            onClick={() => setIsOpen((prev) => !prev)}
+            onClick={() => {
+              setIsOpen((prev) => !prev);
+              // Clear notification badges when menu is interacted with, but PRESERVE data
+              setWardrobeNoticeCount(0);
+              setTryOnStatus((prev) => ({ ...prev, profileNotificationCount: 0 }));
+            }}
             className={`pointer-events-auto relative flex h-[48px] w-[48px] items-center justify-center rounded-full border border-white/10 bg-[#141414] text-white shadow-[0_10px_24px_rgba(0,0,0,0.24)] transition-all duration-300 ${
               isOpen ? "rotate-45 bg-[#1b1b1b]" : "hover:bg-[#1d1d1d]"
             }`}

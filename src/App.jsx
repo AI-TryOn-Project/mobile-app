@@ -1316,30 +1316,29 @@ const MOCK_SHOP_ALL_ITEMS = [
 
 const MOCK_MIX_GALLERY = [
   {
-    id: "m888",
-    title: "Summer Weekend Look",
-    date: "Yesterday",
-    published: false,
-    isResult: false,
-    user: { name: "Alex Schwan", avatar: "https://i.pravatar.cc/150?u=chic" },
+    id: "m1",
+    image: "https://i.pinimg.com/736x/14/05/40/140540fb8d71f81d3faee97ae16c13d6.jpg",
+    title: "Look #2",
+    date: "17d",
+    published: true,
+    user: { name: "Alex Schwan", avatar: "A" },
     components: [
-      { id: "c101", image: "https://i.pinimg.com/1200x/e9/4c/27/e94c27c886d87d47d655a85b8a98fe44.jpg" },
-      { id: "c102", image: "https://i.pinimg.com/736x/98/8c/44/988c44232d4e09159f3820c238e3586c.jpg" },
-      { id: "c103", image: "https://i.pinimg.com/736x/74/db/da/74dbda7b91e9f033d41a304c38b2bc1b.jpg" },
-      { id: "c104", image: "https://i.pinimg.com/736x/66/e9/47/66e9479e255e594de1f29fe1c3c27067.jpg" }
+      { id: "c1", image: "https://i.pinimg.com/1200x/a8/4a/d8/a84ad8cca0937277c206578757b1e234.jpg", name: "Top" },
+      { id: "c2", image: "https://www.gap.com/webcontent/0062/045/335/cn62045335.jpg", name: "Bottoms" },
+      { id: "c3", image: "https://i.pinimg.com/1200x/4c/4e/8f/4c4e8f7994b4264ea9d047aa0807dbb7.jpg", name: "Shoes" }
     ]
   },
   {
-    id: "m999",
-    image: "https://images.unsplash.com/photo-1515886657613-9f3515b0c78f?auto=format&fit=crop&q=80&w=600",
-    title: "Tropical Resort Mix",
-    date: "2h ago",
+    id: "m_draft",
+    image: "https://i.pinimg.com/1200x/e9/4c/27/e94c27c886d87d47d655a85b8a98fe44.jpg",
+    title: "Draft Look",
+    date: "Just now",
     published: false,
-    isResult: true,
-    user: { name: "Alex Schwan", avatar: "https://i.pravatar.cc/150?u=chic" },
+    isResult: false,
     components: [
-      { id: "c101", image: "https://i.pinimg.com/1200x/e9/4c/27/e94c27c886d87d47d655a85b8a98fe44.jpg" },
-      { id: "c102", image: "https://i.pinimg.com/736x/e4/b7/dc/e4b7dc51ed6b81854e9d9b777c49cc22.jpg" }
+      { id: "c1", image: "https://i.pinimg.com/1200x/a8/4a/d8/a84ad8cca0937277c206578757b1e234.jpg", name: "Top" },
+      { id: "c2", image: "https://www.gap.com/webcontent/0062/045/335/cn62045335.jpg", name: "Bottoms" },
+      { id: "c3", image: "https://i.pinimg.com/1200x/4c/4e/8f/4c4e8f7994b4264ea9d047aa0807dbb7.jpg", name: "Shoes" }
     ]
   }
 ];
@@ -1457,7 +1456,7 @@ const flyingStore = createStore(null);
 const wardrobeFilterStore = createStore("All");
 const wardrobeWishlistFilterStore = createStore("Items");
 const profileTabStore = createStore("closet");
-const mixesSubTabStore = createStore("Generated");
+const tryOnsSubTabStore = createStore("Generated");
 const wardrobeNoticeStore = createStore(0);
 const videoStylistStore = createStore(false);
 
@@ -2405,8 +2404,6 @@ function TrendingFeed({ aura, setActiveTab, uploadIntent, onUploadPromptSubmit, 
                       ) : (
                         <img src={item.image} alt="post" className="w-full object-cover pointer-events-none" referrerPolicy="no-referrer" />
                       )}
-
-                      {/* Removed Heart button from feed cards per user request */}
 
                       {contextMenu === item.id && (
                         <div
@@ -3598,7 +3595,7 @@ function TryOnTab({ setActiveTab, returnTab }) {
         {
           id: runId,
           image: resultImg,
-          title: tryOnDraft.title || scenarioSnapshot || "My Try-On Mix",
+          title: tryOnDraft.title || scenarioSnapshot || "My Try-On Look",
           date: "Just now",
           published: false,
           isResult: true,
@@ -3670,7 +3667,7 @@ function TryOnTab({ setActiveTab, returnTab }) {
           </div>
         )}
         <div className="flex items-center gap-3 px-4 pt-12 pb-4 sm:pt-14 bg-[#f5f3ef] sticky top-0 z-20">
-          <button onClick={() => setStep("setup")} className="p-2 bg-white rounded-full text-[#1a1a1a] shadow-sm border border-[#e5e5e5] hover:bg-[#e8e5df] transition">
+          <button onClick={() => tryOnStatusStore.setState((prev) => ({ ...prev, phase: "setup" }))} className="p-2 bg-white rounded-full text-[#1a1a1a] shadow-sm border border-[#e5e5e5] hover:bg-[#e8e5df] transition">
             <ArrowLeft size={18} />
           </button>
           <h2 className="text-3xl font-serif text-[#1a1a1a] italic">Your Virtual Fit</h2>
@@ -3688,16 +3685,16 @@ function TryOnTab({ setActiveTab, returnTab }) {
                 {
                   id: Date.now(),
                   image: resultImg,
-                  title: "My Try-On Mix",
+                  title: "My Try-On Look",
                   date: "Just now",
                   published: false,
                   isResult: false,
                   user: { name: "Alex Schwan", avatar: "https://i.pravatar.cc/150?u=chic" },
-                  components: garments.map((g) => ({ id: g.id, image: g.image, name: g.name || "Garment" }))
+                  components: []
                 },
                 ...prev
               ]);
-              showToast("Saved to My Mixes");
+              showToast("Saved to Try-ons");
               // Reset try-on state and notification
               tryOnStatusStore.setState({ phase: "setup", profileNotificationCount: 0 });
               setGarments([]);
@@ -3714,7 +3711,7 @@ function TryOnTab({ setActiveTab, returnTab }) {
                 {
                   id: newPostId,
                   image: resultImg,
-                  title: "My Try-On Mix",
+                  title: "My Try-On Look",
                   date: "Just now",
                   published: true,
                   user: { name: "Alex Schwan", avatar: "https://i.pravatar.cc/150?u=chic" },
@@ -3797,7 +3794,7 @@ function TryOnTab({ setActiveTab, returnTab }) {
             </button>
           )}
         </div>
-        <div className="grid grid-cols-2 gap-4 mb-8">
+        <div className="grid grid-cols-2 gap-3 mb-6">
           {garments.map((g) => {
             const matchedItem = [...wardrobe, ...wishlist].find((w) => w.image === g.image) || {
               id: g.id,
@@ -3826,12 +3823,9 @@ function TryOnTab({ setActiveTab, returnTab }) {
               setActiveTab("closet");
               wardrobeMainTabStore.setState("Owned");
             }}
-            className="aspect-[3/4] bg-white border border-dashed border-[#d1d1d1] rounded-3xl flex flex-col items-center justify-center text-[#999999] hover:border-black hover:text-black transition gap-2 active:scale-[0.98]"
+            className="aspect-[3/4] bg-transparent border border-dashed border-[#d1d1d1] rounded-3xl flex flex-col items-center justify-center text-[#999999] hover:border-black hover:text-black transition gap-2 active:scale-[0.98]"
           >
-            <div className="w-10 h-10 rounded-full bg-[#f5f5f7] flex items-center justify-center">
-              <Plus size={20} />
-            </div>
-            <span className="text-[10px] font-bold uppercase tracking-widest">Add More</span>
+            <Plus size={28} />
           </button>
         </div>
         <div className="mb-6">
@@ -3875,8 +3869,8 @@ function TryOnTab({ setActiveTab, returnTab }) {
                 showToast("Saved to Try-on Drafts", {
                   onClick: () => {
                     setActiveTab("profile");
-                    profileTabStore.setState("mixes");
-                    mixesSubTabStore.setState("Drafts");
+                    profileTabStore.setState("tryons");
+                    tryOnsSubTabStore.setState("Drafts");
                   }
                 });
                 // Clear inputs after saving draft
@@ -3990,7 +3984,7 @@ function PrivacySubView({ onBack }) {
     <SubView title="Privacy" onBack={onBack}>
       <div className="space-y-5">
         <p className="px-2 text-[12px] text-[#6B655F] leading-snug">
-          Choose who can see each section of your public profile. Posts you publish stay visible to everyone who can see your profile. Mixes follow each post&apos;s visibility.
+          Choose who can see each section of your public profile. Posts you publish stay visible to everyone who can see your profile. Try-ons follow each post&apos;s visibility.
         </p>
         <Section keyName="wardrobe" label="Wardrobe" desc="Items in your closet." />
         <Section keyName="wishlist" label="Wishlist" desc="Items you have saved." />
@@ -4021,8 +4015,19 @@ function ProfileTab({ setActiveTab, aura }) {
   const [wishlist, toggleWishlist] = useWishlist();
   const [activeCategory, setActiveCategory] = useStore(wardrobeFilterStore);
   const [wishlistFilter, setWishlistFilter] = useStore(wardrobeWishlistFilterStore);
-  const [activeSubTab, setActiveSubTab] = useStore(mixesSubTabStore);
+  const [activeSubTab, setActiveSubTab] = useStore(tryOnsSubTabStore);
   const [outfitsState] = useStore(outfitsStore);
+
+  useEffect(() => {
+    if (profileTab === "closet") {
+      wardrobeMainTabStore.setState("Owned");
+      setActiveCategory("All");
+    }
+    if (profileTab === "wishlist") {
+      wardrobeMainTabStore.setState("Wishlist");
+      setActiveCategory("All");
+    }
+  }, [profileTab]);
 
   const showToast = (msg) => {
     setToastMessage(msg);
@@ -4248,7 +4253,7 @@ function ProfileTab({ setActiveTab, aura }) {
         {/* Xiaohongshu-style Tab Bar (Text Only for clarity) */}
         <div className="relative flex w-full border-b border-[#f2f2f2] bg-white sticky top-0 z-20">
           {[
-            { id: "mixes", label: "Try-ons" },
+            { id: "tryons", label: "Try-ons" },
             { id: "wishlist", label: "Wishlist" },
             { id: "closet", label: "Owned" },
             { id: "published", label: "Published" }
@@ -4307,7 +4312,7 @@ function ProfileTab({ setActiveTab, aura }) {
             })}
           </div>
         )}
-        {profileTab === "mixes" && (
+        {profileTab === "tryons" && (
           <div className="flex gap-2 overflow-x-auto px-4 py-3 bg-white border-b border-[#f9f9f9] scrollbar-hide items-center">
             {[
               { label: "Generated", count: myPosts.filter(p => !p.published && p.isResult).length },
@@ -4341,21 +4346,21 @@ function ProfileTab({ setActiveTab, aura }) {
                 ...outfitsState.outfits
                   .filter(o => o.tags?.some(t => t.label === "Wishlist Style"))
                   .map(o => ({ ...o, type: "STYLE", isWishlist: true })),
-                ...wardrobe.filter(i => {
-                  if (!i.wishlist) return false;
+                ...wishlist.filter(i => {
                   if (activeCategory === "All") return true;
-                  if (activeCategory === "Styles") return false;
+                  if (activeCategory === "Styles") return i.type === "STYLE" || i.category === "Styles";
                   return i.category === activeCategory;
-                }).map(i => ({ ...i, type: "ITEM", isWishlist: true }))
+                }).map(i => ({ ...i, type: i.type || "ITEM", isWishlist: true }))
               ]
               .sort((a, b) => b.id - a.id)
               .map((item) => {
                 if (item.type === "STYLE") {
+                  const styleImage = item.coverImage || item.image || item.items?.[0]?.content;
                   return (
                     <div key={`style-${item.id}`} className="relative aspect-[3/4] bg-[#f0f0f0] rounded-2xl overflow-hidden shadow-sm border border-[#f0f0f0] group cursor-pointer active:scale-[0.98] transition-transform">
-                      <img src={item.coverImage || (item.items[0]?.content)} className="w-full h-full object-cover" alt={item.title} referrerPolicy="no-referrer" />
+                      {styleImage && <img src={styleImage} className="w-full h-full object-cover" alt={item.title || item.name} referrerPolicy="no-referrer" />}
                       <div className="absolute bottom-0 left-0 w-full p-4 bg-gradient-to-t from-black/60 to-transparent">
-                        <p className="text-[10px] font-bold text-white line-clamp-1">{item.title}</p>
+                        <p className="text-[10px] font-bold text-white line-clamp-1">{item.title || item.name}</p>
                       </div>
                     </div>
                   );
@@ -4377,7 +4382,7 @@ function ProfileTab({ setActiveTab, aura }) {
           </div>
         )}
         
-        {profileTab === "mixes" && (
+        {profileTab === "tryons" && (
           <div className="grid grid-cols-2 gap-3 px-2 pt-4">
             {myPosts.filter((p) => {
               if (p.published) return false;
@@ -4391,15 +4396,8 @@ function ProfileTab({ setActiveTab, aura }) {
                   key={post.id} 
                   className="relative aspect-[3/4] bg-[#f0f0f0] rounded-2xl overflow-hidden shadow-sm border border-[#f0f0f0] group cursor-pointer active:scale-[0.98] transition-transform" 
                   onClick={() => { 
-                    if (isDraft) {
-                      // Restore draft to editor
-                      mixStore.setState(post.components || []);
-                      tryOnDraftStore.setState({ title: post.title, scenario: post.title === "Try-on Draft" ? "" : post.title });
-                      setActiveTab("tryon");
-                    } else {
-                      setEditingPost(post); 
-                      setIsEditMode(false); 
-                    }
+                    setEditingPost(post); 
+                    setIsEditMode(false); 
                   }}
                 >
                   {isDraft ? (
@@ -5576,7 +5574,7 @@ function UploadIntentSheet({ uploadIntent, onClose, onSubmit }) {
     {
       id: "try-on",
       label: "Try it on me",
-      subtitle: "Run try-on in the background and save it to My Mixes",
+      subtitle: "Run try-on in the background and save it to Try-ons",
       prompt: "Try this on me.",
       icon: <PlayCircle size={18} />
     }
@@ -5746,7 +5744,7 @@ function UserProfileScreen({ userId, onClose }) {
   };
 
   const userPosts = feed.filter((p) => p.userId === targetUser.id);
-  const userMixes = userPosts; // mock: published mixes = posts for now
+  const userTryOns = userPosts; // mock: published try-ons = posts for now
   const wardrobeItems = (targetUser.wardrobeIds || []).map((id) => INITIAL_WARDROBE.find((w) => w.id === id)).filter(Boolean);
   const wishlistItems = (targetUser.wishlistIds || []).map((id) => MOCK_WISHLIST.find((w) => w.id === id)).filter(Boolean);
 
@@ -5784,7 +5782,7 @@ function UserProfileScreen({ userId, onClose }) {
     { id: "posts", label: "Posts" },
     { id: "wardrobe", label: "Wardrobe" },
     { id: "wishlist", label: "Wishlist" },
-    { id: "mixes", label: "Mixes" }
+    { id: "tryons", label: "Try-ons" }
   ];
 
   return (
@@ -5922,14 +5920,14 @@ function UserProfileScreen({ userId, onClose }) {
             )
           )}
 
-          {activeTab === "mixes" && (
-            userMixes.length === 0 ? (
-              <div className="py-12 text-center text-[10px] font-bold uppercase tracking-widest text-[#999999]">No mixes published</div>
+          {activeTab === "tryons" && (
+            userTryOns.length === 0 ? (
+              <div className="py-12 text-center text-[10px] font-bold uppercase tracking-widest text-[#999999]">No try-ons published</div>
             ) : (
               <div className="grid grid-cols-3 gap-1 px-2">
-                {userMixes.map((p) => (
+                {userTryOns.map((p) => (
                   <div key={p.id} onClick={() => setOpenItem(p)} className="relative aspect-[3/4] overflow-hidden cursor-pointer bg-[#e6e2d6] active:scale-[0.98] transition">
-                    <img src={p.image} alt="mix" className="h-full w-full object-cover" referrerPolicy="no-referrer" />
+                    <img src={p.image} alt="try-on" className="h-full w-full object-cover" referrerPolicy="no-referrer" />
                   </div>
                 ))}
               </div>
@@ -5964,7 +5962,6 @@ function CollapsibleNavigation({ activeTab, setActiveTab, mixItems, aura, onUplo
   const [isOpen, setIsOpen] = useState(false);
   const fileInputRef = useRef(null);
   const [tryOnStatus, setTryOnStatus] = useStore(tryOnStatusStore);
-  const [wardrobeNoticeCount, setWardrobeNoticeCount] = useStore(wardrobeNoticeStore);
   const isTryOnRunning = tryOnStatus.phase === "generating";
   const tryOnReadyCount = tryOnStatus.phase === "result" ? tryOnStatus.profileNotificationCount : 0;
 
@@ -5987,8 +5984,8 @@ function CollapsibleNavigation({ activeTab, setActiveTab, mixItems, aura, onUplo
     {
       id: "profile",
       label: "Me",
-      count: (tryOnReadyCount > 0 ? tryOnReadyCount : 0) + (wardrobeNoticeCount > 0 ? wardrobeNoticeCount : 0),
-      notification: tryOnReadyCount > 0 || wardrobeNoticeCount > 0,
+      count: tryOnReadyCount,
+      notification: tryOnReadyCount > 0,
       icon: <User size={22} strokeWidth={navActive === "profile" ? 2.6 : 2.2} />
     }
   ];
@@ -6009,6 +6006,14 @@ function CollapsibleNavigation({ activeTab, setActiveTab, mixItems, aura, onUplo
       onClick: () => videoStylistStore.setState(true)
     }
   ];
+
+  const openTryOnGeneratedNotice = () => {
+    profileTabStore.setState("tryons");
+    tryOnsSubTabStore.setState("Generated");
+    setTryOnStatus((prev) => ({ ...prev, profileNotificationCount: 0 }));
+    setActiveTab("profile");
+    setIsOpen(false);
+  };
 
   return (
     <>
@@ -6044,44 +6049,55 @@ function CollapsibleNavigation({ activeTab, setActiveTab, mixItems, aura, onUplo
           <div className="mb-2 px-2 text-[10px] font-bold uppercase tracking-[0.22em] text-white/35">Navigate</div>
           <div className="space-y-1">
             {navItems.map((item) => (
-              <button
-                key={item.id}
-                type="button"
-                onClick={() => {
-                  setActiveTab(item.id);
-                  // Clear notification badges as requested, but PRESERVE item data
-                  setWardrobeNoticeCount(0);
-                  setTryOnStatus((prev) => ({ ...prev, profileNotificationCount: 0 }));
-                  
-                  if (item.id === "profile") {
-                    profileTabStore.setState("mixes");
-                    mixesSubTabStore.setState("Generated");
-                  }
-                  setIsOpen(false);
-                }}
-                className={`flex w-full items-center gap-3 rounded-[1.2rem] px-3 py-2.5 text-left transition ${
-                  navActive === item.id
-                    ? item.id === "tryon"
-                      ? "bg-[#6c5ce7] text-white"
-                      : item.id === "profile" && item.notification
-                        ? "bg-[#27ae60] text-white"
-                      : "bg-white/[0.08] text-white"
-                    : item.highlighted
-                      ? "bg-[#6c5ce7]/18 text-[#cfc4ff] hover:bg-[#6c5ce7]/24"
-                      : item.notification
-                        ? "bg-[#27ae60]/18 text-[#9be2b5] hover:bg-[#27ae60]/24"
-                      : "text-white/84 hover:bg-white/[0.05]"
-                }`}
-              >
-                <div className={item.notification ? "text-[#9be2b5]" : item.highlighted ? "text-[#cfc4ff]" : "text-white/88"}>{item.icon}</div>
-                <span className="flex-1 text-[14px] font-semibold tracking-[0.01em]">{item.label}</span>
-                {item.count > 0 && item.id !== "tryon" && (
-                  <span className={`rounded-full px-2 py-0.5 text-[11px] font-bold ${item.notification ? "bg-[#27ae60] text-white" : navActive === item.id ? "bg-white/18 text-white" : "bg-[#6c5ce7] text-white"}`}>{item.count}</span>
+              <div key={item.id} className="flex w-full items-center gap-2">
+                <button
+                  type="button"
+                  onClick={() => {
+                    if (item.id === "profile" && item.count > 0) {
+                      openTryOnGeneratedNotice();
+                      return;
+                    }
+                    setActiveTab(item.id);
+                    if (item.id === "tryon") {
+                      // Ensure we are in the editor view
+                      setTryOnStatus((prev) => ({ ...prev, phase: "setup" }));
+                    }
+                    setIsOpen(false);
+                  }}
+                  className={`flex min-w-0 flex-1 items-center gap-3 rounded-[1.2rem] px-3 py-2.5 text-left transition ${
+                    navActive === item.id
+                      ? item.id === "tryon"
+                        ? "bg-[#6c5ce7] text-white"
+                        : item.id === "profile" && item.notification
+                          ? "bg-[#27ae60] text-white"
+                          : "bg-white/[0.08] text-white"
+                      : item.highlighted
+                        ? "bg-[#6c5ce7]/18 text-[#cfc4ff] hover:bg-[#6c5ce7]/24"
+                        : item.notification
+                          ? "bg-[#27ae60]/18 text-[#9be2b5] hover:bg-[#27ae60]/24"
+                          : "text-white/84 hover:bg-white/[0.05]"
+                  }`}
+                >
+                  <div className={item.notification ? "text-[#9be2b5]" : item.highlighted ? "text-[#cfc4ff]" : "text-white/88"}>{item.icon}</div>
+                  <span className="flex-1 text-[14px] font-semibold tracking-[0.01em]">{item.label}</span>
+                  {item.id === "tryon" && item.count > 0 && activeTab !== "tryon" && (
+                    <span className="rounded-full px-2 py-0.5 text-[11px] font-bold bg-[#6c5ce7] text-white">{item.count}</span>
+                  )}
+                </button>
+                {item.id === "profile" && item.count > 0 && (
+                  <button
+                    type="button"
+                    onClick={(e) => {
+                      e.preventDefault();
+                      e.stopPropagation();
+                      openTryOnGeneratedNotice();
+                    }}
+                    className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-[#27ae60] text-[11px] font-bold text-white shadow-[0_6px_14px_rgba(39,174,96,0.35)] transition hover:bg-[#219653]"
+                  >
+                    {item.count}
+                  </button>
                 )}
-                {item.id === "tryon" && item.count > 0 && activeTab !== "tryon" && (
-                  <span className="rounded-full px-2 py-0.5 text-[11px] font-bold bg-[#6c5ce7] text-white">{item.count}</span>
-                )}
-              </button>
+              </div>
             ))}
           </div>
           </div>
@@ -6090,26 +6106,23 @@ function CollapsibleNavigation({ activeTab, setActiveTab, mixItems, aura, onUplo
             type="button"
             onClick={() => {
               setIsOpen((prev) => !prev);
-              // Clear notification badges when menu is interacted with, but PRESERVE data
-              setWardrobeNoticeCount(0);
-              setTryOnStatus((prev) => ({ ...prev, profileNotificationCount: 0 }));
             }}
             className={`pointer-events-auto relative flex h-[48px] w-[48px] items-center justify-center rounded-full border border-white/10 bg-[#141414] text-white shadow-[0_10px_24px_rgba(0,0,0,0.24)] transition-all duration-300 ${
               isOpen ? "rotate-45 bg-[#1b1b1b]" : "hover:bg-[#1d1d1d]"
             }`}
           >
             <Plus size={18} strokeWidth={2.5} />
-            {(isTryOnRunning || tryOnReadyCount > 0 || wardrobeNoticeCount > 0 || mixItems > 0) && (
+            {(isTryOnRunning || tryOnReadyCount > 0 || mixItems > 0) && (
               <span
                 className={`absolute -right-1 -top-1 flex min-w-[18px] items-center justify-center rounded-full px-1.5 py-[1px] text-center text-[10px] font-bold text-white ${
                   isTryOnRunning
                     ? "bg-[#6c5ce7] shadow-[0_6px_14px_rgba(108,92,231,0.35)]"
-                    : tryOnReadyCount > 0 || wardrobeNoticeCount > 0
+                    : tryOnReadyCount > 0
                       ? "bg-[#27ae60] shadow-[0_6px_14px_rgba(39,174,96,0.35)]"
                       : activeTab === "tryon" ? "hidden" : "bg-[#6c5ce7] shadow-[0_6px_14px_rgba(108,92,231,0.35)]"
                 }`}
               >
-                {isTryOnRunning ? <Loader2 size={10} className="animate-spin" /> : tryOnReadyCount > 0 ? tryOnReadyCount : wardrobeNoticeCount > 0 ? wardrobeNoticeCount : (activeTab === "tryon" ? 0 : mixItems)}
+                {isTryOnRunning ? <Loader2 size={10} className="animate-spin" /> : tryOnReadyCount > 0 ? tryOnReadyCount : (activeTab === "tryon" ? 0 : mixItems)}
               </span>
             )}
           </button>

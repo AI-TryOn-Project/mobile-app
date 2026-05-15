@@ -5592,34 +5592,67 @@ const MOCK_SKILLS = [
   }
 ];
 
-function SkillCard({ skill, onClick, isFollowed }) {
+function SkillCard({ skill, onClick, isFollowed, featured }) {
+  if (featured) {
+    return (
+      <button
+        type="button"
+        onClick={onClick}
+        className="group relative w-full overflow-hidden rounded-[28px] active:scale-[0.99] transition"
+        style={{ height: 220 }}
+      >
+        <img src={skill.cover} alt={skill.name} className="absolute inset-0 h-full w-full object-cover transition duration-500 group-hover:scale-105" />
+        <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/30 to-transparent" />
+        {isFollowed && (
+          <div className="absolute top-3 right-3 flex items-center gap-1 rounded-full bg-white/15 backdrop-blur-sm border border-white/25 px-2.5 py-1">
+            <div className="h-1.5 w-1.5 rounded-full bg-[#a29bfe]" />
+            <span className="text-[10px] font-bold uppercase tracking-wider text-white">Following</span>
+          </div>
+        )}
+        <div className="absolute bottom-0 left-0 right-0 p-4 text-left">
+          <div className="mb-1 flex items-center gap-2">
+            <span className="rounded-full bg-white/20 backdrop-blur-sm px-2 py-0.5 text-[10px] font-semibold text-white/90">{skill.author}</span>
+            <span className="flex items-center gap-0.5 text-[11px] font-bold text-amber-400">★ {skill.rating}</span>
+          </div>
+          <h3 className="text-[20px] font-bold leading-tight text-white">{skill.name}</h3>
+          <p className="mt-0.5 line-clamp-1 text-[12px] text-white/70">{skill.tagline}</p>
+          <div className="mt-2 flex items-center gap-3 text-[11px] text-white/55">
+            <span>{skill.followers.toLocaleString()} following</span>
+            <span className="text-white/30">·</span>
+            <span>{skill.usedCount.toLocaleString()} styled</span>
+          </div>
+        </div>
+      </button>
+    );
+  }
+
   return (
     <button
       type="button"
       onClick={onClick}
-      className="group relative flex w-full flex-col overflow-hidden rounded-3xl bg-white shadow-[0_2px_10px_rgba(0,0,0,0.04)] transition active:scale-[0.99]"
+      className="group relative flex w-full flex-col overflow-hidden rounded-[22px] bg-white active:scale-[0.98] transition shadow-[0_1px_8px_rgba(0,0,0,0.06),0_4px_20px_rgba(0,0,0,0.04)]"
     >
-      <div className="relative aspect-[3/4] w-full overflow-hidden bg-neutral-100">
-        <img src={skill.cover} alt={skill.name} className="h-full w-full object-cover transition group-hover:scale-105" />
+      <div className="relative w-full overflow-hidden bg-neutral-100" style={{ aspectRatio: "3/4" }}>
+        <img src={skill.cover} alt={skill.name} className="h-full w-full object-cover transition duration-500 group-hover:scale-105" />
+        <div className="absolute inset-0 bg-gradient-to-t from-black/50 via-transparent to-transparent" />
         {isFollowed && (
-          <div className="absolute top-3 right-3 rounded-full bg-white/95 px-2.5 py-1 text-[10px] font-bold uppercase tracking-wider text-[#6c5ce7]">
-            Following
+          <div className="absolute top-2.5 right-2.5 flex items-center gap-1 rounded-full bg-[#6c5ce7] px-2 py-0.5">
+            <div className="h-1.5 w-1.5 rounded-full bg-white/80" />
+            <span className="text-[9px] font-bold uppercase tracking-wider text-white">On</span>
           </div>
         )}
-      </div>
-      <div className="flex flex-col gap-1 px-3.5 py-3 text-left">
-        <div className="flex items-center justify-between gap-2">
-          <h3 className="truncate text-[15px] font-semibold text-neutral-900">{skill.name}</h3>
-          <div className="flex shrink-0 items-center gap-0.5 text-[11px] font-semibold text-amber-500">
-            <span>★</span>
-            <span>{skill.rating}</span>
-          </div>
+        <div className="absolute bottom-2.5 left-2.5 flex items-center gap-1 rounded-full bg-black/30 backdrop-blur-sm px-2 py-0.5">
+          <span className="text-[10px] font-bold text-amber-400">★</span>
+          <span className="text-[10px] font-semibold text-white">{skill.rating}</span>
         </div>
-        <p className="text-[11px] text-neutral-500">{skill.author}</p>
-        <p className="line-clamp-2 text-[12px] leading-snug text-neutral-700">{skill.tagline}</p>
-        <div className="mt-1 flex items-center gap-3 text-[11px] text-neutral-500">
-          <span>{skill.followers.toLocaleString()} following</span>
-          <span>•</span>
+      </div>
+      <div className="flex flex-col gap-0.5 px-3 pt-2.5 pb-3 text-left">
+        <h3 className="truncate text-[13px] font-bold text-neutral-900 leading-snug">{skill.name}</h3>
+        <p className="text-[11px] text-[#6c5ce7] font-semibold">{skill.author}</p>
+        <p className="mt-0.5 line-clamp-2 text-[11px] leading-snug text-neutral-500">{skill.tagline}</p>
+        <div className="mt-1.5 flex items-center gap-1.5 text-[10px] text-neutral-400">
+          <span>{(skill.followers / 1000).toFixed(1)}k</span>
+          <span>·</span>
           <span>{skill.usedCount.toLocaleString()} styled</span>
         </div>
       </div>
@@ -5629,55 +5662,93 @@ function SkillCard({ skill, onClick, isFollowed }) {
 
 function SkillDetailView({ skill, isFollowed, onToggleFollow, onBack, onUseSkill }) {
   return (
-    <div className="absolute inset-0 flex flex-col bg-[#f5f3ef]">
-      <div className="flex items-center justify-between px-4 pt-12 pb-3">
-        <button type="button" onClick={onBack} className="flex h-10 w-10 items-center justify-center rounded-full bg-white shadow-sm">
-          <ChevronLeft size={20} />
-        </button>
-        <button
-          type="button"
-          onClick={onToggleFollow}
-          className={`rounded-full px-4 py-2 text-[12px] font-bold transition ${
-            isFollowed ? "bg-neutral-200 text-neutral-700" : "bg-[#6c5ce7] text-white"
-          }`}
-        >
-          {isFollowed ? "Following" : "+ Follow"}
-        </button>
-      </div>
-      <div className="flex-1 overflow-y-auto px-4 pb-32 scrollbar-hide">
-        <div className="mb-1 text-[11px] font-bold uppercase tracking-[0.18em] text-[#6c5ce7]">{skill.author}</div>
-        <h1 className="text-[26px] font-bold leading-tight text-neutral-900">{skill.name}</h1>
-        <p className="mt-2 text-[14px] text-neutral-600">{skill.tagline}</p>
-        <div className="mt-3 flex items-center gap-4 text-[12px] text-neutral-500">
-          <span>★ {skill.rating}</span>
-          <span>{skill.followers.toLocaleString()} following</span>
-          <span>{skill.usedCount.toLocaleString()} styled</span>
+    <div className="absolute inset-0 flex flex-col bg-[#0d0d0d] overflow-hidden">
+      {/* Hero image */}
+      <div className="relative shrink-0 overflow-hidden" style={{ height: "52%" }}>
+        <img src={skill.cover} alt={skill.name} className="h-full w-full object-cover" />
+        <div className="absolute inset-0 bg-gradient-to-b from-black/40 via-transparent to-black/60" />
+        <div className="absolute top-0 left-0 right-0 flex items-center justify-between px-4 pt-12 pb-3">
+          <button
+            type="button"
+            onClick={onBack}
+            className="flex h-10 w-10 items-center justify-center rounded-full bg-white/15 backdrop-blur-sm border border-white/20"
+          >
+            <ChevronLeft size={20} className="text-white" />
+          </button>
+          <button
+            type="button"
+            onClick={onToggleFollow}
+            className={`rounded-full px-5 py-2 text-[12px] font-bold transition backdrop-blur-sm ${
+              isFollowed ? "bg-white/20 border border-white/30 text-white" : "bg-white text-[#6c5ce7]"
+            }`}
+          >
+            {isFollowed ? "✓ Following" : "+ Follow"}
+          </button>
         </div>
-
-        <div className="mt-6 mb-2 text-[11px] font-bold uppercase tracking-[0.18em] text-neutral-400">Style DNA</div>
-        <div className="space-y-2">
-          {skill.rules.map((rule, i) => (
-            <div key={i} className="flex items-start gap-3 rounded-2xl bg-white px-4 py-3">
-              <div className="mt-0.5 flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-[#6c5ce7]/12 text-[11px] font-bold text-[#6c5ce7]">{i + 1}</div>
-              <p className="text-[13px] leading-snug text-neutral-700">{rule}</p>
-            </div>
-          ))}
-        </div>
-
-        <div className="mt-6 mb-2 text-[11px] font-bold uppercase tracking-[0.18em] text-neutral-400">Moodboard</div>
-        <div className="grid grid-cols-2 gap-2">
-          {skill.moodboard.map((src, i) => (
-            <div key={i} className="aspect-[3/4] overflow-hidden rounded-2xl bg-neutral-200">
-              <img src={src} alt="" className="h-full w-full object-cover" />
-            </div>
-          ))}
+        <div className="absolute bottom-0 left-0 right-0 px-5 pb-4">
+          <div className="mb-1 text-[11px] font-bold uppercase tracking-[0.18em] text-[#a29bfe]">{skill.author}</div>
+          <h1 className="text-[28px] font-bold leading-tight text-white">{skill.name}</h1>
         </div>
       </div>
-      <div className="absolute inset-x-0 bottom-0 px-4 pb-8 pt-3 bg-gradient-to-t from-[#f5f3ef] via-[#f5f3ef] to-transparent">
+
+      {/* Content sheet */}
+      <div className="flex-1 overflow-y-auto rounded-t-[28px] -mt-5 bg-[#f7f6f3] scrollbar-hide">
+        <div className="px-5 pt-5 pb-36">
+          <p className="text-[14px] leading-relaxed text-neutral-600">{skill.tagline}</p>
+          <div className="mt-3 flex items-center gap-4">
+            <div className="flex items-center gap-1.5 rounded-2xl bg-amber-50 border border-amber-100 px-3 py-1.5">
+              <span className="text-[13px] text-amber-500">★</span>
+              <span className="text-[13px] font-bold text-amber-700">{skill.rating}</span>
+            </div>
+            <div className="flex flex-col">
+              <span className="text-[13px] font-bold text-neutral-800">{skill.followers.toLocaleString()}</span>
+              <span className="text-[10px] uppercase tracking-wide text-neutral-400">following</span>
+            </div>
+            <div className="flex flex-col">
+              <span className="text-[13px] font-bold text-neutral-800">{skill.usedCount.toLocaleString()}</span>
+              <span className="text-[10px] uppercase tracking-wide text-neutral-400">styled</span>
+            </div>
+          </div>
+
+          <div className="mt-6">
+            <div className="mb-3 flex items-center gap-2">
+              <span className="text-[11px] font-bold uppercase tracking-[0.18em] text-neutral-400">Style DNA</span>
+              <div className="flex-1 h-px bg-neutral-200" />
+            </div>
+            <div className="space-y-2">
+              {skill.rules.map((rule, i) => (
+                <div key={i} className="flex items-start gap-3 rounded-2xl bg-white border border-neutral-100 px-4 py-3.5 shadow-sm">
+                  <div className="mt-0.5 flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-[#6c5ce7] text-[11px] font-bold text-white">{i + 1}</div>
+                  <p className="text-[13px] leading-snug text-neutral-700 font-medium">{rule}</p>
+                </div>
+              ))}
+            </div>
+          </div>
+
+          <div className="mt-6">
+            <div className="mb-3 flex items-center gap-2">
+              <span className="text-[11px] font-bold uppercase tracking-[0.18em] text-neutral-400">Moodboard</span>
+              <div className="flex-1 h-px bg-neutral-200" />
+            </div>
+            <div className="mb-2 w-full overflow-hidden rounded-2xl bg-neutral-200" style={{ aspectRatio: "16/9" }}>
+              <img src={skill.moodboard[0]} alt="" className="h-full w-full object-cover" />
+            </div>
+            <div className="grid grid-cols-3 gap-1.5">
+              {skill.moodboard.slice(1).map((src, i) => (
+                <div key={i} className="overflow-hidden rounded-xl bg-neutral-200" style={{ aspectRatio: "3/4" }}>
+                  <img src={src} alt="" className="h-full w-full object-cover" />
+                </div>
+              ))}
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div className="absolute inset-x-0 bottom-0 px-4 pb-8 pt-4 bg-gradient-to-t from-[#f7f6f3] via-[#f7f6f3] to-transparent">
         <button
           type="button"
           onClick={onUseSkill}
-          className="w-full rounded-full bg-[#6c5ce7] py-4 text-[15px] font-bold text-white shadow-[0_8px_24px_rgba(108,92,231,0.35)] active:scale-[0.98]"
+          className="w-full rounded-full bg-[#6c5ce7] py-4 text-[15px] font-bold text-white shadow-[0_8px_32px_rgba(108,92,231,0.4)] active:scale-[0.98] transition"
         >
           Style my wardrobe with this skill
         </button>
@@ -5701,6 +5772,7 @@ function SkillsTab() {
   };
 
   const visibleSkills = subTab === "discover" ? MOCK_SKILLS : MOCK_SKILLS.filter((s) => followed.has(s.id));
+  const [featured, ...rest] = visibleSkills;
 
   if (selectedSkill) {
     return (
@@ -5717,21 +5789,29 @@ function SkillsTab() {
   }
 
   return (
-    <div className="px-4 pt-12 pb-8">
-      <h1 className="text-[28px] font-bold tracking-tight text-neutral-900">Skills</h1>
-      <p className="mt-1 text-[13px] text-neutral-500">Borrow a stylist's eye for your closet.</p>
+    <div className="px-4 pt-12 pb-24">
+      <div className="flex items-end justify-between mb-1">
+        <div>
+          <h1 className="text-[30px] font-bold tracking-tight text-neutral-900 leading-none">Skills</h1>
+          <p className="mt-1.5 text-[13px] text-neutral-500">Borrow a stylist's eye for your closet.</p>
+        </div>
+        <div className="flex items-center gap-1 rounded-full bg-[#6c5ce7]/10 px-3 py-1.5">
+          <Wand2 size={12} className="text-[#6c5ce7]" />
+          <span className="text-[11px] font-bold text-[#6c5ce7]">{MOCK_SKILLS.length} skills</span>
+        </div>
+      </div>
 
-      <div className="mt-5 flex gap-1.5 rounded-full bg-neutral-200/70 p-1">
+      <div className="mt-5 flex gap-1 rounded-2xl bg-neutral-100 p-1">
         {[
           { id: "discover", label: "Discover" },
-          { id: "mine", label: `My Skills${followed.size > 0 ? ` · ${followed.size}` : ""}` }
+          { id: "mine", label: `My Skills${followed.size > 0 ? `  ${followed.size}` : ""}` }
         ].map((tab) => (
           <button
             key={tab.id}
             type="button"
             onClick={() => setSubTab(tab.id)}
-            className={`flex-1 rounded-full px-4 py-2 text-[13px] font-semibold transition ${
-              subTab === tab.id ? "bg-white text-neutral-900 shadow-sm" : "text-neutral-500"
+            className={`flex-1 rounded-xl px-4 py-2.5 text-[13px] font-bold transition ${
+              subTab === tab.id ? "bg-white text-neutral-900 shadow-[0_1px_4px_rgba(0,0,0,0.08)]" : "text-neutral-500"
             }`}
           >
             {tab.label}
@@ -5740,28 +5820,42 @@ function SkillsTab() {
       </div>
 
       {visibleSkills.length === 0 ? (
-        <div className="mt-12 flex flex-col items-center text-center">
-          <Wand2 size={32} className="text-neutral-300" />
-          <p className="mt-3 text-[14px] font-semibold text-neutral-700">No skills yet</p>
-          <p className="mt-1 text-[12px] text-neutral-500">Follow a stylist's skill from Discover to see it here.</p>
+        <div className="mt-16 flex flex-col items-center text-center">
+          <div className="flex h-16 w-16 items-center justify-center rounded-full bg-neutral-100">
+            <Wand2 size={28} className="text-neutral-300" />
+          </div>
+          <p className="mt-4 text-[16px] font-bold text-neutral-700">No skills yet</p>
+          <p className="mt-1 text-[13px] text-neutral-500 max-w-[200px]">Follow a skill from Discover to see it here.</p>
           <button
             type="button"
             onClick={() => setSubTab("discover")}
-            className="mt-4 rounded-full bg-[#6c5ce7] px-5 py-2 text-[12px] font-bold text-white"
+            className="mt-5 rounded-full bg-[#6c5ce7] px-6 py-2.5 text-[13px] font-bold text-white shadow-[0_4px_16px_rgba(108,92,231,0.35)]"
           >
             Browse Discover
           </button>
         </div>
       ) : (
-        <div className="mt-5 grid grid-cols-2 gap-3">
-          {visibleSkills.map((skill) => (
+        <div className="mt-5 space-y-3">
+          {featured && (
             <SkillCard
-              key={skill.id}
-              skill={skill}
-              isFollowed={followed.has(skill.id)}
-              onClick={() => setSelectedSkill(skill)}
+              skill={featured}
+              isFollowed={followed.has(featured.id)}
+              onClick={() => setSelectedSkill(featured)}
+              featured
             />
-          ))}
+          )}
+          {rest.length > 0 && (
+            <div className="grid grid-cols-2 gap-3">
+              {rest.map((skill) => (
+                <SkillCard
+                  key={skill.id}
+                  skill={skill}
+                  isFollowed={followed.has(skill.id)}
+                  onClick={() => setSelectedSkill(skill)}
+                />
+              ))}
+            </div>
+          )}
         </div>
       )}
     </div>

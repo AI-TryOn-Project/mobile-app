@@ -131,7 +131,7 @@ function SkillCard({
         <Image source={{ uri: skill.cover }} resizeMode="cover" style={styles.imageFill} />
         {isFollowed ? (
           <View style={[styles.badge, styles.addedBadge]}>
-            <Text style={styles.addedBadgeText}>ADDED</Text>
+            <Text style={styles.addedBadgeText}>Added</Text>
           </View>
         ) : (
           <View style={[styles.badge, styles.priceBadge]}>
@@ -373,7 +373,7 @@ const styles = StyleSheet.create({
     lineHeight: 35,
     fontFamily: fontFamily.sansBold,
     color: colors.textInk,
-    letterSpacing: -0.5,
+    letterSpacing: -0.7,
   },
   headerSubtitle: {
     marginTop: 4,
@@ -453,7 +453,8 @@ const styles = StyleSheet.create({
     lineHeight: 15,
     fontFamily: fontFamily.sansBold,
     color: colors.accentPurple,
-    letterSpacing: 1.2,
+    textTransform: 'uppercase',
+    letterSpacing: 0.5,
   },
   priceBadge: {
     left: 12,
@@ -465,7 +466,8 @@ const styles = StyleSheet.create({
     lineHeight: 15,
     fontFamily: fontFamily.sansBold,
     color: colors.textBody,
-    letterSpacing: 1.2,
+    textTransform: 'uppercase',
+    letterSpacing: 0.5,
   },
   ratingBadge: {
     position: 'absolute',
@@ -482,8 +484,7 @@ const styles = StyleSheet.create({
   ratingStar: {
     fontSize: 11,
     lineHeight: 17,
-    fontFamily: fontFamily.sansSemiBold,
-    color: colors.accentYellow,
+    color: colors.accentAmber300,
   },
   ratingText: {
     fontSize: 11,
@@ -540,11 +541,6 @@ const styles = StyleSheet.create({
     borderRadius: radii.pill,
     paddingHorizontal: 16,
     paddingVertical: 8,
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 6 },
-    shadowOpacity: 0.1,
-    shadowRadius: 18,
-    elevation: 4,
   },
   actionButtonAdded: { backgroundColor: colors.borderLight },
   actionButtonPrimary: { backgroundColor: colors.accentPurple },
@@ -568,9 +564,7 @@ const styles = StyleSheet.create({
     overflow: 'hidden',
     borderRadius: radii.pill,
     backgroundColor: colors.borderLight,
-    borderWidth: 2,
-    borderColor: colors.white,
-    ...shadows.smallShadow,
+    boxShadow: '0 0 0 2px #ffffff, 0 1px 3px rgba(0,0,0,0.15)',
   },
   authorHandle: {
     fontSize: 13,

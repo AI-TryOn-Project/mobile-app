@@ -109,12 +109,16 @@ type ProfileTab = (typeof PROFILE_TABS)[number]['id']
 
 export function ProfileScreen() {
   const setActiveTab = useAppStore((s) => s.setActiveTab)
-  const { width } = useWindowDimensions()
+  const { width: windowWidth } = useWindowDimensions()
   const [tab, setTab] = useState<ProfileTab>('wishlist')
   const [category, setCategory] =
     useState<(typeof WISHLIST_CATEGORIES)[number]>('All')
 
-  const cardWidth = (width - spacing.base * 2 - spacing.md) / 2
+  const CARD_GAP = 12
+  const GRID_PADDING_H = 8
+  const cardWidth = (windowWidth - GRID_PADDING_H * 2 - CARD_GAP) / 2
+  const styleCardHeight = (cardWidth * 4) / 3
+  const itemImageHeight = (cardWidth * 5) / 4
   const visibleWishlist =
     category === 'All'
       ? MOCK_WISHLIST
@@ -125,7 +129,7 @@ export function ProfileScreen() {
   return (
     <ScrollView
       style={{ flex: 1, backgroundColor: colors.cardWhite }}
-      contentContainerStyle={{ paddingBottom: 100 }}
+      contentContainerStyle={{ paddingBottom: 96 }}
     >
       <LinearGradient
         colors={['#f5f5f7', '#ffffff']}
@@ -152,7 +156,7 @@ export function ProfileScreen() {
               backgroundColor: 'rgba(255,255,255,0.8)',
               alignItems: 'center',
               justifyContent: 'center',
-              ...shadows.composer,
+              ...shadows.smallShadow,
             }}
           >
             <ChevronLeft size={20} color={colors.textPrimary} />
@@ -188,7 +192,7 @@ export function ProfileScreen() {
                 borderColor: colors.white,
                 overflow: 'hidden',
                 backgroundColor: '#f0f0f0',
-                ...shadows.composer,
+                ...shadows.mediumShadow,
               }}
             >
               <Image source={{ uri: MOCK_PROFILE.avatar }} style={{ width: '100%', height: '100%' }} />
@@ -218,7 +222,8 @@ export function ProfileScreen() {
                 fontSize: 22,
                 fontWeight: '700',
                 color: colors.textPrimary,
-                lineHeight: 26,
+                lineHeight: 28,
+                marginBottom: 2,
                 fontFamily: fontFamily.sansBold,
               }}
             >
@@ -228,7 +233,8 @@ export function ProfileScreen() {
               style={{
                 fontSize: typography.small,
                 color: colors.textMutedGray,
-                marginTop: 2,
+                lineHeight: 18,
+                marginBottom: 12,
                 fontFamily: fontFamily.sans,
               }}
             >
@@ -256,12 +262,20 @@ export function ProfileScreen() {
                   fontSize: 18,
                   fontWeight: '700',
                   color: colors.textPrimary,
+                  lineHeight: 27,
                   fontFamily: fontFamily.sansBold,
                 }}
               >
                 {stat.value}
               </Text>
-              <Text style={{ fontSize: typography.small, color: colors.textMutedGray, marginTop: 2 }}>
+              <Text
+                style={{
+                  fontSize: typography.small,
+                  color: colors.textMutedGray,
+                  lineHeight: 18,
+                  fontFamily: fontFamily.sansMedium,
+                }}
+              >
                 {stat.label}
               </Text>
             </View>
@@ -295,6 +309,7 @@ export function ProfileScreen() {
                   style={{
                     fontSize: typography.bodyMd,
                     color: isActive ? colors.textPrimary : colors.textMutedGray,
+                    lineHeight: 21,
                     fontFamily: isActive ? fontFamily.sansBold : fontFamily.sansMedium,
                   }}
                 >
@@ -321,7 +336,11 @@ export function ProfileScreen() {
           <ScrollView
             horizontal
             showsHorizontalScrollIndicator={false}
-            style={{ backgroundColor: colors.white }}
+            style={{
+              backgroundColor: colors.white,
+              borderBottomWidth: 1,
+              borderBottomColor: '#f9f9f9',
+            }}
             contentContainerStyle={{
               flexDirection: 'row',
               gap: spacing.sm,
@@ -348,6 +367,8 @@ export function ProfileScreen() {
                       fontSize: typography.body,
                       fontWeight: '700',
                       color: isActive ? colors.white : colors.textMutedGray,
+                      lineHeight: 19.5,
+                      fontFamily: fontFamily.sansBold,
                     }}
                   >
                     {item}
@@ -362,8 +383,9 @@ export function ProfileScreen() {
       {tab === 'wishlist' ? (
         <View
           style={{
-            paddingHorizontal: spacing.base,
+            paddingHorizontal: spacing.sm,
             paddingTop: spacing.base,
+            paddingBottom: 80,
             flexDirection: 'row',
             flexWrap: 'wrap',
             gap: spacing.md,
@@ -375,55 +397,72 @@ export function ProfileScreen() {
                 key={item.id}
                 style={{
                   width: cardWidth,
-                  aspectRatio: 3 / 4,
+                  height: styleCardHeight,
                   borderRadius: radii.md,
                   overflow: 'hidden',
                   backgroundColor: colors.pillMutedBg,
+                  borderWidth: 1,
+                  borderColor: '#f0f0f0',
+                  ...shadows.smallShadow,
                 }}
               >
-                <Image source={{ uri: item.image }} style={{ width: '100%', height: '100%' }} />
-                <View
+                <Image
+                  source={{ uri: item.image }}
+                  resizeMode="cover"
+                  style={{ width: '100%', height: '100%' }}
+                />
+                <LinearGradient
+                  colors={['transparent', 'rgba(0,0,0,0.6)']}
                   style={{
                     position: 'absolute',
                     bottom: 0,
                     left: 0,
                     right: 0,
-                    padding: spacing.md,
+                    padding: spacing.base,
                   }}
                 >
                   <Text
                     style={{
-                      fontSize: typography.bodyMd,
+                      fontSize: typography.caption,
                       fontWeight: '700',
                       color: colors.white,
+                      lineHeight: 15,
+                      fontFamily: fontFamily.sansBold,
                     }}
                   >
                     {item.title}
                   </Text>
-                </View>
+                </LinearGradient>
               </View>
             ) : (
               <View key={item.id} style={{ width: cardWidth }}>
                 <View
                   style={{
-                    aspectRatio: 4 / 5,
+                    width: cardWidth,
+                    height: itemImageHeight,
                     borderRadius: radii.md,
                     overflow: 'hidden',
                     backgroundColor: colors.pillMutedBg,
                     marginBottom: spacing.sm,
+                    ...shadows.smallShadow,
                   }}
                 >
-                  <Image source={{ uri: item.image }} style={{ width: '100%', height: '100%' }} />
+                  <Image
+                    source={{ uri: item.image }}
+                    resizeMode="cover"
+                    style={{ width: '100%', height: '100%' }}
+                  />
                 </View>
                 <View style={{ paddingHorizontal: spacing.xs }}>
                   <Text
                     numberOfLines={1}
                     style={{
                       fontSize: typography.caption,
-                      fontWeight: '700',
+                      lineHeight: 15,
+                      fontFamily: fontFamily.sansBold,
                       color: colors.textDark,
                       textTransform: 'uppercase',
-                      letterSpacing: 1.2,
+                      letterSpacing: 1,
                     }}
                   >
                     {item.brand}
@@ -432,6 +471,8 @@ export function ProfileScreen() {
                     numberOfLines={1}
                     style={{
                       fontSize: typography.small,
+                      lineHeight: 18,
+                      fontFamily: fontFamily.sans,
                       color: '#4a4a4a',
                       marginTop: 2,
                     }}
@@ -441,7 +482,8 @@ export function ProfileScreen() {
                   <Text
                     style={{
                       fontSize: typography.small,
-                      fontWeight: '700',
+                      lineHeight: 18,
+                      fontFamily: fontFamily.sansBold,
                       color: colors.textDark,
                       marginTop: spacing.xs,
                     }}
@@ -455,7 +497,16 @@ export function ProfileScreen() {
         </View>
       ) : (
         <View style={{ padding: 48, alignItems: 'center' }}>
-          <Text style={{ fontSize: typography.bodyMd, color: colors.textMutedGray }}>Coming soon</Text>
+          <Text
+            style={{
+              fontSize: typography.bodyMd,
+              color: colors.textMutedGray,
+              lineHeight: 21,
+              fontFamily: fontFamily.sans,
+            }}
+          >
+            Coming soon
+          </Text>
         </View>
       )}
     </ScrollView>

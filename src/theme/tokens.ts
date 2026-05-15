@@ -39,6 +39,12 @@ export const colors = {
   white: '#ffffff',
   toastBg: '#1a1a1a',
   analyzeBadgePurple: '#8b2cff',
+  pillTrackBg: 'rgba(229,229,229,0.7)',
+  textNeutral500: '#737373',
+  textNeutral600: '#525252',
+  textNeutral700: '#404040',
+  overlayDark55: 'rgba(0,0,0,0.55)',
+  overlayWhite92: 'rgba(255,255,255,0.92)',
 } as const
 
 export const shadows = {

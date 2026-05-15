@@ -30,6 +30,10 @@ export const colors = {
   accentPurpleMuted: 'rgba(108,92,231,0.18)',
   accentGreen: '#27ae60',
   accentGreenMuted: 'rgba(39,174,96,0.18)',
+  accentRed: '#ff2442',
+  accentYellow: '#ffdb00',
+  bgPillMuted: '#f5f5f7',
+  textPrimary: '#333333',
   /** questions step */
   questionsBg: '#000000',
   white: '#ffffff',

@@ -27,34 +27,74 @@ const WISHLIST_CATEGORIES = [
 
 const MOCK_WISHLIST = [
   {
-    id: 1,
+    id: 107,
     title: 'Satin Slip Style',
-    image: 'https://cdn.mos.cms.futurecdn.net/kS7tzWxXP88T2GY46gju99-1600-80.jpg.webp',
+    brand: 'Night Out',
+    name: 'Satin Slip Style',
+    price: 'Style',
+    image: 'https://img.ltwebstatic.com/v4/j/ssms/2025/12/08/98/176517802406eeaa10fc33833c369290b28242b73d_thumbnail_420x.webp',
+    category: 'Styles',
+    type: 'STYLE',
   },
   {
-    id: 2,
+    id: 106,
     title: 'Cashmere & Denim',
+    brand: 'Modern Minimal',
+    name: 'Cashmere & Denim',
+    price: 'Style',
+    image: 'https://i.pinimg.com/736x/d0/da/e0/d0dae0f6ecdae7f438a95fcc156e0da7.jpg',
+    category: 'Styles',
+    type: 'STYLE',
+  },
+  {
+    id: 105,
+    title: 'Minimalist Blazer Look',
+    brand: 'Chic Style',
+    name: 'Minimalist Blazer Look',
+    price: 'Style',
+    image: 'https://i.pinimg.com/736x/f8/be/0f/f8be0ff9016bead77eeaff91060fe826.jpg',
+    category: 'Styles',
+    type: 'STYLE',
+  },
+  {
+    id: 104,
+    title: null,
+    brand: 'Reformation',
+    name: 'Linen waistcoat',
+    price: '$128',
+    image: 'https://cdn.mos.cms.futurecdn.net/V2Phz4BcHo7yoDwLtXKMgQ-1600-80.jpg.webp',
+    category: 'Tops',
+    type: 'ITEM',
+  },
+  {
+    id: 103,
+    title: null,
+    brand: 'MANGO',
+    name: 'Pleated trousers',
+    price: '$99',
+    image: 'https://cdn.mos.cms.futurecdn.net/myGZ3oP99vpGPSukjsfGLi-1600-80.jpg.webp',
+    category: 'Bottoms',
+    type: 'ITEM',
+  },
+  {
+    id: 102,
+    title: null,
+    brand: 'SSENSE',
+    name: 'Summer tote',
+    price: '$340',
     image: 'https://cdn.mos.cms.futurecdn.net/5iP9pDMJAgVMfnbkGVjWhd-1600-80.jpg.webp',
+    category: 'Bags',
+    type: 'ITEM',
   },
   {
-    id: 3,
+    id: 101,
     title: null,
-    image: 'https://i.pinimg.com/736x/74/db/da/74dbda7b91e9f033d41a304c38b2bc1b.jpg',
-  },
-  {
-    id: 4,
-    title: null,
-    image: 'https://i.pinimg.com/736x/66/e9/47/66e9479e255e594de1f29fe1c3c27067.jpg',
-  },
-  {
-    id: 5,
-    title: null,
-    image: 'https://i.pinimg.com/736x/98/8c/44/988c44232d4e09159f3820c238e3586c.jpg',
-  },
-  {
-    id: 6,
-    title: null,
-    image: 'https://i.pinimg.com/1200x/75/5a/98/755a98d93f917608e6eb73c2a77e7481.jpg',
+    brand: 'ZARA',
+    name: 'Satin maxi dress',
+    price: '$89',
+    image: 'https://cdn.mos.cms.futurecdn.net/kS7tzWxXP88T2GY46gju99-1600-80.jpg.webp',
+    category: 'Dresses',
+    type: 'ITEM',
   },
 ] as const
 
@@ -75,6 +115,12 @@ export function ProfileScreen() {
     useState<(typeof WISHLIST_CATEGORIES)[number]>('All')
 
   const cardWidth = (width - spacing.base * 2 - spacing.md) / 2
+  const visibleWishlist =
+    category === 'All'
+      ? MOCK_WISHLIST
+      : category === 'Styles'
+        ? MOCK_WISHLIST.filter((item) => item.type === 'STYLE')
+        : MOCK_WISHLIST.filter((item) => item.category === category)
 
   return (
     <ScrollView
@@ -323,19 +369,19 @@ export function ProfileScreen() {
             gap: spacing.md,
           }}
         >
-          {MOCK_WISHLIST.map((item) => (
-            <View
-              key={item.id}
-              style={{
-                width: cardWidth,
-                aspectRatio: 3 / 4,
-                borderRadius: radii.md,
-                overflow: 'hidden',
-                backgroundColor: colors.pillMutedBg,
-              }}
-            >
-              <Image source={{ uri: item.image }} style={{ width: '100%', height: '100%' }} />
-              {item.title ? (
+          {visibleWishlist.map((item) =>
+            item.type === 'STYLE' ? (
+              <View
+                key={item.id}
+                style={{
+                  width: cardWidth,
+                  aspectRatio: 3 / 4,
+                  borderRadius: radii.md,
+                  overflow: 'hidden',
+                  backgroundColor: colors.pillMutedBg,
+                }}
+              >
+                <Image source={{ uri: item.image }} style={{ width: '100%', height: '100%' }} />
                 <View
                   style={{
                     position: 'absolute',
@@ -355,9 +401,57 @@ export function ProfileScreen() {
                     {item.title}
                   </Text>
                 </View>
-              ) : null}
-            </View>
-          ))}
+              </View>
+            ) : (
+              <View key={item.id} style={{ width: cardWidth }}>
+                <View
+                  style={{
+                    aspectRatio: 4 / 5,
+                    borderRadius: radii.md,
+                    overflow: 'hidden',
+                    backgroundColor: colors.pillMutedBg,
+                    marginBottom: spacing.sm,
+                  }}
+                >
+                  <Image source={{ uri: item.image }} style={{ width: '100%', height: '100%' }} />
+                </View>
+                <View style={{ paddingHorizontal: spacing.xs }}>
+                  <Text
+                    numberOfLines={1}
+                    style={{
+                      fontSize: typography.caption,
+                      fontWeight: '700',
+                      color: colors.textDark,
+                      textTransform: 'uppercase',
+                      letterSpacing: 1.2,
+                    }}
+                  >
+                    {item.brand}
+                  </Text>
+                  <Text
+                    numberOfLines={1}
+                    style={{
+                      fontSize: typography.small,
+                      color: '#4a4a4a',
+                      marginTop: 2,
+                    }}
+                  >
+                    {item.name}
+                  </Text>
+                  <Text
+                    style={{
+                      fontSize: typography.small,
+                      fontWeight: '700',
+                      color: colors.textDark,
+                      marginTop: spacing.xs,
+                    }}
+                  >
+                    {item.price}
+                  </Text>
+                </View>
+              </View>
+            ),
+          )}
         </View>
       ) : (
         <View style={{ padding: 48, alignItems: 'center' }}>

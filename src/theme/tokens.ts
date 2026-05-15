@@ -104,6 +104,21 @@ export const typography = {
   tabPill: 12,
 } as const
 
+export const fontFamily = {
+  /** Default body font (Plus Jakarta Sans). archive 中所有非 .font-serif 的文本默认这个。 */
+  sans: 'PlusJakartaSans_400Regular',
+  sansMedium: 'PlusJakartaSans_500Medium',
+  sansSemiBold: 'PlusJakartaSans_600SemiBold',
+  sansBold: 'PlusJakartaSans_700Bold',
+  /** Serif (Playfair Display). archive 中 .font-serif 用这个。 */
+  serif: 'PlayfairDisplay_400Regular',
+  serifMedium: 'PlayfairDisplay_500Medium',
+  serifSemiBold: 'PlayfairDisplay_600SemiBold',
+  serifBold: 'PlayfairDisplay_700Bold',
+  serifItalic: 'PlayfairDisplay_400Regular_Italic',
+  serifMediumItalic: 'PlayfairDisplay_500Medium_Italic',
+} as const
+
 export const layout = {
   navPanelWidth: 232,
   navFabSize: 48,

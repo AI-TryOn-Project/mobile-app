@@ -30,6 +30,10 @@ export const colors = {
   accentPurpleMuted: 'rgba(108,92,231,0.18)',
   accentGreen: '#27ae60',
   accentGreenMuted: 'rgba(39,174,96,0.18)',
+  accentRed: '#ff2442',
+  accentYellow: '#ffdb00',
+  bgPillMuted: '#f5f5f7',
+  textPrimary: '#333333',
   /** questions step */
   questionsBg: '#000000',
   white: '#ffffff',
@@ -64,6 +68,20 @@ export const shadows = {
     shadowOffset: { width: 0, height: 8 },
     shadowOpacity: 0.05,
     shadowRadius: 13,
+    elevation: 4,
+  },
+  smallShadow: {
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 1 },
+    shadowOpacity: 0.15,
+    shadowRadius: 3,
+    elevation: 2,
+  },
+  mediumShadow: {
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.15,
+    shadowRadius: 6,
     elevation: 4,
   },
 } as const
@@ -102,6 +120,21 @@ export const typography = {
   titleSerif: 34,
   sectionUpper: 10,
   tabPill: 12,
+} as const
+
+export const fontFamily = {
+  /** Default body font (Plus Jakarta Sans). archive 中所有非 .font-serif 的文本默认这个。 */
+  sans: 'PlusJakartaSans_400Regular',
+  sansMedium: 'PlusJakartaSans_500Medium',
+  sansSemiBold: 'PlusJakartaSans_600SemiBold',
+  sansBold: 'PlusJakartaSans_700Bold',
+  /** Serif (Playfair Display). archive 中 .font-serif 用这个。 */
+  serif: 'PlayfairDisplay_400Regular',
+  serifMedium: 'PlayfairDisplay_500Medium',
+  serifSemiBold: 'PlayfairDisplay_600SemiBold',
+  serifBold: 'PlayfairDisplay_700Bold',
+  serifItalic: 'PlayfairDisplay_400Regular_Italic',
+  serifMediumItalic: 'PlayfairDisplay_500Medium_Italic',
 } as const
 
 export const layout = {

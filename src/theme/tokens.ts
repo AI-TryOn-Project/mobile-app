@@ -32,6 +32,7 @@ export const colors = {
   accentGreenMuted: 'rgba(39,174,96,0.18)',
   accentRed: '#ff2442',
   accentYellow: '#ffdb00',
+  accentAmber300: '#fcd34d',
   bgPillMuted: '#f5f5f7',
   textPrimary: '#333333',
   /** questions step */

@@ -1,4 +1,4 @@
-import React, { useMemo, useState } from 'react'
+import React, { useCallback, useMemo, useState } from 'react'
 import {
   Image,
   Pressable,
@@ -12,9 +12,10 @@ import {
 import { BlurView } from 'expo-blur'
 import { Mic, Send } from 'lucide-react-native'
 import { useSafeAreaInsets } from 'react-native-safe-area-context'
-import { colors, fontFamily, radii, shadows, typography } from '@/theme/tokens'
+import { colors, fontFamily, layout, radii, shadows, typography } from '@/theme/tokens'
 import { useAppStore } from '@/stores/useAppStore'
 import { type FeedItem } from '@/constants/appJsxMocks'
+import { PostDetailsOverlay } from '@/components/PostDetailsOverlay'
 
 const STYLIST_AVATAR =
   'https://images.unsplash.com/photo-1488426862026-3ee34a7d66df?auto=format&fit=crop&w=240&q=80'
@@ -29,6 +30,34 @@ export function DiscoverScreen() {
   const [activeCommunityFilter, setActiveCommunityFilter] = useState('All')
   const [searchQuery, setSearchQuery] = useState('')
   const [isStylistCollapsed, setIsStylistCollapsed] = useState(false)
+  const [selectedPost, setSelectedPost] = useState<FeedItem | null>(null)
+  const [savedPostIds, setSavedPostIds] = useState<Set<number>>(() => new Set())
+  const [mixedPostIds, setMixedPostIds] = useState<Set<number>>(() => new Set())
+  const [mixedItemIds, setMixedItemIds] = useState<Set<string>>(() => new Set())
+
+  const togglePostId = useCallback(
+    (setter: React.Dispatch<React.SetStateAction<Set<number>>>, id: number) => {
+      setter((prev) => {
+        const next = new Set(prev)
+        if (next.has(id)) next.delete(id)
+        else next.add(id)
+        return next
+      })
+    },
+    []
+  )
+
+  const toggleItemId = useCallback(
+    (setter: React.Dispatch<React.SetStateAction<Set<string>>>, id: string) => {
+      setter((prev) => {
+        const next = new Set(prev)
+        if (next.has(id)) next.delete(id)
+        else next.add(id)
+        return next
+      })
+    },
+    []
+  )
 
   const filteredFeed = useMemo(
     () =>
@@ -62,15 +91,22 @@ export function DiscoverScreen() {
     setSearchQuery('')
   }
 
+  const bottomDockClearance = insets.bottom + layout.bottomNavOffset + layout.navFabSize + 24
+
   return (
-    <View style={[styles.root, { paddingBottom: insets.bottom + 100 }]}>
+    <View style={styles.root}>
       <ScrollView
         stickyHeaderIndices={[0]}
         showsVerticalScrollIndicator={false}
         onScrollBeginDrag={() => setIsStylistCollapsed(true)}
-        contentContainerStyle={{ paddingBottom: 24 }}
+        contentContainerStyle={{ paddingBottom: bottomDockClearance }}
       >
-        <BlurView intensity={40} tint="light" style={[styles.stickyHeader, { paddingTop: insets.top + 8 }]}>
+        <BlurView
+          intensity={90}
+          tint="light"
+          style={[styles.stickyHeader, { paddingTop: Math.max(insets.top + 8, 48) }]}
+        >
+          <View pointerEvents="none" style={styles.stickyHeaderWash} />
           <View style={styles.composerOuter}>
             <View
               style={[
@@ -128,14 +164,19 @@ export function DiscoverScreen() {
           {cols.map((col, index) => (
             <View key={index} style={styles.col}>
               {col.items.map((item) => (
-                <FeedCard key={item.id} item={item} cardW={cardW} />
+                <FeedCard
+                  key={item.id}
+                  item={item}
+                  cardW={cardW}
+                  onPress={() => setSelectedPost(item)}
+                />
               ))}
             </View>
           ))}
         </View>
       </ScrollView>
 
-      <View style={[styles.searchDock, { bottom: insets.bottom + 88 }]}>
+      <View style={[styles.searchDock, { bottom: insets.bottom + layout.bottomNavOffset }]}>
         <TextInput
           value={searchQuery}
           onChangeText={setSearchQuery}
@@ -156,13 +197,37 @@ export function DiscoverScreen() {
           )}
         </Pressable>
       </View>
+
+      <PostDetailsOverlay
+        post={selectedPost}
+        onClose={() => setSelectedPost(null)}
+        isSavedPost={selectedPost != null && savedPostIds.has(selectedPost.id)}
+        onToggleSavePost={() =>
+          selectedPost && togglePostId(setSavedPostIds, selectedPost.id)
+        }
+        isPostMixed={selectedPost != null && mixedPostIds.has(selectedPost.id)}
+        onTogglePostMix={() =>
+          selectedPost && togglePostId(setMixedPostIds, selectedPost.id)
+        }
+        mixedItemIds={mixedItemIds}
+        onToggleItemMix={(id) => toggleItemId(setMixedItemIds, id)}
+      />
     </View>
   )
 }
 
-function FeedCard({ item, cardW }: { item: FeedItem; cardW: number }) {
+function FeedCard({
+  item,
+  cardW,
+  onPress,
+}: {
+  item: FeedItem
+  cardW: number
+  onPress: () => void
+}) {
   return (
     <Pressable
+      onPress={onPress}
       style={[
         styles.cardWrap,
         {
@@ -184,6 +249,11 @@ const styles = StyleSheet.create({
     zIndex: 30,
     backgroundColor: 'rgba(245,243,239,0.92)',
     paddingBottom: 12,
+    overflow: 'hidden',
+  },
+  stickyHeaderWash: {
+    ...StyleSheet.absoluteFillObject,
+    backgroundColor: 'rgba(245,243,239,0.72)',
   },
   composerOuter: { paddingHorizontal: 16 },
   composer: {
@@ -262,17 +332,17 @@ const styles = StyleSheet.create({
   cardImg: { width: '100%', height: '100%' },
   searchDock: {
     position: 'absolute',
-    left: 16,
+    left: layout.leftNavGutter + layout.navFabSize + 12,
     right: 16,
+    height: layout.navFabSize,
     flexDirection: 'row',
     alignItems: 'center',
     gap: 10,
     borderWidth: 1,
     borderColor: colors.cardWarmBorder,
-    borderRadius: radii.pill,
+    borderRadius: layout.navFabSize / 2,
     backgroundColor: colors.cardWhite,
-    paddingHorizontal: 12,
-    paddingVertical: 8,
+    paddingHorizontal: 14,
     ...shadows.composer,
   },
   searchInput: {

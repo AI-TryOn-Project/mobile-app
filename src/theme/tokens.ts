@@ -27,6 +27,7 @@ export const colors = {
   navFabBg: '#141414',
   navFabBorder: 'rgba(255,255,255,0.1)',
   accentPurple: '#6c5ce7',
+  accentPurpleSoft: '#efe8ff',
   accentPurpleMuted: 'rgba(108,92,231,0.18)',
   accentGreen: '#27ae60',
   accentGreenMuted: 'rgba(39,174,96,0.18)',
@@ -90,6 +91,13 @@ export const shadows = {
     shadowOpacity: 0.15,
     shadowRadius: 6,
     elevation: 4,
+  },
+  backFab: {
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 6 },
+    shadowOpacity: 0.1,
+    shadowRadius: 18,
+    elevation: 6,
   },
 } as const
 

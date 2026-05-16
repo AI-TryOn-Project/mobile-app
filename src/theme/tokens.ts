@@ -18,6 +18,7 @@ export const colors = {
   textLabelBrown: '#8f7d67',
   textMutedGray: '#999999',
   textDark: '#1a1a1a',
+  textItemNameMuted: '#6b655f',
   borderLight: '#e5e5e5',
   borderHairline: '#f2f2f2',
   feedCardBg: '#e6e2d6',
@@ -32,6 +33,7 @@ export const colors = {
   accentGreen: '#27ae60',
   accentGreenMuted: 'rgba(39,174,96,0.18)',
   accentRed: '#ff2442',
+  accentHeartRed: '#ef4444',
   accentYellow: '#ffdb00',
   accentAmber300: '#fcd34d',
   bgPillMuted: '#f5f5f7',
@@ -99,6 +101,13 @@ export const shadows = {
     shadowRadius: 18,
     elevation: 6,
   },
+  shopCta: {
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 8 },
+    shadowOpacity: 0.15,
+    shadowRadius: 20,
+    elevation: 8,
+  },
 } as const
 
 export const radii = {
@@ -140,6 +149,7 @@ export const typography = {
 export const fontFamily = {
   /** Default body font (Plus Jakarta Sans). archive 中所有非 .font-serif 的文本默认这个。 */
   sans: 'PlusJakartaSans_400Regular',
+  sansItalic: 'PlusJakartaSans_400Regular_Italic',
   sansMedium: 'PlusJakartaSans_500Medium',
   sansSemiBold: 'PlusJakartaSans_600SemiBold',
   sansBold: 'PlusJakartaSans_700Bold',

@@ -11,6 +11,8 @@ import {
 } from 'react-native'
 import { SafeAreaView, useSafeAreaInsets } from 'react-native-safe-area-context'
 import { getPostBreakdown, type FeedItem, type ShopItem } from '@/constants/appJsxMocks'
+import { ItemDetailsOverlay } from '@/components/ItemDetailsOverlay'
+import { ToastPill } from '@/components/ToastPill'
 import { colors, fontFamily, shadows } from '@/theme/tokens'
 
 type Props = {
@@ -22,6 +24,8 @@ type Props = {
   onTogglePostMix: () => void
   mixedItemIds: Set<string>
   onToggleItemMix: (itemId: string) => void
+  isWishlisted: (baseId: string) => boolean
+  onToggleWishlist: (item: ShopItem) => void
 }
 
 type ShopItemCardProps = {
@@ -29,6 +33,7 @@ type ShopItemCardProps = {
   cardW: number
   isMixed: boolean
   onToggleItemMixWithToast: (itemId: string) => void
+  onOpenItem: (item: ShopItem) => void
 }
 
 export function PostDetailsOverlay({
@@ -40,10 +45,13 @@ export function PostDetailsOverlay({
   onTogglePostMix,
   mixedItemIds,
   onToggleItemMix,
+  isWishlisted,
+  onToggleWishlist,
 }: Props) {
   const { width: windowWidth, height: windowHeight } = useWindowDimensions()
   const insets = useSafeAreaInsets()
   const [toast, setToast] = useState<string | null>(null)
+  const [selectedItem, setSelectedItem] = useState<ShopItem | null>(null)
   const toastTimer = useRef<ReturnType<typeof setTimeout> | null>(null)
 
   const showToast = useCallback((msg: string) => {
@@ -62,6 +70,7 @@ export function PostDetailsOverlay({
     if (post == null) {
       if (toastTimer.current) clearTimeout(toastTimer.current)
       setToast(null)
+      setSelectedItem(null)
     }
   }, [post])
 
@@ -108,16 +117,7 @@ export function PostDetailsOverlay({
           </Pressable>
         </View>
 
-        {toast != null && (
-          <View
-            pointerEvents="none"
-            style={[styles.toastWrap, { top: Math.max(insets.top + 8, 48) + 76 }]}
-          >
-            <View style={styles.toastPill}>
-              <Text style={styles.toastText}>{toast}</Text>
-            </View>
-          </View>
-        )}
+        <ToastPill message={toast} top={Math.max(insets.top + 8, 48) + 76} />
 
         <ScrollView
           style={styles.scroll}
@@ -178,12 +178,19 @@ export function PostDetailsOverlay({
                   cardW={cardW}
                   isMixed={mixedItemIds.has(item.id)}
                   onToggleItemMixWithToast={onToggleItemMixWithToast}
+                  onOpenItem={setSelectedItem}
                 />
               ))}
             </View>
           </View>
         </ScrollView>
       </SafeAreaView>
+      <ItemDetailsOverlay
+        initialItem={selectedItem}
+        onClose={() => setSelectedItem(null)}
+        isWishlisted={isWishlisted}
+        onToggleWishlist={onToggleWishlist}
+      />
     </View>
   )
 }
@@ -193,11 +200,12 @@ function ShopItemCard({
   cardW,
   isMixed,
   onToggleItemMixWithToast,
+  onOpenItem,
 }: ShopItemCardProps) {
   const imageW = cardW - 16
 
   return (
-    <Pressable style={[styles.shopCard, { width: cardW }]}>
+    <Pressable onPress={() => onOpenItem(item)} style={[styles.shopCard, { width: cardW }]}>
       <View style={[styles.shopImageFrame, { width: imageW, height: (imageW * 5) / 4 }]}>
         <Image source={{ uri: item.image }} style={styles.shopImage} resizeMode="cover" />
         <Pressable
@@ -272,26 +280,6 @@ const styles = StyleSheet.create({
     color: colors.textMutedGray,
   },
   scroll: { flex: 1 },
-  toastWrap: {
-    position: 'absolute',
-    left: 0,
-    right: 0,
-    alignItems: 'center',
-    zIndex: 10,
-  },
-  toastPill: {
-    backgroundColor: colors.toastBg,
-    paddingHorizontal: 16,
-    paddingVertical: 10,
-    borderRadius: 999,
-    ...shadows.mediumShadow,
-  },
-  toastText: {
-    fontFamily: fontFamily.sansSemiBold,
-    fontSize: 12,
-    lineHeight: 18,
-    color: colors.white,
-  },
   hero: { width: '100%', backgroundColor: colors.feedCardBg },
   heroImage: { width: '100%', height: '100%' },
   body: { padding: 24, paddingBottom: 8 },

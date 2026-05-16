@@ -14,7 +14,7 @@ import { Mic, Send } from 'lucide-react-native'
 import { useSafeAreaInsets } from 'react-native-safe-area-context'
 import { colors, fontFamily, layout, radii, shadows, typography } from '@/theme/tokens'
 import { useAppStore } from '@/stores/useAppStore'
-import { type FeedItem } from '@/constants/appJsxMocks'
+import { type FeedItem, type ShopItem } from '@/constants/appJsxMocks'
 import { PostDetailsOverlay } from '@/components/PostDetailsOverlay'
 
 const STYLIST_AVATAR =
@@ -34,6 +34,7 @@ export function DiscoverScreen() {
   const [savedPostIds, setSavedPostIds] = useState<Set<number>>(() => new Set())
   const [mixedPostIds, setMixedPostIds] = useState<Set<number>>(() => new Set())
   const [mixedItemIds, setMixedItemIds] = useState<Set<string>>(() => new Set())
+  const [wishlistItemIds, setWishlistItemIds] = useState<Set<string>>(() => new Set())
 
   const togglePostId = useCallback(
     (setter: React.Dispatch<React.SetStateAction<Set<number>>>, id: number) => {
@@ -58,6 +59,20 @@ export function DiscoverScreen() {
     },
     []
   )
+
+  const isWishlisted = useCallback(
+    (baseId: string) => wishlistItemIds.has(baseId),
+    [wishlistItemIds]
+  )
+
+  const onToggleWishlist = useCallback((item: ShopItem) => {
+    setWishlistItemIds((prev) => {
+      const next = new Set(prev)
+      if (next.has(item.baseId)) next.delete(item.baseId)
+      else next.add(item.baseId)
+      return next
+    })
+  }, [])
 
   const filteredFeed = useMemo(
     () =>
@@ -211,6 +226,8 @@ export function DiscoverScreen() {
         }
         mixedItemIds={mixedItemIds}
         onToggleItemMix={(id) => toggleItemId(setMixedItemIds, id)}
+        isWishlisted={isWishlisted}
+        onToggleWishlist={onToggleWishlist}
       />
     </View>
   )

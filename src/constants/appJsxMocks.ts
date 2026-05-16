@@ -199,6 +199,7 @@ export const DEFAULT_STYLIST_REPLY =
 
 export type ShopItem = {
   id: string
+  baseId: string
   brand: string
   name: string
   price: string
@@ -209,6 +210,7 @@ export type ShopItem = {
 export const MOCK_SHOP_ITEMS: ShopItem[] = [
   {
     id: 'all1',
+    baseId: 'all1',
     brand: 'ZARA',
     name: 'Ribbed Knit Top',
     price: '$29.90',
@@ -218,6 +220,7 @@ export const MOCK_SHOP_ITEMS: ShopItem[] = [
   },
   {
     id: 'all2',
+    baseId: 'all2',
     brand: "Levi's",
     name: '501 Original Fit Jeans',
     price: '$98.00',
@@ -227,6 +230,7 @@ export const MOCK_SHOP_ITEMS: ShopItem[] = [
   },
   {
     id: 'all_new_1',
+    baseId: 'all_new_1',
     brand: 'Mate',
     name: 'Organic Cotton Shrunken Tee',
     price: '$58.00',
@@ -236,6 +240,7 @@ export const MOCK_SHOP_ITEMS: ShopItem[] = [
   },
   {
     id: 'all_new_2',
+    baseId: 'all_new_2',
     brand: 'Glassons',
     name: 'High Boat Neck Fitted Tank',
     price: '$19.99',
@@ -245,6 +250,7 @@ export const MOCK_SHOP_ITEMS: ShopItem[] = [
   },
   {
     id: 'all_new_3',
+    baseId: 'all_new_3',
     brand: 'H&M',
     name: 'Lace-Trimmed Slip Dress',
     price: '$39.99',
@@ -254,6 +260,7 @@ export const MOCK_SHOP_ITEMS: ShopItem[] = [
   },
   {
     id: 'all_new_4',
+    baseId: 'all_new_4',
     brand: 'Aritzia',
     name: "The '80s Comfy Denim Shirt",
     price: '$98.00',
@@ -263,6 +270,7 @@ export const MOCK_SHOP_ITEMS: ShopItem[] = [
   },
   {
     id: 'all_new_5',
+    baseId: 'all_new_5',
     brand: 'Mango',
     name: 'Polka dot balloon jeans',
     price: '$89.99',
@@ -271,6 +279,7 @@ export const MOCK_SHOP_ITEMS: ShopItem[] = [
   },
   {
     id: 'all_new_6',
+    baseId: 'all_new_6',
     brand: 'Old Navy',
     name: 'Smocked-Waist Midi Skirt',
     price: '$19.99',
@@ -285,6 +294,6 @@ export function getPostBreakdown(post: FeedItem): ShopItem[] {
 
   return Array.from({ length: 4 }, (_, i) => {
     const base = MOCK_SHOP_ITEMS[(start + i) % len]
-    return { ...base, id: `${post.id}-${base.id}` }
+    return { ...base, id: `${post.id}-${base.id}`, baseId: base.id }
   })
 }

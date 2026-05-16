@@ -11,6 +11,7 @@ import {
 } from '@expo-google-fonts/playfair-display'
 import {
   PlusJakartaSans_400Regular,
+  PlusJakartaSans_400Regular_Italic,
   PlusJakartaSans_500Medium,
   PlusJakartaSans_600SemiBold,
   PlusJakartaSans_700Bold,
@@ -29,6 +30,7 @@ export default function App() {
     PlayfairDisplay_400Regular_Italic,
     PlayfairDisplay_500Medium_Italic,
     PlusJakartaSans_400Regular,
+    PlusJakartaSans_400Regular_Italic,
     PlusJakartaSans_500Medium,
     PlusJakartaSans_600SemiBold,
     PlusJakartaSans_700Bold,

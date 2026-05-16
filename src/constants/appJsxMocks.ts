@@ -13,6 +13,7 @@ export type FeedItem = {
   id: number
   filter: string
   image: string
+  aspectRatio: number
   user: string
   avatar: string
   likes: number
@@ -26,6 +27,7 @@ export const MOCK_FEED: FeedItem[] = [
     id: 401,
     filter: 'minimalist',
     image: 'https://i.pinimg.com/736x/f8/be/0f/f8be0ff9016bead77eeaff91060fe826.jpg',
+    aspectRatio: 0.85,
     user: 'Chic Style',
     avatar: 'https://i.pravatar.cc/150?u=chic',
     likes: 612,
@@ -36,6 +38,7 @@ export const MOCK_FEED: FeedItem[] = [
     id: 402,
     filter: 'minimalist',
     image: 'https://i.pinimg.com/736x/d0/da/e0/d0dae0f6ecdae7f438a95fcc156e0da7.jpg',
+    aspectRatio: 0.56,
     user: 'Modern Minimal',
     avatar: 'https://i.pravatar.cc/150?u=mod',
     likes: 844,
@@ -47,6 +50,7 @@ export const MOCK_FEED: FeedItem[] = [
     filter: 'going-out',
     image:
       'https://img.ltwebstatic.com/v4/j/ssms/2025/12/08/98/176517802406eeaa10fc33833c369290b28242b73d_thumbnail_420x.webp',
+    aspectRatio: 0.75,
     user: 'Night Out Wardrobe',
     avatar: 'https://i.pravatar.cc/150?u=night',
     likes: 580,
@@ -54,19 +58,10 @@ export const MOCK_FEED: FeedItem[] = [
     tags: ['goingout', 'weekend'],
   },
   {
-    id: 302,
-    filter: 'boho',
-    image: 'https://showmeyourmumu.com/cdn/shop/files/YI5XiqLg_1440x.progressive.jpg?v=1766090892',
-    user: 'Show Me Your Mumu',
-    avatar: 'https://i.pravatar.cc/150?u=mumu',
-    likes: 1240,
-    desc: 'Floral flutter sleeve mini, suede ankle boots.',
-    tags: ['spring', 'floral'],
-  },
-  {
     id: 501,
     filter: 'y2k',
     image: 'https://i.pinimg.com/736x/d0/50/01/d050018a2250b92ba154b148d2d6e26f.jpg',
+    aspectRatio: 0.76,
     user: 'Vintage Finds',
     avatar: 'https://i.pravatar.cc/150?u=v1',
     likes: 432,
@@ -77,11 +72,47 @@ export const MOCK_FEED: FeedItem[] = [
     id: 503,
     filter: 'minimalist',
     image: 'https://i.pinimg.com/736x/c2/3d/6d/c23d6da086bd35893755ab8cb33ff280.jpg',
+    aspectRatio: 0.63,
     user: 'Neutral Palette',
     avatar: 'https://i.pravatar.cc/150?u=v3',
     likes: 554,
     desc: 'Clean lines and neutral tones.',
     tags: ['minimal', 'clean'],
+  },
+  {
+    id: 507,
+    filter: 'y2k',
+    image:
+      'https://img.ltwebstatic.com/v4/j/pi/2026/02/10/2d/17707311586d4e11f7e561bbebc27b6a8b83049aac_thumbnail_420x.webp',
+    aspectRatio: 0.75,
+    user: 'Trend Setter',
+    avatar: 'https://i.pravatar.cc/150?u=v7',
+    likes: 489,
+    desc: 'Bringing back the early 2000s.',
+    tags: ['trendy', 'y2k'],
+  },
+  {
+    id: 508,
+    filter: 'going-out',
+    image:
+      'https://www.meshki.us/cdn/shop/files/241119_MESHKI_SegrettiReshoots_17_882.jpg?v=1775956764&width=1206',
+    aspectRatio: 0.67,
+    user: 'Glamour Look',
+    avatar: 'https://i.pravatar.cc/150?u=v8',
+    likes: 920,
+    desc: 'Sleek and sophisticated evening wear.',
+    tags: ['evening', 'sophisticated'],
+  },
+  {
+    id: 509,
+    filter: 'coastal',
+    image: 'https://i.pinimg.com/1200x/d6/04/ad/d604ad4e4a3fe22e874347be6b0154c1.jpg',
+    aspectRatio: 0.8,
+    user: 'Breezy Style',
+    avatar: 'https://i.pravatar.cc/150?u=v9',
+    likes: 315,
+    desc: 'Catching the coastal breeze.',
+    tags: ['coastal', 'breezy'],
   },
 ]
 

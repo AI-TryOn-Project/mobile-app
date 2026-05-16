@@ -7,22 +7,24 @@ import {
   Text,
   TextInput,
   View,
+  useWindowDimensions,
 } from 'react-native'
+import { BlurView } from 'expo-blur'
+import { Mic, Send } from 'lucide-react-native'
 import { useSafeAreaInsets } from 'react-native-safe-area-context'
-import { colors, radii, shadows, spacing, typography } from '@/theme/tokens'
+import { colors, fontFamily, radii, shadows, typography } from '@/theme/tokens'
 import { useAppStore } from '@/stores/useAppStore'
-import { DEFAULT_FILTER_TAGS, MOCK_FEED, type FeedItem } from '@/constants/appJsxMocks'
+import { type FeedItem } from '@/constants/appJsxMocks'
 
 const STYLIST_AVATAR =
   'https://images.unsplash.com/photo-1488426862026-3ee34a7d66df?auto=format&fit=crop&w=240&q=80'
 
 export function DiscoverScreen() {
   const insets = useSafeAreaInsets()
+  const { width: vw } = useWindowDimensions()
   const discoveryReply = useAppStore((s) => s.discoveryReply)
   const filterTags = useAppStore((s) => s.filterTags)
   const feedData = useAppStore((s) => s.feedData)
-  const setFeedData = useAppStore((s) => s.setFeedData)
-  const setDiscoveryStylist = useAppStore((s) => s.setDiscoveryStylist)
 
   const [activeCommunityFilter, setActiveCommunityFilter] = useState('All')
   const [searchQuery, setSearchQuery] = useState('')
@@ -36,34 +38,29 @@ export function DiscoverScreen() {
     [feedData, activeCommunityFilter]
   )
 
-  const runStylistFeed = () => {
-    const q = searchQuery.trim()
-    if (!q) return
-    const lower = q.toLowerCase()
-    let items: FeedItem[] = [...feedData]
-    let reply = `I pulled a fresh set of looks for ${q}.`
-    let tags = [...DEFAULT_FILTER_TAGS]
-    if (lower.includes('hawaii') || lower.includes('夏威夷')) {
-      reply = 'Hawaii has a few different vibes — tap a scene to filter.'
-      tags = [
-        { label: 'Beach Day', slug: 'beach-day' },
-        { label: 'Brunch', slug: 'brunch' },
-      ]
-      items = MOCK_FEED.slice(0, 4).map((it, i) => {
-        if (i === 0) return { ...it, filter: 'beach-day' }
-        if (i === 1) return { ...it, filter: 'brunch' }
-        return it
-      })
+  const paddingH = 16
+  const gap = 12
+  const cardW = (vw - paddingH * 2 - gap) / 2
+  const cols = useMemo(() => {
+    const nextCols: { items: FeedItem[]; h: number }[] = [
+      { items: [], h: 0 },
+      { items: [], h: 0 },
+    ]
+    for (const item of filteredFeed) {
+      const target = nextCols[0].h <= nextCols[1].h ? nextCols[0] : nextCols[1]
+      target.items.push(item)
+      const cardH = cardW / item.aspectRatio
+      target.h += cardH + 16
     }
-    setDiscoveryStylist(reply, tags)
-    setFeedData(items)
-    setActiveCommunityFilter('All')
-    setSearchQuery('')
-    setIsStylistCollapsed(false)
-  }
+    return nextCols
+  }, [cardW, filteredFeed])
 
-  const leftCol = filteredFeed.filter((_, i) => i % 2 === 0)
-  const rightCol = filteredFeed.filter((_, i) => i % 2 === 1)
+  const hasTypedInput = searchQuery.trim().length > 0
+
+  const handleComposerPress = () => {
+    if (!hasTypedInput) return
+    setSearchQuery('')
+  }
 
   return (
     <View style={[styles.root, { paddingBottom: insets.bottom + 100 }]}>
@@ -73,7 +70,7 @@ export function DiscoverScreen() {
         onScrollBeginDrag={() => setIsStylistCollapsed(true)}
         contentContainerStyle={{ paddingBottom: 24 }}
       >
-        <View style={[styles.stickyHeader, { paddingTop: insets.top + 8 }]}>
+        <BlurView intensity={40} tint="light" style={[styles.stickyHeader, { paddingTop: insets.top + 8 }]}>
           <View style={styles.composerOuter}>
             <View
               style={[
@@ -91,7 +88,7 @@ export function DiscoverScreen() {
               </View>
             </View>
           </View>
-        </View>
+        </BlurView>
 
         <ScrollView
           horizontal
@@ -102,13 +99,21 @@ export function DiscoverScreen() {
             onPress={() => setActiveCommunityFilter('All')}
             style={[styles.tag, activeCommunityFilter === 'All' && styles.tagOn]}
           >
-            <Text style={[styles.tagText, activeCommunityFilter === 'All' && styles.tagTextOn]}>All</Text>
+            <Text
+              style={[
+                styles.tagText,
+                styles.allTagText,
+                activeCommunityFilter === 'All' && styles.tagTextOn,
+              ]}
+            >
+              All
+            </Text>
           </Pressable>
           {filterTags.map((tag) => (
             <Pressable
               key={tag.slug}
               onPress={() => setActiveCommunityFilter(tag.slug)}
-              style={[styles.tag, activeCommunityFilter === tag.slug && styles.tagOn]}
+              style={[styles.tag, styles.secondaryTag, activeCommunityFilter === tag.slug && styles.tagOn]}
             >
               <Text
                 style={[styles.tagText, activeCommunityFilter === tag.slug && styles.tagTextOn]}
@@ -120,16 +125,13 @@ export function DiscoverScreen() {
         </ScrollView>
 
         <View style={styles.masonry}>
-          <View style={styles.col}>
-            {leftCol.map((item) => (
-              <FeedCard key={item.id} item={item} />
-            ))}
-          </View>
-          <View style={styles.col}>
-            {rightCol.map((item) => (
-              <FeedCard key={item.id} item={item} />
-            ))}
-          </View>
+          {cols.map((col, index) => (
+            <View key={index} style={styles.col}>
+              {col.items.map((item) => (
+                <FeedCard key={item.id} item={item} cardW={cardW} />
+              ))}
+            </View>
+          ))}
         </View>
       </ScrollView>
 
@@ -137,29 +139,41 @@ export function DiscoverScreen() {
         <TextInput
           value={searchQuery}
           onChangeText={setSearchQuery}
-          placeholder="Ask the stylist…"
-          placeholderTextColor="#999"
+          placeholder="Ask the stylist..."
+          placeholderTextColor={colors.textMutedGray}
           style={styles.searchInput}
-          onSubmitEditing={runStylistFeed}
+          onSubmitEditing={handleComposerPress}
           returnKeyType="send"
         />
-        <Pressable style={styles.sendBtn} onPress={runStylistFeed}>
-          <Text style={styles.sendBtnText}>Send</Text>
+        <Pressable
+          style={[styles.iconButton, hasTypedInput ? styles.iconButtonSend : styles.iconButtonMic]}
+          onPress={handleComposerPress}
+        >
+          {hasTypedInput ? (
+            <Send size={14} color={colors.white} />
+          ) : (
+            <Mic size={14} color={colors.textDark} />
+          )}
         </Pressable>
       </View>
     </View>
   )
 }
 
-function FeedCard({ item }: { item: FeedItem }) {
+function FeedCard({ item, cardW }: { item: FeedItem; cardW: number }) {
   return (
-    <Pressable style={styles.cardWrap}>
-      <View style={styles.cardInner}>
-        <Image source={{ uri: item.image }} style={styles.cardImg} resizeMode="cover" />
-      </View>
-      <Text style={styles.cardMeta} numberOfLines={1}>
-        {item.user}
-      </Text>
+    <Pressable
+      style={[
+        styles.cardWrap,
+        {
+          width: cardW,
+          height: cardW / item.aspectRatio,
+          borderRadius: radii.xxl,
+          overflow: 'hidden',
+        },
+      ]}
+    >
+      <Image source={{ uri: item.image }} style={styles.cardImg} resizeMode="cover" />
     </Pressable>
   )
 }
@@ -168,7 +182,7 @@ const styles = StyleSheet.create({
   root: { flex: 1, backgroundColor: colors.canvasMain },
   stickyHeader: {
     zIndex: 30,
-    backgroundColor: 'rgba(245,243,239,0.96)',
+    backgroundColor: 'rgba(245,243,239,0.92)',
     paddingBottom: 12,
   },
   composerOuter: { paddingHorizontal: 16 },
@@ -183,7 +197,7 @@ const styles = StyleSheet.create({
   },
   composerExpanded: {
     alignItems: 'flex-start',
-    borderRadius: 26,
+    borderRadius: 25,
     paddingVertical: 10,
   },
   composerCollapsed: {
@@ -198,12 +212,14 @@ const styles = StyleSheet.create({
     overflow: 'hidden',
     borderWidth: 1,
     borderColor: colors.cardWarmBorder,
+    ...shadows.smallShadow,
   },
   avatarImg: { width: '100%', height: '100%' },
   stylistText: {
+    fontFamily: fontFamily.sans,
     fontSize: typography.small,
-    color: '#2b2723',
-    lineHeight: 18,
+    lineHeight: 20,
+    color: colors.textBody,
   },
   tagsRow: {
     paddingHorizontal: 16,
@@ -220,9 +236,16 @@ const styles = StyleSheet.create({
     borderColor: colors.borderLight,
     backgroundColor: colors.cardWhite,
   },
-  tagOn: { backgroundColor: colors.textDark, borderColor: colors.textDark },
-  tagText: { fontSize: typography.small, fontWeight: '500', color: colors.textDark },
-  tagTextOn: { color: colors.white, fontWeight: '700' },
+  secondaryTag: { paddingHorizontal: 16 },
+  tagOn: { backgroundColor: colors.textDark, borderColor: 'transparent' },
+  tagText: {
+    fontFamily: fontFamily.sansMedium,
+    fontSize: typography.small,
+    lineHeight: 18,
+    color: colors.textDark,
+  },
+  allTagText: { fontFamily: fontFamily.sansBold },
+  tagTextOn: { fontFamily: fontFamily.sansBold, color: colors.white },
   masonry: {
     flexDirection: 'row',
     gap: 12,
@@ -230,49 +253,45 @@ const styles = StyleSheet.create({
     paddingTop: 8,
     alignItems: 'flex-start',
   },
-  col: { flex: 1, gap: 16 },
-  cardWrap: { marginBottom: 4 },
-  cardInner: {
-    borderRadius: radii.xxl,
+  col: { flex: 1 },
+  cardWrap: {
+    marginBottom: 16,
     backgroundColor: colors.feedCardBg,
-    overflow: 'hidden',
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 1 },
-    shadowOpacity: 0.06,
-    shadowRadius: 3,
-    elevation: 2,
+    ...shadows.smallShadow,
   },
-  cardImg: { width: '100%', aspectRatio: 1.15 },
-  cardMeta: {
-    marginTop: 6,
-    fontSize: typography.caption,
-    color: colors.textMutedGray,
-    fontWeight: '600',
-  },
+  cardImg: { width: '100%', height: '100%' },
   searchDock: {
     position: 'absolute',
     left: 16,
     right: 16,
     flexDirection: 'row',
-    gap: 8,
     alignItems: 'center',
+    gap: 10,
+    borderWidth: 1,
+    borderColor: colors.cardWarmBorder,
+    borderRadius: radii.pill,
+    backgroundColor: colors.cardWhite,
+    paddingHorizontal: 12,
+    paddingVertical: 8,
+    ...shadows.composer,
   },
   searchInput: {
     flex: 1,
-    borderRadius: radii.pill,
-    borderWidth: 1,
-    borderColor: colors.borderLight,
-    backgroundColor: colors.cardWhite,
-    paddingHorizontal: 16,
-    paddingVertical: 12,
-    fontSize: typography.bodyMd,
-    color: colors.textDark,
+    minWidth: 0,
+    paddingHorizontal: 4,
+    paddingVertical: 0,
+    fontFamily: fontFamily.sans,
+    fontSize: typography.small,
+    lineHeight: 18,
+    color: colors.textBody,
   },
-  sendBtn: {
-    paddingHorizontal: 18,
-    paddingVertical: 12,
-    borderRadius: radii.pill,
-    backgroundColor: colors.textDark,
+  iconButton: {
+    width: 32,
+    height: 32,
+    borderRadius: 16,
+    alignItems: 'center',
+    justifyContent: 'center',
   },
-  sendBtnText: { color: colors.white, fontWeight: '700', fontSize: typography.small },
+  iconButtonMic: { backgroundColor: colors.bgPillMuted },
+  iconButtonSend: { backgroundColor: colors.black },
 })
